@@ -285,19 +285,75 @@ a.big{display:block;text-align:center;text-decoration:none}
 .hubmsg{margin:0;font-size:1.05rem;max-width:36ch}
 
 .lastline br+*{display:block}
+/* ---------- Stats: You | Friends ---------- */
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:4px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:4px}
+.seg button{font:700 .95rem var(--body);border:0;border-radius:10px;padding:10px;background:none;color:var(--muted);cursor:pointer}
+.seg button[aria-selected="true"]{background:var(--tray);color:var(--ink)}
+#vFriends,#vYou{display:flex;flex-direction:column;gap:16px}
+#vFriends[hidden],#vYou[hidden]{display:none}
+.namein{font:600 1.1rem var(--body);width:100%;box-sizing:border-box;padding:14px 16px;border-radius:14px;border:1.5px solid var(--line);background:var(--tray);color:var(--ink);outline:none}
+.namein:focus{border-color:var(--ink)}
+.daynav{display:grid;grid-template-columns:44px 1fr 44px;align-items:center;text-align:center}
+.daynav b{display:block;font:400 1.35rem var(--display)}
+.daynav small{color:var(--muted);font-size:.85rem}
+.daynav button{width:44px;height:44px;border-radius:12px;border:0;background:var(--tray);color:var(--ink);font:700 1.5rem var(--body);cursor:pointer;line-height:1}
+.daynav button:disabled{opacity:.3;cursor:default}
+.lbhead,.lbrow{display:grid;grid-template-columns:30px 1fr 52px 56px;align-items:center;gap:6px}
+.lbhead{padding:0 10px;font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:700}
+.lbhead span:nth-child(n+3){text-align:right}
+.lb{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.lbrow{width:100%;font:inherit;color:inherit;text-align:left;border:2px solid transparent;background:var(--tray);border-radius:12px;padding:10px;cursor:pointer;min-height:52px}
+.lbrow.you{border-color:var(--red)}
+.lbrow.sel{border-color:var(--ink)}
+.lbrank{font:700 1rem var(--mono);color:var(--muted)}
+.lbname{display:flex;align-items:center;gap:8px;min-width:0;font-weight:700}
+.lbname .nmtxt{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lbname em{font-style:normal;font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;color:var(--red);flex:none}
+.lbchick svg{width:30px;height:30px;display:block;flex:none}
+.lbday,.lbtot{text-align:right;font:700 1rem var(--mono);font-variant-numeric:tabular-nums}
+.lbday{color:var(--muted)}
+.lbempty{color:var(--muted);text-align:center;padding:12px}
+#fPenCard h2 small{font:500 .85rem var(--body);color:var(--muted);margin-left:6px}
+#fPen .slot{cursor:default}
+.rename{text-align:center;margin:0}
+.rename button{background:none;border:0;color:var(--muted);font:600 .9rem var(--body);text-decoration:underline;cursor:pointer}
+.nameerr{margin:0;color:var(--red);font-weight:600;font-size:.92rem}
+.namelinks{display:flex;justify-content:center;gap:18px}
+.namelinks button{background:none;border:0;color:var(--muted);font:600 .9rem var(--body);text-decoration:underline;cursor:pointer;padding:4px}
+.namelinks button[hidden]{display:none}
 
 </style>
 </head><body>
 <div class="wrap">
   <header>
     <a class="brand" href="index.html"><svg width="30" height="40" viewBox="0 0 60 80" aria-hidden="true"><path d="M30 3C46 3 57 31 57 48C57 66 45 78 30 78C15 78 3 66 3 48C3 31 14 3 30 3Z" fill="var(--red)"/><ellipse cx="20" cy="30" rx="6" ry="11" fill="#fff" opacity=".35" transform="rotate(20 20 30)"/></svg><h1>The <span>Red</span> Egg</h1></a>
-    <div class="meta">Stats<b>All time</b></div>
+    <div class="meta">Stats<b>This week</b></div>
   </header>
   <nav class="tabs" aria-label="Main"><div class="in"><a href="index.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="fillme" d="M12 2.5c3.8 0 7 7 7 11.3 0 4.3-3 7.7-7 7.7s-7-3.4-7-7.7C5 9.5 8.2 2.5 12 2.5Z" fill="none" stroke="currentColor" stroke-width="2"/></svg><span>Home</span></a><a href="collection.html"><svg viewBox="0 0 24 24" aria-hidden="true"><circle class="fillme" cx="12" cy="8" r="4.5" fill="none" stroke="currentColor" stroke-width="2"/><path class="fillme" d="M5 18.5c0-3.6 3.1-6 7-6s7 2.4 7 6c0 1.6-1.4 2.5-3 2.5H8c-1.6 0-3-.9-3-2.5Z" fill="none" stroke="currentColor" stroke-width="2"/></svg><span>Collection</span></a><a href="stats.html" aria-current="page"><svg viewBox="0 0 24 24" aria-hidden="true"><rect class="fillme" x="4" y="12" width="4" height="8" rx="1" fill="none" stroke="currentColor" stroke-width="2"/><rect class="fillme" x="10" y="6" width="4" height="14" rx="1" fill="none" stroke="currentColor" stroke-width="2"/><rect class="fillme" x="16" y="9" width="4" height="11" rx="1" fill="none" stroke="currentColor" stroke-width="2"/></svg><span>Stats</span></a><a href="how.html"><svg viewBox="0 0 24 24" aria-hidden="true"><circle class="fillme" cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.6 2.2c-.7.4-1.1.9-1.1 1.8M12 16.6v.4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>How to play</span></a></div></nav>
-  <div class="pagehead"><h2>Stats</h2><p>How your weeks and games are going.</p></div>
+  <div class="pagehead"><h2>Stats</h2></div>
+  <div class="seg" id="seg" role="tablist"><button data-v="friends" role="tab">Friends</button><button data-v="you" role="tab">You</button></div>
+  <div id="vFriends" hidden>
+    <section class="card" id="nameCard" hidden>
+      <h2 id="nameH">Pick a username</h2>
+      <input class="namein" id="nameIn" maxlength="16" autocomplete="username" autocapitalize="off" spellcheck="false" placeholder="Username">
+      <p class="nameerr" id="nameErr" hidden></p>
+      <button class="big" id="nameSave">Join</button>
+      <div class="namelinks"><button id="swapMode" hidden></button><button id="cancelName" hidden>Cancel</button></div>
+    </section>
+    <section class="card" id="board" hidden>
+      <div class="daynav"><button id="prevDay" aria-label="Previous day">‹</button><div><b id="dayTitle"></b><small id="daySub"></small></div><button id="nextDay" aria-label="Next day">›</button></div>
+      <div class="lbhead"><span>#</span><span>Name</span><span>Day</span><span>Week</span></div>
+      <ol class="lb" id="lbList"></ol>
+    </section>
+    <p class="empty" id="lbStatus" hidden></p>
+    <section class="card" id="fPenCard" hidden><h2><span id="fPenTitle"></span> <small id="fPenCount"></small></h2><div class="coll" id="fPen"></div></section>
+    <p class="rename" id="renameRow" hidden><button id="renameBtn">Change username</button></p>
+  </div>
+  <div id="vYou" hidden>
   <section class="card"><div class="tiles" id="tiles"></div></section>
   <section class="card"><h2>Recent weeks</h2><div class="chart" id="chart"></div></section>
   <section class="card"><h2>By game</h2><div class="chartwrap"><table class="gtable" id="gtable"></table></div></section>
+  </div>
   <footer class="site"><b>The Red Egg</b><span class="beta" id="betaBadge">Beta</span></footer>
 </div>
 <script>
@@ -608,6 +664,94 @@ const preFrac=p=>.8*Math.min(1,p/450);
 const sunFrac=(week,sun)=>{const a=preFrac(week);return a+(.96-a)*Math.min(1,sun/100)};
 const EGGP2="M30 3C46 3 57 31 57 48C57 66 45 78 30 78C15 78 3 66 3 48C3 31 14 3 30 3Z";
 
+/* ---------- leaderboard: shared scores ----------
+   Inside Claude the scores live in the artifact's shared store; on the live site they go to /api/players. */
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const LB={
+  _p:null,
+  init(){
+    if(this._p)return this._p;
+    this._p=(async()=>{
+      if(window.claude&&typeof window.claude.use==="function"){
+        try{
+          const db=await window.claude.use("db");if(!db)return null;
+          const user=await window.claude.use("user");const id=user&&await user.id();
+          return id?{kind:"claude",db,id}:null;
+        }catch(e){return null}
+      }
+      let id=RS.get("lbId",null);
+      if(!id){id="p"+Date.now().toString(36)+Math.random().toString(36).slice(2,10);RS.set("lbId",id)}
+      return {kind:"web",id};
+    })();
+    return this._p;
+  },
+  async list(){
+    const b=await this.init();if(!b)throw new Error("off");
+    if(b.kind==="claude"){const s=await b.db.collection("players").get();return s.docs.map(d=>({id:d.id,...d.data()}))}
+    const r=await fetch("/api/players",{cache:"no-store"});if(!r.ok)throw new Error("off");return (await r.json()).players||[];
+  },
+  async save(doc){
+    const b=await this.init();if(!b)throw new Error("off");
+    if(b.kind==="claude"){
+      const k=lbKey(doc.name),all=await this.list();
+      if(all.some(p=>p.id!==b.id&&lbKey(p.name)===k))throw new Error("taken");
+      return b.db.doc("players/"+b.id).set(doc);
+    }
+    const r=await fetch("/api/players",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({id:b.id,...doc})});
+    if(r.status===409)throw new Error("taken");
+    if(!r.ok)throw new Error("off");
+  }
+};
+function lbName(){return RS.get("lbName","")}
+const lbKey=n=>String(n||"").replace(/\s+/g," ").trim().toLowerCase();
+/* log in on another device: take over that username's id and bring its progress here */
+LB.login=async function(name){
+  const b=await this.init();if(!b||b.kind!=="web")throw new Error("off");
+  const r=await fetch("/api/players?login="+encodeURIComponent(name),{cache:"no-store"});
+  if(r.status===404)throw new Error("missing");if(!r.ok)throw new Error("off");
+  const d=await r.json();
+  RS.set("lbId",d.id);RS.set("lbName",d.name);this._p=null;
+  if(d.save)lbMerge(d.save);
+  RS.set("lbSent","");
+  return d;
+};
+function lbMerge(sv){
+  const pen=RS.get("pen",[]);(sv.pen||[]).forEach(p=>{if(p&&p.id&&!pen.some(x=>x.id===p.id))pen.push(p)});
+  pen.sort((a,b)=>a.id<b.id?-1:1);RS.set("pen",pen);
+  const w=RS.get("week",null),sw=sv.week;
+  if(sw&&sw.id&&sw.id>=CUR_MONDAY){
+    if(!w||!w.id||sw.id>w.id)RS.set("week",sw);
+    else if(sw.id===w.id){w.days={...(w.days||{}),...(sw.days||{})};w.sunday={...(w.sunday||{}),...(sw.sunday||{})};if(sw.hatched)w.hatched=true;RS.set("week",w)}
+  }
+  const h=RS.get("history",[]),seen=new Set(h.map(x=>x.game+"|"+x.at));
+  (sv.history||[]).forEach(x=>{if(x&&!seen.has(x.game+"|"+x.at)){h.push(x);seen.add(x.game+"|"+x.at)}});
+  h.sort((a,b)=>(a.at||0)-(b.at||0));RS.set("history",h);
+  RS.set("playDays",[...new Set([...RS.get("playDays",[]),...(sv.playDays||[])])].sort());
+  if(sv.weeks)RS.set("lbWeeks",{...sv.weeks,...RS.get("lbWeeks",{})});
+}
+/* what everyone else sees about me: the last 3 weeks of scores and my pen counts */
+function lbPayload(){
+  const w=currentWeek(),pen=RS.get("pen",[]),old=RS.get("lbWeeks",{});
+  const weeks={...old};
+  const r=v=>Math.round((+v||0)*10)/10;
+  const days={};Object.keys(w.days).forEach(k=>days[k]=r(w.days[k]));
+  const sunDone=SUNDAY_KEYS.every(k=>k in w.sunday);
+  const mine=pen.find(p=>p.id===w.id);
+  weeks[w.id]={days,sun:Object.keys(w.sunday).length?r(sum(w.sunday)):null,chick:mine?tierFor(mine.total).key:null,total:Math.round(sum(w.days)+sum(w.sunday))};
+  const cut=(()=>{const d=new Date(CUR_MONDAY+"T12:00:00");d.setDate(d.getDate()-14);return ymd(d)})();
+  pen.forEach(p=>{if(p.id<cut)return;weeks[p.id]=weeks[p.id]||{days:{},sun:null};weeks[p.id].chick=tierFor(p.total).key;weeks[p.id].total=p.total});
+  const keep=Object.keys(weeks).sort().slice(-3);const out={};keep.forEach(k=>out[k]=weeks[k]);
+  RS.set("lbWeeks",out);
+  const counts={};pen.forEach(p=>{const k=tierFor(p.total).key;counts[k]=(counts[k]||0)+1});
+  return {name:lbName(),weeks:out,pen:counts,save:{week:currentWeek(),pen,history:RS.get("history",[]).slice(-500),playDays:RS.get("playDays",[]).slice(-400),weeks:out}};
+}
+async function lbSync(force){
+  if(!lbName())return;
+  const doc=lbPayload(),key=JSON.stringify(doc);
+  if(!force&&RS.get("lbSent","")===key)return;
+  try{await LB.save({...doc,updated:Date.now()});RS.set("lbSent",key)}catch(e){if(force)throw e}
+}
+
 (function(){
   const pen=STORE.get("pen",[]),hist=history(),w=getWeek();
   const thisWeek=Math.round(sum(w.days)+sum(w.sunday));
@@ -639,6 +783,112 @@ const EGGP2="M30 3C46 3 57 31 57 48C57 66 45 78 30 78C15 78 3 66 3 48C3 31 14 3 
     const s=hist.filter(h=>h.game===g.key).map(h=>h.score);
     const a=s.length?Math.round(s.reduce((x,y)=>x+y,0)/s.length):null,b=s.length?Math.max(...s):null;
     return `<tr><td>${g.name}</td><td>${s.length}</td><td>${a??"–"}${a!=null?`<span class="meter"><i style="width:${a}%"></i></span>`:""}</td><td>${b??"–"}</td></tr>`}).join("")}</tbody>`;
+})();
+
+/* ---------- Stats: You | Friends ---------- */
+(function(){
+  const views={friends:$("vFriends"),you:$("vYou")};
+  function show(v){Object.keys(views).forEach(k=>views[k].hidden=k!==v);
+    document.querySelectorAll("#seg button").forEach(b=>b.setAttribute("aria-selected",b.dataset.v===v));
+    RS.set("statsView",v);if(v==="friends")boot()}
+  $("seg").onclick=e=>{const b=e.target.closest("button");if(b)show(b.dataset.v)};
+
+  /* the days you can flip through: last week Monday through today */
+  const SPAN=[];{const d=new Date(CUR_MONDAY+"T12:00:00");d.setDate(d.getDate()-7);for(let i=0;i<7+TODAY_IDX+1;i++){SPAN.push(new Date(d));d.setDate(d.getDate()+1)}}
+  let pos=SPAN.length-1,players=null,openId=null,me=null,booted=false;
+  const myPen=()=>{const c={};RS.get("pen",[]).forEach(p=>{const k=tierFor(p.total).key;c[k]=(c[k]||0)+1});return c};
+  const num=v=>{v=+v;return isFinite(v)?Math.max(0,Math.min(700,v)):0};
+
+  function rowsFor(d){
+    const wk=ymd(mondayOf(d)),di=(d.getDay()+6)%7;
+    return players.map(p=>{
+      const w=(p.weeks&&p.weeks[wk])||null;let day=null,tot=0;
+      if(w){const days=w.days||{};
+        DAY_KEYS.slice(0,6).forEach((k,i)=>{if(i<=di&&k in days)tot+=num(days[k])});
+        if(di<6)day=DAY_KEYS[di] in days?num(days[DAY_KEYS[di]]):null;
+        else{day=w.sun!=null?num(w.sun):null;if(day!=null)tot+=day;if(w.chick&&w.total!=null)tot=num(w.total)}
+      }
+      const chick=di===6&&w&&w.chick?ALL_CHICKS.find(t=>t.key===w.chick):null;
+      return {p,day,tot:Math.round(tot),chick,played:!!w&&Object.keys(w.days||{}).length+(w.sun!=null?1:0)>0};
+    }).sort((a,b)=>b.tot-a.tot||(b.day??-1)-(a.day??-1)||String(a.p.name).localeCompare(String(b.p.name)));
+  }
+  function render(){
+    const d=SPAN[pos],di=(d.getDay()+6)%7,mine=myPen();
+    $("dayTitle").textContent=pos===SPAN.length-1?"Today":DAY_NAMES[di];
+    $("daySub").textContent=`${label(d)} · ${di===6?"The Red Egg":DAYS[di].name}`;
+    $("prevDay").disabled=pos===0;$("nextDay").disabled=pos===SPAN.length-1;
+    const rows=rowsFor(d);
+    if(!rows.length){$("lbList").innerHTML=`<li class="lbempty">No one yet.</li>`;return}
+    let rank=0,last=null;
+    $("lbList").innerHTML=rows.map((r,i)=>{
+      if(r.tot!==last){rank=i+1;last=r.tot}
+      const you=r.p.id===me,ch=r.chick?`<span class="lbchick" title="${esc(r.chick.name)}">${miniSVG(r.chick,!mine[r.chick.key])}</span>`:"";
+      return `<li><button class="lbrow${you?" you":""}${openId===r.p.id?" sel":""}" data-id="${esc(r.p.id)}">
+        <span class="lbrank">${r.played?rank:"–"}</span>
+        <span class="lbname">${ch}<span class="nmtxt">${esc(r.p.name||"Someone")}</span>${you?`<em>you</em>`:""}</span>
+        <span class="lbday">${r.day==null?"–":Math.round(r.day)}</span>
+        <span class="lbtot">${r.tot}</span></button></li>`}).join("");
+    renderPen();
+  }
+  function renderPen(){
+    const card=$("fPenCard"),p=players&&players.find(x=>x.id===openId);
+    if(!p){card.hidden=true;return}
+    const mine=myPen(),theirs=p.pen||{};
+    const has=ALL_CHICKS.filter(t=>num(theirs[t.key])>0);
+    $("fPenTitle").textContent=p.id===me?"Your pen":`${p.name||"Someone"}'s pen`;
+    const tc=Math.round(has.reduce((a,t)=>a+num(theirs[t.key]),0));$("fPenCount").textContent=`${tc} chick${tc===1?"":"s"}`;
+    $("fPen").innerHTML=has.length?has.map(t=>{const n=Math.round(num(theirs[t.key])),known=!!mine[t.key];
+      return `<div class="slot${known?" b-"+t.rar:" locked"}${t.exact!=null?" special":""}"><span class="ct">×${n}</span>${miniSVG(t,!known)}<span class="nm">${known?t.name.replace(/ Chick$/,""):"???"}</span>${known?rarTag(t):""}</div>`}).join("")
+      :`<p class="empty">No chicks yet.</p>`;
+    card.hidden=false;
+  }
+  $("lbList").onclick=e=>{const b=e.target.closest(".lbrow");if(!b)return;openId=openId===b.dataset.id?null:b.dataset.id;render();
+    if(openId)setTimeout(()=>$("fPenCard").scrollIntoView({behavior:"smooth",block:"nearest"}),30)};
+  $("prevDay").onclick=()=>{if(pos>0){pos--;render()}};
+  $("nextDay").onclick=()=>{if(pos<SPAN.length-1){pos++;render()}};
+
+  async function load(){
+    $("lbStatus").hidden=true;
+    try{players=(await LB.list()).filter(p=>p&&p.name);render();$("board").hidden=false}
+    catch(e){$("board").hidden=true;$("lbStatus").hidden=false;$("lbStatus").textContent="The leaderboard can't load right now."}
+  }
+  let mode="join",kind=null;
+  function setMode(m){mode=m;$("nameErr").hidden=true;
+    $("nameH").textContent=m==="login"?"Log in":m==="rename"?"Change username":"Pick a username";
+    $("nameSave").textContent=m==="login"?"Log in":m==="rename"?"Save":"Join";
+    $("swapMode").hidden=kind!=="web"||m==="rename";
+    $("swapMode").textContent=m==="login"?"New here? Pick a username":"Have a username? Log in";
+    $("cancelName").hidden=m!=="rename";}
+  function err(t){$("nameErr").textContent=t;$("nameErr").hidden=false}
+  async function boot(){
+    if(booted)return;booted=true;
+    const b=await LB.init();
+    if(!b){$("nameCard").hidden=true;$("board").hidden=true;$("lbStatus").hidden=false;$("lbStatus").textContent="The leaderboard can't load here.";return}
+    me=b.id;kind=b.kind;
+    if(!lbName()){setMode("join");$("nameCard").hidden=false;$("board").hidden=true;return}
+    $("nameCard").hidden=true;$("renameRow").hidden=false;
+    await lbSync();await load();
+  }
+  async function saveName(){
+    const n=$("nameIn").value.replace(/\s+/g," ").trim().slice(0,16);
+    if(!n){$("nameIn").focus();return}
+    $("nameSave").disabled=true;$("nameErr").hidden=true;
+    try{
+      if(mode==="login"){await LB.login(n);location.reload();return}
+      const old=lbName();RS.set("lbName",n);
+      try{await lbSync(true)}catch(e){RS.set("lbName",old);throw e}
+      $("nameCard").hidden=true;$("renameRow").hidden=false;await load();
+    }catch(e){
+      err(e.message==="taken"?"That username is taken.":e.message==="missing"?"No one has that username.":"Couldn't connect. Try again.");
+    }finally{$("nameSave").disabled=false}
+  }
+  $("nameSave").onclick=saveName;
+  $("nameIn").onkeydown=e=>{if(e.key==="Enter")saveName()};
+  $("swapMode").onclick=()=>setMode(mode==="login"?"join":"login");
+  $("cancelName").onclick=()=>{$("nameCard").hidden=true;$("board").hidden=false};
+  $("renameBtn").onclick=()=>{setMode("rename");$("nameIn").value=lbName();$("nameCard").hidden=false;$("nameIn").focus()};
+
+  show(RS.get("statsView","friends")==="you"?"you":"friends");
 })();
 
 </script>

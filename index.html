@@ -284,6 +284,42 @@ a.big{display:block;text-align:center;text-decoration:none}
 .hubmsg{margin:0;font-size:1.05rem;max-width:36ch}
 
 .lastline br+*{display:block}
+/* ---------- Stats: You | Friends ---------- */
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:4px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:4px}
+.seg button{font:700 .95rem var(--body);border:0;border-radius:10px;padding:10px;background:none;color:var(--muted);cursor:pointer}
+.seg button[aria-selected="true"]{background:var(--tray);color:var(--ink)}
+#vFriends,#vYou{display:flex;flex-direction:column;gap:16px}
+#vFriends[hidden],#vYou[hidden]{display:none}
+.namein{font:600 1.1rem var(--body);width:100%;box-sizing:border-box;padding:14px 16px;border-radius:14px;border:1.5px solid var(--line);background:var(--tray);color:var(--ink);outline:none}
+.namein:focus{border-color:var(--ink)}
+.daynav{display:grid;grid-template-columns:44px 1fr 44px;align-items:center;text-align:center}
+.daynav b{display:block;font:400 1.35rem var(--display)}
+.daynav small{color:var(--muted);font-size:.85rem}
+.daynav button{width:44px;height:44px;border-radius:12px;border:0;background:var(--tray);color:var(--ink);font:700 1.5rem var(--body);cursor:pointer;line-height:1}
+.daynav button:disabled{opacity:.3;cursor:default}
+.lbhead,.lbrow{display:grid;grid-template-columns:30px 1fr 52px 56px;align-items:center;gap:6px}
+.lbhead{padding:0 10px;font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:700}
+.lbhead span:nth-child(n+3){text-align:right}
+.lb{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.lbrow{width:100%;font:inherit;color:inherit;text-align:left;border:2px solid transparent;background:var(--tray);border-radius:12px;padding:10px;cursor:pointer;min-height:52px}
+.lbrow.you{border-color:var(--red)}
+.lbrow.sel{border-color:var(--ink)}
+.lbrank{font:700 1rem var(--mono);color:var(--muted)}
+.lbname{display:flex;align-items:center;gap:8px;min-width:0;font-weight:700}
+.lbname .nmtxt{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lbname em{font-style:normal;font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;color:var(--red);flex:none}
+.lbchick svg{width:30px;height:30px;display:block;flex:none}
+.lbday,.lbtot{text-align:right;font:700 1rem var(--mono);font-variant-numeric:tabular-nums}
+.lbday{color:var(--muted)}
+.lbempty{color:var(--muted);text-align:center;padding:12px}
+#fPenCard h2 small{font:500 .85rem var(--body);color:var(--muted);margin-left:6px}
+#fPen .slot{cursor:default}
+.rename{text-align:center;margin:0}
+.rename button{background:none;border:0;color:var(--muted);font:600 .9rem var(--body);text-decoration:underline;cursor:pointer}
+.nameerr{margin:0;color:var(--red);font-weight:600;font-size:.92rem}
+.namelinks{display:flex;justify-content:center;gap:18px}
+.namelinks button{background:none;border:0;color:var(--muted);font:600 .9rem var(--body);text-decoration:underline;cursor:pointer;padding:4px}
+.namelinks button[hidden]{display:none}
 
 </style>
 <div class="wrap">
@@ -641,6 +677,94 @@ const preFrac=p=>.8*Math.min(1,p/450);
 const sunFrac=(week,sun)=>{const a=preFrac(week);return a+(.96-a)*Math.min(1,sun/100)};
 const EGGP2="M30 3C46 3 57 31 57 48C57 66 45 78 30 78C15 78 3 66 3 48C3 31 14 3 30 3Z";
 
+/* ---------- leaderboard: shared scores ----------
+   Inside Claude the scores live in the artifact's shared store; on the live site they go to /api/players. */
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const LB={
+  _p:null,
+  init(){
+    if(this._p)return this._p;
+    this._p=(async()=>{
+      if(window.claude&&typeof window.claude.use==="function"){
+        try{
+          const db=await window.claude.use("db");if(!db)return null;
+          const user=await window.claude.use("user");const id=user&&await user.id();
+          return id?{kind:"claude",db,id}:null;
+        }catch(e){return null}
+      }
+      let id=RS.get("lbId",null);
+      if(!id){id="p"+Date.now().toString(36)+Math.random().toString(36).slice(2,10);RS.set("lbId",id)}
+      return {kind:"web",id};
+    })();
+    return this._p;
+  },
+  async list(){
+    const b=await this.init();if(!b)throw new Error("off");
+    if(b.kind==="claude"){const s=await b.db.collection("players").get();return s.docs.map(d=>({id:d.id,...d.data()}))}
+    const r=await fetch("/api/players",{cache:"no-store"});if(!r.ok)throw new Error("off");return (await r.json()).players||[];
+  },
+  async save(doc){
+    const b=await this.init();if(!b)throw new Error("off");
+    if(b.kind==="claude"){
+      const k=lbKey(doc.name),all=await this.list();
+      if(all.some(p=>p.id!==b.id&&lbKey(p.name)===k))throw new Error("taken");
+      return b.db.doc("players/"+b.id).set(doc);
+    }
+    const r=await fetch("/api/players",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({id:b.id,...doc})});
+    if(r.status===409)throw new Error("taken");
+    if(!r.ok)throw new Error("off");
+  }
+};
+function lbName(){return RS.get("lbName","")}
+const lbKey=n=>String(n||"").replace(/\s+/g," ").trim().toLowerCase();
+/* log in on another device: take over that username's id and bring its progress here */
+LB.login=async function(name){
+  const b=await this.init();if(!b||b.kind!=="web")throw new Error("off");
+  const r=await fetch("/api/players?login="+encodeURIComponent(name),{cache:"no-store"});
+  if(r.status===404)throw new Error("missing");if(!r.ok)throw new Error("off");
+  const d=await r.json();
+  RS.set("lbId",d.id);RS.set("lbName",d.name);this._p=null;
+  if(d.save)lbMerge(d.save);
+  RS.set("lbSent","");
+  return d;
+};
+function lbMerge(sv){
+  const pen=RS.get("pen",[]);(sv.pen||[]).forEach(p=>{if(p&&p.id&&!pen.some(x=>x.id===p.id))pen.push(p)});
+  pen.sort((a,b)=>a.id<b.id?-1:1);RS.set("pen",pen);
+  const w=RS.get("week",null),sw=sv.week;
+  if(sw&&sw.id&&sw.id>=CUR_MONDAY){
+    if(!w||!w.id||sw.id>w.id)RS.set("week",sw);
+    else if(sw.id===w.id){w.days={...(w.days||{}),...(sw.days||{})};w.sunday={...(w.sunday||{}),...(sw.sunday||{})};if(sw.hatched)w.hatched=true;RS.set("week",w)}
+  }
+  const h=RS.get("history",[]),seen=new Set(h.map(x=>x.game+"|"+x.at));
+  (sv.history||[]).forEach(x=>{if(x&&!seen.has(x.game+"|"+x.at)){h.push(x);seen.add(x.game+"|"+x.at)}});
+  h.sort((a,b)=>(a.at||0)-(b.at||0));RS.set("history",h);
+  RS.set("playDays",[...new Set([...RS.get("playDays",[]),...(sv.playDays||[])])].sort());
+  if(sv.weeks)RS.set("lbWeeks",{...sv.weeks,...RS.get("lbWeeks",{})});
+}
+/* what everyone else sees about me: the last 3 weeks of scores and my pen counts */
+function lbPayload(){
+  const w=currentWeek(),pen=RS.get("pen",[]),old=RS.get("lbWeeks",{});
+  const weeks={...old};
+  const r=v=>Math.round((+v||0)*10)/10;
+  const days={};Object.keys(w.days).forEach(k=>days[k]=r(w.days[k]));
+  const sunDone=SUNDAY_KEYS.every(k=>k in w.sunday);
+  const mine=pen.find(p=>p.id===w.id);
+  weeks[w.id]={days,sun:Object.keys(w.sunday).length?r(sum(w.sunday)):null,chick:mine?tierFor(mine.total).key:null,total:Math.round(sum(w.days)+sum(w.sunday))};
+  const cut=(()=>{const d=new Date(CUR_MONDAY+"T12:00:00");d.setDate(d.getDate()-14);return ymd(d)})();
+  pen.forEach(p=>{if(p.id<cut)return;weeks[p.id]=weeks[p.id]||{days:{},sun:null};weeks[p.id].chick=tierFor(p.total).key;weeks[p.id].total=p.total});
+  const keep=Object.keys(weeks).sort().slice(-3);const out={};keep.forEach(k=>out[k]=weeks[k]);
+  RS.set("lbWeeks",out);
+  const counts={};pen.forEach(p=>{const k=tierFor(p.total).key;counts[k]=(counts[k]||0)+1});
+  return {name:lbName(),weeks:out,pen:counts,save:{week:currentWeek(),pen,history:RS.get("history",[]).slice(-500),playDays:RS.get("playDays",[]).slice(-400),weeks:out}};
+}
+async function lbSync(force){
+  if(!lbName())return;
+  const doc=lbPayload(),key=JSON.stringify(doc);
+  if(!force&&RS.get("lbSent","")===key)return;
+  try{await LB.save({...doc,updated:Date.now()});RS.set("lbSent",key)}catch(e){if(force)throw e}
+}
+
 /* ---------- page ---------- */
 // the crack is measured against the point where the egg breaks (300); before Sunday it stops just short
 const unlocked=()=>STORE.get("unlockAll",false);
@@ -724,7 +848,7 @@ function hatch(w,t,total,net,from){
       await wait(500);
       showTier(t,total);$("status").textContent="Your egg hatched.";
     }
-    renderPen();$("nextWeekBtn").hidden=false;
+    renderPen();$("nextWeekBtn").hidden=false;lbSync();
   })();
 }
 $("nextWeekBtn").onclick=()=>{
@@ -779,6 +903,7 @@ function renderToday(){
 }
 
 render();
+lbSync();
 
 /* testing tools stay hidden unless you tap the Beta badge five times */
 (function(){const t=$("testTools");if(!t)return;if(STORE.get("showTools",false))t.hidden=false;let n=0;
