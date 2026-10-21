@@ -1,0 +1,647 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<script>document.documentElement.setAttribute("data-theme","dark")</script><meta name="color-scheme" content="dark"><meta name="theme-color" content="#14171C">
+<title>How to Play The Red Egg</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+
+/* Layout: one 560px column per page; brand header, page content as cards, tab bar fixed at the bottom on phones and a pill row under the header on wider screens */
+:root{
+  --bg:#ECEFF2; --surface:#FFFFFF; --tray:#DCE1E6; --ink:#1A1D23; --muted:#5E6673;
+  --line:#C9D0D8; --red:#D11F35; --red-dark:#8E1222; --crack:#3A0A12; --good:#2E9B57; --btn:#1A1D23; --btn-ink:#FFFFFF;
+  --glow:#F6C343; --chick:#F2C230; --hole:#1A0509;
+  --t1:#B98500; --t2:#2E9B57; --t3:#2F6FDB; --t4:#7A6F62; --t5:#8A5A3C;
+  --display:"Bagel Fat One","Arial Rounded MT Bold",system-ui,sans-serif;
+  --body:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#14171C; --surface:#1E232A; --tray:#262C34; --ink:#EEF1F5; --muted:#9AA3B0;
+  --line:#353D47; --red:#F0384D; --red-dark:#A01A2D; --crack:#2A060C; --good:#47C474; --btn:#EEF1F5; --btn-ink:#14171C;
+  --glow:#FFCF4D; --chick:#FFD34D; --hole:#120306; --t1:#FFC93C; --t2:#47C474; --t3:#6EA0FF; --t4:#B3A898; --t5:#C08A66; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#14171C; --surface:#1E232A; --tray:#262C34; --ink:#EEF1F5; --muted:#9AA3B0;
+  --line:#353D47; --red:#F0384D; --red-dark:#A01A2D; --crack:#2A060C; --good:#47C474; --btn:#EEF1F5; --btn-ink:#14171C;
+  --glow:#FFCF4D; --chick:#FFD34D; --hole:#120306; --t1:#FFC93C; --t2:#47C474; --t3:#6EA0FF; --t4:#B3A898; --t5:#C08A66; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.45;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 40px}
+.wrap{max-width:560px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.meta{flex-shrink:0}
+.brand{display:flex;align-items:center;gap:10px}
+.brand h1{font-family:var(--display);font-weight:400;font-size:1.9rem;line-height:1;margin:0;letter-spacing:.01em}
+.brand h1 span{color:var(--red)}
+.meta{font-size:.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-weight:600;text-align:right}
+.meta b{display:block;color:var(--ink);font-size:.95rem;letter-spacing:.02em;text-transform:none}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:14px}
+h2{font-family:var(--display);font-weight:400;font-size:1.35rem;margin:0}
+h3{margin:0;font-size:.75rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted)}
+
+/* the egg */
+.eggcard{align-items:center;text-align:center}
+.egg{width:220px;height:253px;position:relative;margin-top:44px}
+.egg svg{width:100%;height:100%;overflow:visible}
+.egg .body{transform-origin:50% 95%}
+.egg.wob1 .body{animation:wob1 .45s ease-in-out 2}
+.egg.wob2 .body{animation:wob2 .22s ease-in-out 4}
+@keyframes wob1{25%{transform:rotate(-5deg)}75%{transform:rotate(5deg)}}
+@keyframes wob2{25%{transform:rotate(-9deg) translateY(-3px)}75%{transform:rotate(9deg) translateY(-3px)}}
+.egg .ring{stroke-dasharray:300;stroke-dashoffset:300;transition:stroke-dashoffset .55s ease-in}
+.egg.cracked .ring{stroke-dashoffset:0}
+.egg.cracked.partial .ring{stroke-dashoffset:150}
+.egg .top{transform-box:view-box;transform-origin:30% 50%;transition:transform 1.1s cubic-bezier(.15,.8,.3,1),opacity .5s ease .6s}
+.egg.open .top{transform:translate(-70px,-150px) rotate(-70deg);opacity:0}
+.egg .shard{opacity:0;transform-box:fill-box;transform-origin:center}
+.egg.open .shard{animation:shard .95s cubic-bezier(.1,.7,.3,1) forwards}
+@keyframes shard{0%{opacity:1;transform:translate(0,0) rotate(0)}100%{opacity:0;transform:translate(var(--dx),var(--dy)) rotate(var(--r))}}
+.egg .chick{opacity:0;transform-box:view-box;transform-origin:50% 75%;transform:translateY(60px) scale(.5)}
+.egg.open .chick{animation:pop .8s cubic-bezier(.3,1.7,.5,1) .25s forwards}
+@keyframes pop{0%{opacity:1;transform:translateY(60px) scale(.5)}70%{opacity:1;transform:translateY(-44px) scale(1.04)}100%{opacity:1;transform:translateY(-36px)}}
+.egg .spark{opacity:0;transform-box:fill-box;transform-origin:center}
+.egg.open .spark{animation:twinkle 1.6s ease-in-out infinite;animation-delay:var(--d)}
+@keyframes twinkle{0%,100%{opacity:0;transform:scale(.3)}50%{opacity:1;transform:scale(1)}}
+.egg .peek{opacity:0;transition:opacity .4s ease .2s}
+.egg.peeking .peek{opacity:1}
+.egg .peek .eyes{animation:blink 3.2s infinite 1s;transform-box:fill-box;transform-origin:center}
+@keyframes blink{0%,92%,100%{transform:scaleY(1)}95%{transform:scaleY(.1)}}
+.egg .seg{transition:stroke-dashoffset .3s ease-out}
+.egg.static *{animation-duration:0s!important;animation-delay:0s!important;transition:none!important}
+.egg.static.open .spark{animation:twinkle 1.6s ease-in-out infinite!important;animation-delay:var(--d)!important}
+.tiername{font-family:var(--display);font-size:1.8rem;line-height:1.1;min-height:1.1em}
+.points{font:700 1rem var(--mono);color:var(--muted);font-variant-numeric:tabular-nums}
+.points b{color:var(--ink);font-size:1.4rem}
+.status{color:var(--muted);max-width:40ch;margin:0}
+.big{width:100%;border:0;border-radius:14px;padding:16px;font:700 1.05rem var(--body);cursor:pointer;background:var(--btn);color:var(--btn-ink)}
+
+/* days */
+.days{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.day{display:grid;grid-template-columns:3.2em 1fr auto;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--line)}
+.day:last-child{border-bottom:0}
+.day .dn{font-weight:700;font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.day .gn{font-weight:700;min-width:0}
+.day .gn small{display:block;font-weight:500;color:var(--muted);font-size:.8rem}
+.day .today{display:inline-block;font-size:.62rem;text-transform:uppercase;letter-spacing:.08em;background:var(--ink);color:var(--surface);border-radius:999px;padding:1px 7px;margin-left:6px;vertical-align:2px}
+.day.sun .gn{color:var(--red)}
+.sc{font:700 1rem var(--mono);font-variant-numeric:tabular-nums;text-align:right}
+.play{font:700 .9rem var(--body);border:0;border-radius:10px;padding:9px 14px;background:var(--btn);color:var(--btn-ink);cursor:pointer;text-decoration:none;white-space:nowrap;display:inline-block}
+.play.red{background:var(--red);color:#fff}
+.play.re{background:transparent;color:var(--muted);border:1.5px solid var(--line);padding:4px 9px;font-size:.75rem;margin-left:8px}
+.soon{font-size:.8rem;color:var(--muted);font-weight:600}
+
+/* collection */
+.coll{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.slot{font:inherit;color:inherit;border:2px solid transparent;cursor:pointer;background:var(--tray);border-radius:14px;padding:10px 6px 8px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:2px;position:relative}
+.slot svg{width:70px;height:70px}
+.slot.sel{border-color:var(--ink)}
+.slot.locked{cursor:default}
+.detail{background:var(--tray);border-radius:14px;padding:14px 16px}
+.detail h4{margin:0 0 6px;font-family:var(--display);font-weight:400;font-size:1.2rem}
+.detail ul{list-style:none;margin:0;padding:0}
+.detail li{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--line);font-size:.92rem}
+.detail li:last-child{border-bottom:0}
+.detail li b{font-family:var(--mono)}
+.slot .nm{font-size:.74rem;font-weight:700;line-height:1.2}
+.slot.locked .nm{color:var(--muted)}
+.slot .ct{position:absolute;top:6px;right:8px;font:700 .72rem var(--mono);color:var(--muted)}
+.hist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.hist li{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--line);font-size:.92rem}
+.hist li:last-child{border-bottom:0}
+.hist b{font-family:var(--mono)}
+.hist span:first-child{color:var(--muted)}
+.empty{color:var(--muted);margin:0;font-size:.92rem}
+details{font-size:.9rem;color:var(--muted)}
+details summary{cursor:pointer;font-weight:600;color:var(--ink)}
+.tools{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.pickwrap{display:flex;align-items:center;gap:6px;font-weight:600;color:var(--ink);font-size:.85rem}
+.pickwrap select{font:600 .85rem var(--body);padding:8px;border-radius:10px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink)}
+.tools button{font:600 .85rem var(--body);border-radius:10px;padding:9px 12px;background:transparent;color:var(--ink);border:1.5px solid var(--line);cursor:pointer}
+a:focus-visible,button:focus-visible{outline:3px solid var(--red);outline-offset:2px}
+@media (max-width:400px){.coll{grid-template-columns:repeat(3,1fr);gap:7px}.slot svg{width:52px;height:52px}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.egg.open .chick{opacity:1;transform:translateY(-36px)}.egg.open .spark{opacity:1;transform:none}}
+
+/* ---------- site chrome ---------- */
+body{padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}
+.brand{text-decoration:none;color:inherit}
+.tabs{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--surface);border-top:1px solid var(--line);
+  display:flex;justify-content:center;
+  padding-left:max(8px,env(safe-area-inset-left,0px));padding-right:max(8px,env(safe-area-inset-right,0px));padding-bottom:env(safe-area-inset-bottom,0px)}
+.tabs .in{display:flex;width:100%;max-width:560px}
+.tabs a{white-space:nowrap;flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:9px 4px 10px;text-decoration:none;color:var(--muted);font-size:.72rem;font-weight:700;letter-spacing:.02em}
+.tabs a svg{width:24px;height:24px}
+.tabs a[aria-current="page"]{color:var(--ink)}
+.tabs a[aria-current="page"] svg .fillme{fill:var(--red)}
+@media (min-width:720px){
+  body{padding-bottom:40px}
+  .tabs{position:static;background:transparent;border:0;padding:0;margin:-6px auto 0;max-width:560px}
+  .tabs .in{background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:4px;gap:4px}
+  .tabs a{flex-direction:row;justify-content:center;gap:7px;font-size:.88rem;padding:9px 10px;border-radius:999px}
+  .tabs a svg{width:19px;height:19px}
+  .tabs a[aria-current="page"]{background:var(--tray)}
+}
+footer.site{text-align:center;color:var(--muted);font-size:.8rem;padding-top:6px}
+footer.site b{font-family:var(--display);font-weight:400;color:var(--ink)}
+footer.site .beta{display:inline-block;font-size:.62rem;text-transform:uppercase;letter-spacing:.1em;font-weight:700;border:1.5px solid var(--line);border-radius:999px;padding:1px 7px;margin-left:6px;vertical-align:1px}
+.pagehead{display:flex;flex-direction:column;gap:4px}
+.pagehead h2{font-size:2rem}
+.pagehead p{margin:0;color:var(--muted);max-width:52ch}
+.link{color:var(--ink);font-weight:700;text-decoration:none;font-size:.92rem}
+.link:hover{text-decoration:underline}
+
+/* home */
+a.big{display:block;text-align:center;text-decoration:none}
+.big.red{background:var(--red);color:#fff}
+.today{width:100%}
+.todaynote{margin:0;background:var(--tray);border-radius:12px;padding:12px 14px;color:var(--muted)}
+.todaynote b{color:var(--ink);font-family:var(--mono)}
+.teaser{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.mini{background:var(--tray);border-radius:14px;padding:10px 6px 8px;display:flex;flex-direction:column;align-items:center;gap:2px;text-decoration:none;color:var(--ink);font-size:.74rem;font-weight:700}
+.mini svg{width:64px;height:64px}
+
+/* stats */
+.tiles{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.tile{background:var(--tray);border-radius:14px;padding:12px 14px;display:flex;flex-direction:column;gap:2px}
+.tile span{font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:700}
+.tile b{font:700 1.7rem var(--mono);font-variant-numeric:tabular-nums;line-height:1.1}
+.tile small{color:var(--muted);font-size:.8rem}
+.gtable{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+.gtable th{font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:600;text-align:right;padding:6px 4px;border-bottom:1px solid var(--line)}
+.gtable td{padding:9px 4px;border-bottom:1px solid var(--line);text-align:right;font-family:var(--mono);font-size:.92rem}
+.gtable th:first-child,.gtable td:first-child{text-align:left;font-family:var(--body);font-weight:700}
+.gtable tr:last-child td{border-bottom:0}
+.meter{display:inline-block;width:52px;height:6px;border-radius:3px;background:var(--tray);vertical-align:middle;margin-left:6px;overflow:hidden}
+.meter i{display:block;height:100%;background:var(--ink);border-radius:3px}
+.chartwrap{overflow-x:auto}
+.chart svg{width:100%;height:auto;display:block}
+
+/* how to play */
+.how h3{font-size:.75rem;margin-top:4px}
+.how p{margin:0;max-width:60ch}
+.steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.steps li{display:grid;grid-template-columns:2.8em 1fr;gap:12px;align-items:start}
+.steps .dn{font-weight:700;font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);padding-top:2px}
+.steps b{display:block}
+.steps span{color:var(--muted);font-size:.92rem}
+.steps li.sun b{color:var(--red)}
+.ratings{display:flex;flex-wrap:wrap;gap:6px}
+.rpill{display:inline-block;font:700 .72rem var(--body);text-transform:uppercase;letter-spacing:.08em;padding:4px 10px;border-radius:999px;border:1.5px solid currentColor}
+.faq details{border-bottom:1px solid var(--line);padding:10px 0}
+.faq details:last-child{border-bottom:0}
+.faq summary{font-size:.98rem}
+.faq p{margin:.4em 0 0}
+
+/* week rows: today, locked, missed */
+.day{padding-left:10px;padding-right:10px;margin:0 -10px;border-radius:12px}
+.day.is-today{border:2px solid var(--red);margin:4px -10px}
+.day.locked .gn,.day.locked .dn,.day.missed .gn,.day.missed .dn{opacity:.4}
+.lockic{width:14px;height:14px;vertical-align:-2px;margin-right:4px}
+.day.sun.locked .gn{color:var(--ink)}
+.egg .crackline{transition:opacity .3s ease}
+.egg.open .crackline{opacity:0}
+.unlockrow{display:flex;align-items:center;gap:8px;font-weight:600;color:var(--ink);font-size:.85rem}
+
+/* an unbroken shell sits under the two halves so no seam shows until it opens */
+.egg.open .whole{opacity:0}
+
+/* the Red Egg row keeps its look even when locked */
+.day.sun .gn{font-family:var(--display);font-weight:400;font-size:1.15rem;color:var(--red);letter-spacing:.01em}
+.day.sun .dn{color:var(--red)}
+.day.sun.locked .gn,.day.sun.locked .dn{opacity:1;color:var(--red)}
+.day.sun:not(.is-today){background:color-mix(in srgb,var(--red) 7%,transparent)}
+
+.demos{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.demo{background:var(--tray);border-radius:14px;padding:12px 14px;text-decoration:none;color:var(--ink);display:flex;flex-direction:column;gap:2px}
+.demo b{font-family:var(--display);font-weight:400;font-size:1.1rem}
+.demo span{color:var(--muted);font-size:.82rem;line-height:1.3}
+@media (hover:hover){.demo:hover{outline:2px solid var(--ink)}}
+
+.slot.special:not(.locked){background:linear-gradient(135deg,color-mix(in srgb,var(--glow) 30%,var(--tray)),var(--tray))}
+.coll2{grid-template-columns:repeat(3,1fr)}
+
+/* rarity colors */
+:root{--r-mythic:#7A4FD1;--r-legendary:#B98500;--r-epic:#8E44C9;--r-rare:#2F6FDB;--r-uncommon:#2E9B57;--r-common:#6B7480;--r-rough:#8A5A3C;--r-secret:#D14F8E}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--r-legendary:#FFC93C;--r-epic:#C08BFF;--r-rare:#6EA0FF;--r-uncommon:#47C474;--r-common:#9AA3B0;--r-rough:#C08A66;--r-secret:#FF8FC4;--r-mythic:#B9A2FF}}
+:root[data-theme="dark"]{--r-legendary:#FFC93C;--r-epic:#C08BFF;--r-rare:#6EA0FF;--r-uncommon:#47C474;--r-common:#9AA3B0;--r-rough:#C08A66;--r-secret:#FF8FC4;--r-mythic:#B9A2FF}
+.rar{display:inline-block;font:700 .62rem var(--body);text-transform:uppercase;letter-spacing:.1em;padding:2px 8px;border-radius:999px;border:1.5px solid currentColor;vertical-align:middle;white-space:nowrap}
+.r-mythic{border-color:transparent;background:linear-gradient(90deg,#8FE3FF,#C9B8FF,#FF9BD2);color:#2A1B4F}
+.r-legendary{color:var(--r-legendary)}.r-epic{color:var(--r-epic)}.r-rare{color:var(--r-rare)}.r-uncommon{color:var(--r-uncommon)}
+.r-common{color:var(--r-common)}.r-rough{color:var(--r-rough)}.r-cursed{color:#fff;background:#2B2F35;border-color:#2B2F35}.r-secret{color:var(--r-secret)}
+.slot{gap:4px}
+.slot.b-mythic{border-color:#B9A2FF}.slot.b-legendary{border-color:var(--r-legendary)}.slot.b-epic{border-color:var(--r-epic)}.slot.b-rare{border-color:var(--r-rare)}
+.slot.b-uncommon{border-color:var(--r-uncommon)}.slot.b-common{border-color:var(--line)}.slot.b-rough{border-color:transparent}.slot.b-cursed{border-color:#2B2F35}.slot.b-secret{border-color:var(--r-secret)}
+.slot.sel{outline:3px solid var(--ink);outline-offset:1px}
+.rarline{margin-top:6px;line-height:1}
+.rarline .rar{font-size:.72rem;padding:3px 10px}
+.detail h4 .rar{margin-left:4px}
+.hatchshare{background:transparent;color:var(--ink);border:1.5px solid var(--line);border-radius:12px;padding:10px 16px;font:700 .95rem var(--body);cursor:pointer}
+
+.streak{display:block;margin-top:6px;font:700 .9rem var(--body);color:var(--red)}
+
+.play.catch{background:transparent;color:var(--ink);border:1.5px solid var(--ink)}
+.day.missed:has(.catch) .gn,.day.missed:has(.catch) .dn{opacity:1}
+
+/* week rows: every row the same size; today's red border sits on the same box */
+.days{gap:6px}
+.day,.day.is-today{box-sizing:border-box;min-height:60px;margin:0;padding:8px 12px;border:2px solid transparent;border-radius:12px;background:color-mix(in srgb,var(--tray) 55%,transparent)}
+.day:last-child{border-bottom:2px solid transparent}
+.day.is-today{border-color:var(--red)}
+.day.sun:not(.is-today){background:color-mix(in srgb,var(--red) 8%,transparent)}
+.day.sun .gn{font-size:1.05rem}
+
+/* row buttons all the same size */
+.day .play{box-sizing:border-box;min-width:100px;height:38px;padding:0 14px;display:inline-flex;align-items:center;justify-content:center;border:1.5px solid transparent;font-size:.9rem;line-height:1}
+.day .play.red{border-color:var(--red)}
+.day .play.catch{border-color:var(--ink)}
+.day .play.re{min-width:0;height:auto;padding:4px 9px}
+
+/* Sunday hub */
+.hubcard{align-items:center;text-align:center;gap:12px;overflow:hidden;background:radial-gradient(ellipse at 50% 30%,color-mix(in srgb,var(--red) 10%,var(--surface)),var(--surface) 70%)}
+.hubcard .lbl{font-size:.75rem;text-transform:uppercase;letter-spacing:.14em;font-weight:700;color:var(--red)}
+.hubcard h2{font-size:2rem;line-height:1.05;text-wrap:balance}
+.hubcard h2 span{color:var(--red)}
+.egg.rumble .body{animation:rumble 2.2s ease-in-out infinite}
+@keyframes rumble{0%,62%,100%{transform:rotate(0)}66%{transform:rotate(calc(var(--amp) * -1))}72%{transform:rotate(var(--amp))}78%{transform:rotate(calc(var(--amp) * -.6))}84%{transform:rotate(calc(var(--amp) * .4))}}
+.totals{display:flex;gap:10px;justify-content:center;width:100%}
+.totals div{flex:1;max-width:170px;background:var(--tray);border-radius:14px;padding:10px 12px}
+.totals span{display:block;font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);font-weight:700}
+.totals b{font:700 2rem var(--mono);font-variant-numeric:tabular-nums;line-height:1.1}
+.totals .sun b{color:var(--red)}
+.lastline{margin:0;color:var(--muted)}
+.lastline b{color:var(--good);font-family:var(--mono)}
+.track{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;width:100%}
+.tok{display:flex;flex-direction:column;align-items:center;gap:2px;min-width:0}
+.tok svg{width:28px;height:37px}
+.tok svg path{fill:var(--line);transition:fill .4s}
+.tok.done svg path{fill:var(--glow);stroke:#B98500;stroke-width:3}
+.tok.cur svg{animation:bob 1.2s ease-in-out infinite}
+.tok.cur svg path{fill:var(--red)}
+@keyframes bob{50%{transform:translateY(-4px)}}
+.tok .tn{font-size:.62rem;font-weight:700;line-height:1.1;color:var(--muted);text-align:center}
+.tok .tp{font:700 .7rem var(--mono);color:var(--ink);min-height:1.1em}
+.tok.cur .tp{color:var(--red);text-transform:uppercase;font-family:var(--body);letter-spacing:.06em}
+.hubmsg{margin:0;font-size:1.05rem;max-width:36ch}
+
+.lastline br+*{display:block}
+
+</style>
+</head><body>
+<div class="wrap">
+  <header>
+    <a class="brand" href="index.html"><svg width="30" height="40" viewBox="0 0 60 80" aria-hidden="true"><path d="M30 3C46 3 57 31 57 48C57 66 45 78 30 78C15 78 3 66 3 48C3 31 14 3 30 3Z" fill="var(--red)"/><ellipse cx="20" cy="30" rx="6" ry="11" fill="#fff" opacity=".35" transform="rotate(20 20 30)"/></svg><h1>The <span>Red</span> Egg</h1></a>
+    <div class="meta">How to play<b>The basics</b></div>
+  </header>
+  <nav class="tabs" aria-label="Main"><div class="in"><a href="index.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="fillme" d="M12 2.5c3.8 0 7 7 7 11.3 0 4.3-3 7.7-7 7.7s-7-3.4-7-7.7C5 9.5 8.2 2.5 12 2.5Z" fill="none" stroke="currentColor" stroke-width="2"/></svg><span>Home</span></a><a href="collection.html"><svg viewBox="0 0 24 24" aria-hidden="true"><circle class="fillme" cx="12" cy="8" r="4.5" fill="none" stroke="currentColor" stroke-width="2"/><path class="fillme" d="M5 18.5c0-3.6 3.1-6 7-6s7 2.4 7 6c0 1.6-1.4 2.5-3 2.5H8c-1.6 0-3-.9-3-2.5Z" fill="none" stroke="currentColor" stroke-width="2"/></svg><span>Collection</span></a><a href="stats.html"><svg viewBox="0 0 24 24" aria-hidden="true"><rect class="fillme" x="4" y="12" width="4" height="8" rx="1" fill="none" stroke="currentColor" stroke-width="2"/><rect class="fillme" x="10" y="6" width="4" height="14" rx="1" fill="none" stroke="currentColor" stroke-width="2"/><rect class="fillme" x="16" y="9" width="4" height="11" rx="1" fill="none" stroke="currentColor" stroke-width="2"/></svg><span>Stats</span></a><a href="how.html" aria-current="page"><svg viewBox="0 0 24 24" aria-hidden="true"><circle class="fillme" cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.6 2.2c-.7.4-1.1.9-1.1 1.8M12 16.6v.4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>How to play</span></a></div></nav>
+  <div class="pagehead"><h2>How to play</h2><p>One egg a week. A new game every day. Play well, crack it open on Sunday, and see what hatches.</p></div>
+
+  <section class="card how">
+    <h2>The week</h2>
+    <p>Each day has its own game. Every game is worth up to 100 points, and every point you earn cracks the egg a little more.</p>
+    <ul class="steps">
+      <li><span class="dn">Mon</span><div><b>Scrambled</b><span>Swap colored eggs into a hidden order. After every swap you see how many are in the right spot. The faster you sort them, the more points.</span></div></li>
+      <li><span class="dn">Tue</span><div><b>Blind Stop</b><span>Stop the clock at the target time. The clock disappears, so you have to feel it. The closer you stop, the more points.</span></div></li>
+      <li><span class="dn">Wed</span><div><b>Flash</b><span>Some eggs in the carton glow for half a second. Tap the ones you remember. Right picks earn points; wrong picks cost them.</span></div></li>
+      <li><span class="dn">Thu</span><div><b>Trivia</b><span>Questions from this week's category. Find the right answer fast. Wrong taps add time.</span></div></li>
+      <li><span class="dn">Fri</span><div><b>Link Up</b><span>Build a chain of five words, each one joining onto the last: SUN → LIGHT → HOUSE → BOAT. Solve each link fast. Hints help but add time.</span></div></li>
+      <li><span class="dn">Sat</span><div><b>Pecking Order</b><span>Put five things in order, like oldest to newest. Anything in the right spot locks in green, so you can work out the rest. Fewer tries, more points.</span></div></li>
+      <li class="sun"><span class="dn">Sun</span><div><b>The Red Egg</b><span>One round of every game, back to back. Then the egg cracks open.</span></div></li>
+    </ul>
+  </section>
+
+  <section class="card how">
+    <h2>Every round is rated</h2>
+    <p>Each game has 5 rounds worth up to 20 points each. After every round you'll see how you did.</p>
+    <div class="ratings"><span class="rpill" style="color:var(--t1)">Perfect Yolk</span><span class="rpill" style="color:var(--t2)">Sunny Side Up</span><span class="rpill" style="color:var(--t3)">Over Easy</span><span class="rpill" style="color:var(--t4)">Cracked</span><span class="rpill" style="color:var(--t5)">Rotten Egg</span></div>
+  </section>
+
+  <section class="card how">
+    <h2>Hatching</h2>
+    <p>On Sunday, your whole week decides what hatches. A strong week cracks the egg wide open. A rough one might only crack a little, and something may just peek out.</p>
+    <p>There are 15 chicks to collect, plus a few secret ones. Each stays a mystery until you hatch it. Every chick has a rarity, so you can tell at a glance who had the better week:</p>
+    <div class="ratings"><span class="rar r-mythic">Mythic</span><span class="rar r-legendary">Legendary</span><span class="rar r-epic">Epic</span><span class="rar r-rare">Rare</span><span class="rar r-uncommon">Uncommon</span><span class="rar r-common">Common</span><span class="rar r-rough">Rough</span><span class="rar r-cursed">Cursed</span></div>
+    <p>The only Mythic chick needs a perfect week.</p>
+  </section>
+
+  <section class="card how faq">
+    <h2>Questions</h2>
+    <details><summary>When does a new egg start?</summary><p>Every Monday. Sunday is always the hatch.</p></details>
+    <details><summary>What if I miss a day?</summary><p>You can go back and play any day you missed, as long as this week's egg hasn't hatched yet. You'll get the same puzzle everyone else played that day. You can't play ahead, though: each game unlocks on its own day.</p></details>
+    <details><summary>Does everyone get the same games?</summary><p>On the finished site, yes: everyone plays the same puzzles each day. During the beta, every play is random.</p></details>
+    <details><summary>Where are my scores saved?</summary><p>During the beta, in this browser on this device.</p></details>
+  </section>
+
+  <footer class="site"><b>The Red Egg</b><span class="beta" id="betaBadge">Beta</span></footer>
+</div>
+<script>
+/* ---- daily rules shared by every page: same puzzle for everyone, one play per day, streaks ---- */
+const DAY_KEYS=["egg-sort","blind-stop","flash","trivia","bridge","pecking-order","sunday"];
+const DAY_NAMES=["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
+const pad2=n=>String(n).padStart(2,"0");
+const ymd=d=>`${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`;
+const NOW=new Date(),LOCALDAY=ymd(NOW),TODAY_IDX=(NOW.getDay()+6)%7;
+const CUR_MONDAY=(()=>{const d=new Date(NOW);d.setDate(d.getDate()-TODAY_IDX);return ymd(d)})();
+const WEEK_NO=Math.round((new Date(CUR_MONDAY+"T12:00:00")-new Date("2026-01-05T12:00:00"))/604800000);
+/* the date a day's game belongs to this week, so a catch-up gets the same puzzle everyone played that day */
+function gameDate(key){const i=DAY_KEYS.indexOf(key);const d=new Date(CUR_MONDAY+"T12:00:00");d.setDate(d.getDate()+Math.max(0,i));return ymd(d)}
+const SUN_KEYS=["egg-sort","blind-stop","flash","trivia","bridge","pecking-order"];
+function hashStr(s){let h=2166136261;for(const c of s){h^=c.charCodeAt(0);h=Math.imul(h,16777619)}return h>>>0}
+function rngFrom(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function seededOrder(list,salt){const r=rngFrom(hashStr(salt)),a=list.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+const RS={get(k,d){try{const v=localStorage.getItem("redegg2:"+k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem("redegg2:"+k,JSON.stringify(v))}catch(e){}}};
+/* a new egg every Monday */
+function currentWeek(){let w=RS.get("week",null);if(!w||!w.id||w.id<CUR_MONDAY){w={id:CUR_MONDAY,days:{},sunday:{}};RS.set("week",w)}w.days=w.days||{};w.sunday=w.sunday||{};return w}
+function markPlayed(){const s=RS.get("playDays",[]);if(!s.includes(LOCALDAY)){s.push(LOCALDAY);RS.set("playDays",s)}}
+function dayStreak(){const s=new Set(RS.get("playDays",[]));const d=new Date(NOW);if(!s.has(ymd(d)))d.setDate(d.getDate()-1);let n=0;while(s.has(ymd(d))){n++;d.setDate(d.getDate()-1)}return n}
+function bestDayStreak(){const s=[...new Set(RS.get("playDays",[]))].sort();let best=0,run=0,prev=null;for(const k of s){const d=new Date(k+"T12:00:00");run=prev&&Math.round((d-prev)/864e5)===1?run+1:1;best=Math.max(best,run);prev=d}return best}
+function weekStreak(){const ids=new Set(RS.get("pen",[]).map(p=>p.id));const d=new Date(CUR_MONDAY+"T12:00:00");if(!ids.has(ymd(d)))d.setDate(d.getDate()-7);let n=0;while(ids.has(ymd(d))){n++;d.setDate(d.getDate()-7)}return n}
+/* stop replays and off-day plays (testing can unlock every day) */
+function dailyGate(mode,key,name){
+  if(mode==="practice"||RS.get("unlockAll",false))return false;
+  const w=currentWeek();let msg=null;
+  if(mode==="day"){
+    if(key in w.days)msg=`You already played today's ${name}. You scored <b>${Math.round(w.days[key])}</b>. A new puzzle is waiting tomorrow.`;
+    else if(DAY_KEYS.indexOf(key)>TODAY_IDX)msg=`${name} is ${DAY_NAMES[DAY_KEYS.indexOf(key)]}'s game. It unlocks on ${DAY_NAMES[DAY_KEYS.indexOf(key)]}.`;
+    else if(SUN_KEYS.every(k=>k in w.sunday))msg=`This week's egg has already hatched, so ${name} can't be caught up. A new egg starts Monday.`;
+  }else if(mode==="sunday"){
+    if(TODAY_IDX!==6)msg=`The Red Egg is played on Sunday.`;
+    else if(key in w.sunday)msg=`You already played this round of the Red Egg.`;
+  }
+  if(!msg)return false;
+  const wrap=document.querySelector(".wrap");
+  [...wrap.children].forEach(el=>{if(el.tagName!=="HEADER")el.hidden=true});
+  wrap.insertAdjacentHTML("beforeend",`<section class="card" style="align-items:center;text-align:center;gap:16px"><p style="margin:0;font-size:1.05rem;max-width:36ch">${msg}</p><a href="index.html" style="display:block;width:100%;text-align:center;text-decoration:none;border-radius:16px;padding:16px;font:700 1.05rem var(--body);background:var(--btn);color:var(--btn-ink)">Back to the egg</a></section>`);
+  return true;
+}
+
+const DAYS=[
+  {d:"Mon",key:"egg-sort",name:"Scrambled"},
+  {d:"Tue",key:"blind-stop",name:"Blind Stop"},
+  {d:"Wed",key:"flash",name:"Flash"},
+  {d:"Thu",key:"trivia",name:"Trivia"},
+  {d:"Fri",key:"bridge",name:"Link Up"},
+  {d:"Sat",key:"pecking-order",name:"Pecking Order"}
+];
+const SUNDAY_KEYS=["egg-sort","blind-stop","flash","trivia","bridge","pecking-order"];
+const TIERS=[
+  {min:700,rar:"mythic",key:"diamond",name:"Diamond Chick",fill:"url(#gDiamond)",crown:"gem",sparkle:true,pick:700},
+  {min:690,rar:"legendary",key:"platinum",name:"Platinum Chick",fill:"url(#gPlat)",crown:"plat",sparkle:true,pick:694},
+  {min:650,rar:"legendary",key:"golden",name:"Golden Chick",fill:"url(#gGold)",crown:"gold",sparkle:true,pick:665},
+  {min:600,rar:"epic",key:"silver",name:"Silver Chick",fill:"url(#gSilver)",sparkle:true,pick:620},
+  {min:560,rar:"epic",key:"hero",name:"Hero Chick",fill:"var(--chick)",acc:"cape",pick:575},
+  {min:525,rar:"rare",key:"cool",name:"Cool Chick",fill:"var(--chick)",acc:"shades",pick:540},
+  {min:500,rar:"rare",key:"party",name:"Party Chick",fill:"var(--chick)",acc:"party",pick:510},
+  {min:475,rar:"uncommon",key:"chef",name:"Chef Chick",fill:"var(--chick)",acc:"chef",pick:485},
+  {min:450,rar:"uncommon",key:"sweet",name:"Sweet Chick",fill:"var(--chick)",acc:"bow",pick:460},
+  {min:425,rar:"common",key:"sleepy",name:"Sleepy Chick",fill:"var(--chick)",acc:"sleepy",pick:435},
+  {min:400,rar:"common",key:"regular",name:"Regular Chick",fill:"var(--chick)",pick:410},
+  {min:300,rar:"rough",key:"scruffy",name:"Scruffy Chick",fill:"var(--chick)",scruff:true,pick:340},
+  {min:200,rar:"rough",key:"peeking",name:"Peeking Chick",peek:true,pick:250},
+  {min:100,rar:"rough",key:"shell",name:"Still in the Shell",shell:true,pick:150},
+  {min:0,rar:"cursed",key:"duckling",name:"Ugly Duckling",fill:"#9EA3A8",acc:"duck",pick:40}
+];
+/* special chicks: only for an exact weekly score */
+const SPECIALS=[
+  {exact:67,rar:"secret",key:"sixseven",name:"6-7 Chick",fill:"var(--chick)",acc:"six7",sparkle:true,pick:67},
+  {exact:69,rar:"secret",key:"nice",name:"Nice Chick",fill:"var(--chick)",acc:"nice",sparkle:true,pick:69},
+  {exact:420,rar:"secret",key:"chill",name:"420 Chick",fill:"url(#gChill)",acc:"chill",sparkle:true,pick:420}
+];
+const ALL_CHICKS=[...TIERS,...SPECIALS];
+/* rarity: the quick way to tell which chick beat which */
+const RARITY={mythic:"Mythic",legendary:"Legendary",epic:"Epic",rare:"Rare",uncommon:"Uncommon",common:"Common",rough:"Rough",cursed:"Cursed",secret:"Secret"};
+const rarTag=t=>`<span class="rar r-${t.rar}">${RARITY[t.rar]}</span>`;
+const STORE={get(k,d){try{const v=localStorage.getItem("redegg2:"+k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem("redegg2:"+k,JSON.stringify(v))}catch(e){}}};
+const $=id=>document.getElementById(id);
+
+function mondayOf(dt){const d=new Date(dt);const wd=(d.getDay()+6)%7;d.setDate(d.getDate()-wd);d.setHours(0,0,0,0);return d}
+function label(d){return d.toLocaleDateString(undefined,{month:"short",day:"numeric"})}
+function getWeek(){
+  return currentWeek();
+}
+function sum(o){return Object.values(o).reduce((a,b)=>a+(+b||0),0)}
+function sundayDone(w){return SUNDAY_KEYS.every(k=>k in w.sunday)}
+function tierFor(total){return SPECIALS.find(t=>t.exact===total)||TIERS.find(t=>total>=t.min)}
+
+/* ---------- drawing ---------- */
+const SHELL="M100 8C150 8 186 96 186 146C186 196 148 224 100 224C52 224 14 196 14 146C14 96 50 8 100 8Z";
+const WEEK_MAX=700, BREAK_LINE=300;
+function mulberry(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function hash(s){let h=2166136261;for(const c of s){h^=c.charCodeAt(0);h=Math.imul(h,16777619)}return h>>>0}
+/* This week's crack network: a jagged fracture around the egg (where it will break), branches off it,
+   and separate impact points all over the shell. Segments are ordered the way they appear. */
+function buildNet(seed){
+  // one jagged crack running left to right across the middle of the egg
+  const r=mulberry(hash("crack3-"+seed));
+  const RN=31,nodes=[];
+  for(let i=0;i<RN;i++){const x=10+i*(180/(RN-1));nodes.push([x,118+(i%2?-1:1)*(2.5+r()*5.5)+(r()-.5)*4])}
+  return {nodes};
+}
+function clipPaths(net){
+  const pts=net.nodes.map(([x,y])=>`L${x.toFixed(1)} ${y.toFixed(1)}`).join(" ");
+  const rev=net.nodes.slice().reverse().map(([x,y])=>`L${x.toFixed(1)} ${y.toFixed(1)}`).join(" ");
+  return `<clipPath id="ct"><path d="M0 0 L200 0 ${rev} Z"/></clipPath>
+    <clipPath id="cb"><path d="M0 240 ${pts} L200 240 Z"/></clipPath>
+    <clipPath id="cs"><path d="${SHELL}"/></clipPath>`;
+}
+/* metal and gem finishes; the sheen band slides across shiny chicks */
+const GRADS=`
+  <radialGradient id="gShell" cx=".38" cy=".3" r=".8"><stop offset="0" stop-color="#E9485C"/><stop offset=".55" stop-color="#C81E33"/><stop offset="1" stop-color="#7E0F1D"/></radialGradient>
+  <radialGradient id="gShellIn" cx=".5" cy=".7" r=".7"><stop offset="0" stop-color="#F7EEE8"/><stop offset="1" stop-color="#D9C6BC"/></radialGradient>
+  <radialGradient id="gSoft" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#fff" stop-opacity=".55"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+  <linearGradient id="gGold" x1="0" y1="0" x2=".9" y2="1"><stop offset="0" stop-color="#FFF6C8"/><stop offset=".25" stop-color="#FFD24A"/><stop offset=".5" stop-color="#E9A400"/><stop offset=".72" stop-color="#FFE07A"/><stop offset="1" stop-color="#A86F00"/></linearGradient>
+  <linearGradient id="gSilver" x1="0" y1="0" x2=".9" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".28" stop-color="#C9D0D8"/><stop offset=".5" stop-color="#8C96A3"/><stop offset=".72" stop-color="#E6EAEE"/><stop offset="1" stop-color="#6E7884"/></linearGradient>
+  <linearGradient id="gPlat" x1="0" y1="0" x2=".9" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".25" stop-color="#E3E8F0"/><stop offset=".45" stop-color="#C5D2E8"/><stop offset=".6" stop-color="#F3E9FF"/><stop offset=".8" stop-color="#DDE7F3"/><stop offset="1" stop-color="#9AA8BC"/></linearGradient>
+  <linearGradient id="gDiamond" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#E8FBFF"><animate attributeName="stop-color" values="#E8FBFF;#FFE3F6;#E3FFE9;#E8FBFF" dur="4s" repeatCount="indefinite"/></stop>
+    <stop offset=".35" stop-color="#7FDBFF"><animate attributeName="stop-color" values="#7FDBFF;#C79BFF;#FF9BD2;#7FDBFF" dur="4s" repeatCount="indefinite"/></stop>
+    <stop offset=".65" stop-color="#C9B8FF"><animate attributeName="stop-color" values="#C9B8FF;#8CF5D9;#9BD0FF;#C9B8FF" dur="4s" repeatCount="indefinite"/></stop>
+    <stop offset="1" stop-color="#4AB8E8"><animate attributeName="stop-color" values="#4AB8E8;#B07CFF;#4AE8C3;#4AB8E8" dur="4s" repeatCount="indefinite"/></stop>
+  </linearGradient>
+  <linearGradient id="gSheen" gradientUnits="userSpaceOnUse" x1="40" y1="60" x2="160" y2="150">
+    <stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".45" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".95"/><stop offset=".55" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    <animateTransform attributeName="gradientTransform" type="translate" values="-140 0;140 0;140 0" keyTimes="0;.6;1" dur="2.6s" repeatCount="indefinite"/>
+  </linearGradient>
+  <radialGradient id="gHalo" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#fff" stop-opacity=".9"/><stop offset=".5" stop-color="#BDEBFF" stop-opacity=".45"/><stop offset="1" stop-color="#BDEBFF" stop-opacity="0"/></radialGradient>
+  <linearGradient id="gChill" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#9BE36D"/><stop offset=".35" stop-color="#F2D34B"/><stop offset=".65" stop-color="#FF9F5A"/><stop offset="1" stop-color="#6FC7E8"/></linearGradient>
+  <radialGradient id="gShade" cx=".36" cy=".3" r=".85"><stop offset="0" stop-color="#fff" stop-opacity=".5"/><stop offset=".35" stop-color="#fff" stop-opacity="0"/><stop offset=".78" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".2"/></radialGradient>
+  <radialGradient id="gHaloGold" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#FFF4C2" stop-opacity=".8"/><stop offset="1" stop-color="#FFD24A" stop-opacity="0"/></radialGradient>`;
+const DEFS=`<defs>${GRADS}</defs>`;
+const BODY=`<path d="M100 64 C130 64 148 92 148 124 C148 154 128 172 100 172 C72 172 52 154 52 124 C52 92 70 64 100 64 Z"/>`;
+function chickParts(t){
+  const shiny=["silver","golden","platinum","diamond"].includes(t.key);
+  const crown=t.crown==="gem"?`<path d="M82 66 L88 50 L100 44 L112 50 L118 66 Z" fill="url(#gDiamond)" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/><path d="M88 50 L100 66 L112 50 M100 44 L100 66 M82 66 L100 56 L118 66" stroke="#fff" stroke-width="1.1" opacity=".85" fill="none"/>`
+    :t.crown?`<path d="M80 64 L86 46 L96 58 L100 42 L104 58 L114 46 L120 64 Z" fill="${t.crown==="plat"?"url(#gPlat)":"url(#gGold)"}" stroke="${t.crown==="plat"?"#7D8BA0":"#8A5A00"}" stroke-width="2" stroke-linejoin="round"/><circle cx="100" cy="56" r="3" fill="${t.crown==="plat"?"#8FE3FF":"#D11F35"}"/>`:"";
+  const cape=t.acc==="cape"?`<path d="M80 96 Q60 150 66 176 L100 166 L134 176 Q140 150 120 96 Z" fill="#D11F35"/><path d="M80 96 Q60 150 66 176 L100 166" fill="none" stroke="#9E1426" stroke-width="2"/>`:"";
+  const behind=t.key==="diamond"
+    ?`<circle cx="100" cy="112" r="78" fill="url(#gHalo)"/><g opacity=".55"><g><animateTransform attributeName="transform" type="rotate" from="0 100 112" to="360 100 112" dur="14s" repeatCount="indefinite"/>${Array.from({length:12},(_,i)=>`<polygon points="100,112 ${100+90*Math.cos(i*Math.PI/6-.09)},${112+90*Math.sin(i*Math.PI/6-.09)} ${100+90*Math.cos(i*Math.PI/6+.09)},${112+90*Math.sin(i*Math.PI/6+.09)}" fill="${["#8FE3FF","#FF9BD2","#C9B8FF"][i%3]}"/>`).join("")}</g></g>`
+    :t.key==="platinum"?`<circle cx="100" cy="112" r="70" fill="url(#gHalo)" opacity=".75"/>`
+    :t.key==="golden"?`<circle cx="100" cy="112" r="62" fill="url(#gHaloGold)" opacity=".7"/>`:"";
+  const facets=t.key==="diamond"?`<path d="M64 112 L100 74 L136 112 L100 168 Z M64 112 H136 M84 112 L100 168 L116 112 M84 112 L100 74 L116 112" fill="none" stroke="#fff" stroke-width="1.4" opacity=".55"/>`:"";
+  const sheen=shiny?`<g fill="url(#gSheen)" opacity="${t.key==="diamond"?1:t.key==="platinum"?.95:.8}">${BODY}</g>`:"";
+  const rim="";
+  return `${cape}${behind}
+    ${t.scruff?`<path d="M92 68 L84 50 M100 66 L102 46 M108 68 L118 52 M54 110 L42 104 M146 112 L158 106 M60 150 L48 156" stroke="var(--chick)" stroke-width="6" stroke-linecap="round"/><path d="M92 68 L84 50 M100 66 L102 46 M108 68 L118 52" stroke="#D99A00" stroke-width="1.5" stroke-linecap="round" opacity=".6"/>`:""}
+    ${t.fluff?`<circle cx="86" cy="70" r="9" fill="${t.fill}"/><circle cx="100" cy="64" r="10" fill="${t.fill}"/><circle cx="114" cy="70" r="9" fill="${t.fill}"/><circle cx="66" cy="136" r="12" fill="${t.fill}"/><circle cx="134" cy="136" r="12" fill="${t.fill}"/>`:""}
+    ${feet(t)}
+    <g fill="${t.fill}">${BODY}</g>
+    <g fill="url(#gShade)" opacity=".7">${BODY}</g>
+    <ellipse cx="100" cy="146" rx="26" ry="18" fill="#fff" opacity=".22"/>
+    <ellipse cx="82" cy="84" rx="9" ry="5" fill="#fff" opacity=".5" transform="rotate(-30 82 84)"/>
+    <g fill="none" stroke="${outline(t)}" stroke-width="3">${BODY}</g>
+    ${sheen}${rim}
+    ${wings(t)}
+    ${facets}${crown}
+    ${face(t)}
+    ${hat(t)}
+    ${shellCap(t)}`;
+}
+
+function outline(t){return {golden:"#A86F00",silver:"#6E7884",platinum:"#8C9AB0",diamond:"#7FB8E6",duckling:"#6E7378",chill:"#5E9B3A"}[t.key]||"#D99A00"}
+/* little orange feet */
+function feet(t){
+  const col=t.acc==="duck"?"#E8913A":"#F28C28";
+  const f=x=>`<ellipse cx="${x}" cy="172" rx="10" ry="6" fill="${col}" stroke="#C9661A" stroke-width="2"/>`;
+  return f(86)+f(114);
+}
+/* the Red Egg signature: a piece of red shell still stuck on the chick's head */
+function shellCap(t){
+  const hatted=!!t.crown||t.scruff||["party","chef","sleepy","nice","chill","duck","bow"].includes(t.acc);
+  if(hatted)return "";
+  return `<g transform="rotate(-14 100 70)">
+    <path d="M78 76 Q78 50 100 48 Q122 50 122 76 L117 71 L112 77 L106 70 L100 77 L94 70 L88 77 L83 71 Z" fill="#D11F35"/>
+    <path d="M78 76 Q78 50 100 48 Q122 50 122 76 L117 71 L112 77 L106 70 L100 77 L94 70 L88 77 L83 71 Z" fill="url(#gShade)"/>
+    <path d="M86 60 Q90 53 98 52" stroke="#fff" stroke-width="3" stroke-linecap="round" fill="none" opacity=".45"/>
+    <circle cx="108" cy="58" r="1.2" fill="#6E0C18" opacity=".5"/><circle cx="92" cy="66" r="1" fill="#6E0C18" opacity=".5"/>
+  </g>`;
+}
+function face(t){
+  // big low eyes and a tiny beak: the cute proportions
+  const EY=108,LX=84,RX=116;
+  const eye=(x,y)=>`<ellipse cx="${x}" cy="${y}" rx="7" ry="8.5" fill="#1A1D23"/><circle cx="${x+2.4}" cy="${y-3}" r="2.8" fill="#fff"/><circle cx="${x-2.2}" cy="${y+3}" r="1.3" fill="#fff"/>`;
+  const closed=(x,y)=>`<path d="M${x-7} ${y} Q${x} ${y+6} ${x+7} ${y}" stroke="#1A1D23" stroke-width="3" fill="none" stroke-linecap="round"/>`;
+  const happy=(x,y)=>`<path d="M${x-7} ${y+2} Q${x} ${y-6} ${x+7} ${y+2}" stroke="#1A1D23" stroke-width="3" fill="none" stroke-linecap="round"/>`;
+  const half=(x,y)=>`<ellipse cx="${x}" cy="${y+2}" rx="7" ry="6" fill="#1A1D23"/><path d="M${x-9} ${y-1} H${x+9}" stroke="#9BE36D" stroke-width="7"/><path d="M${x-7} ${y+1.5} H${x+7}" stroke="#1A1D23" stroke-width="2.4" stroke-linecap="round"/><circle cx="${x+2}" cy="${y+4}" r="1.5" fill="#fff"/>`;
+  const beak=`<path d="M94 118 Q100 114 106 118 Q100 126 94 118 Z" fill="#F7A23B" stroke="#E07B16" stroke-width="1.5" stroke-linejoin="round"/>`;
+  const blush=(o)=>`<ellipse cx="72" cy="122" rx="8" ry="5" fill="#FF7F9C" opacity="${o}"/><ellipse cx="128" cy="122" rx="8" ry="5" fill="#FF7F9C" opacity="${o}"/>`;
+  switch(t.acc){
+    case "shades":return `<path d="M68 100 H132 V108 Q130 120 117 120 Q106 120 104 108 H96 Q94 120 83 120 Q70 120 68 108 Z" fill="#1A1D23"/><path d="M74 104 L84 104" stroke="#fff" stroke-width="2.5" opacity=".6" stroke-linecap="round"/><path d="M108 104 L118 104" stroke="#fff" stroke-width="2.5" opacity=".6" stroke-linecap="round"/>${beak}${blush(.45)}`;
+    case "sleepy":return closed(LX,EY)+closed(RX,EY)+beak+blush(.5)+`<text x="134" y="88" font-family="Bagel Fat One, sans-serif" font-size="14" fill="var(--muted)">z</text><text x="144" y="74" font-family="Bagel Fat One, sans-serif" font-size="18" fill="var(--muted)">z</text>`;
+    case "bow":return eye(LX,EY)+eye(RX,EY)+blush(.8)+beak;
+    case "duck":return `<circle cx="${LX}" cy="${EY}" r="5" fill="#1A1D23"/><circle cx="${RX}" cy="${EY}" r="5" fill="#1A1D23"/><path d="M75 98 L91 103 M125 98 L109 103" stroke="#1A1D23" stroke-width="3" stroke-linecap="round"/><ellipse cx="100" cy="123" rx="17" ry="7" fill="#E8913A" stroke="#B5651D" stroke-width="1.5"/><path d="M84 123 H116" stroke="#B5651D" stroke-width="1.5"/>`;
+    case "nice":return eye(LX,EY)+happy(RX,EY)+beak+blush(.7);
+    case "chill":return half(LX,EY)+half(RX,EY)+`<path d="M92 118 Q100 128 108 118 Z" fill="#F28C28" stroke="#C9661A" stroke-width="1.5"/>`+blush(.4);
+    case "six7":return eye(LX,EY)+eye(RX,EY)+`<path d="M94 118 Q100 128 106 118 Z" fill="#E07B16"/>`+blush(.6);
+    default:return eye(LX,EY)+eye(RX,EY)+beak+blush(.55);
+  }
+}
+function wings(t){
+  const w=(d)=>`<path d="${d}" fill="${t.fill}" stroke="${outline(t)}" stroke-width="3" stroke-linejoin="round"/><path d="${d}" fill="#000" opacity=".06"/>`;
+  if(t.acc==="six7")return w("M56 120 Q40 104 44 86 Q58 92 62 110 Z")+w("M144 132 Q160 124 162 106 Q148 108 140 122 Z")+`<g font-family="Bagel Fat One, sans-serif" font-size="24" fill="var(--red)"><text x="30" y="80">6</text><text x="156" y="100">7</text></g>`;
+  return w("M55 118 Q40 128 46 146 Q58 144 62 130 Z")+w("M145 118 Q160 128 154 146 Q142 144 138 130 Z");
+}
+function hat(t){
+  switch(t.acc){
+    case "party":return `<path d="M88 70 L100 30 L112 70 Z" fill="#2F6FDB"/><path d="M92 58 L108 58 M96 46 L104 46" stroke="#FFD24A" stroke-width="4"/><circle cx="100" cy="29" r="5" fill="#E66BA8"/>`;
+    case "chef":return `<rect x="84" y="56" width="32" height="12" rx="2" fill="#fff" stroke="#C9D0D8" stroke-width="1.5"/><circle cx="88" cy="50" r="10" fill="#fff" stroke="#C9D0D8" stroke-width="1.5"/><circle cx="100" cy="44" r="12" fill="#fff" stroke="#C9D0D8" stroke-width="1.5"/><circle cx="112" cy="50" r="10" fill="#fff" stroke="#C9D0D8" stroke-width="1.5"/><rect x="85" y="50" width="30" height="12" fill="#fff"/>`;
+    case "bow":return `<path d="M100 66 L84 56 L84 76 Z M100 66 L116 56 L116 76 Z" fill="#E66BA8"/><circle cx="100" cy="66" r="5" fill="#C94F8E"/>`;
+    case "sleepy":return `<path d="M76 74 Q100 50 126 74 Q118 46 98 44 Q86 46 76 74 Z" fill="#5B6FD6"/><path d="M98 44 Q120 40 132 60" stroke="#5B6FD6" stroke-width="8" fill="none" stroke-linecap="round"/><circle cx="134" cy="64" r="6" fill="#fff"/>`;
+    case "duck":return `<path d="M96 68 L92 52 M100 66 L102 48 M104 68 L110 54" stroke="#7B8086" stroke-width="3" stroke-linecap="round"/>`;
+    case "nice":return `<g transform="rotate(-8 100 50)"><rect x="76" y="38" width="48" height="18" rx="9" fill="var(--red)"/><text x="100" y="52" text-anchor="middle" font-family="Bagel Fat One, sans-serif" font-size="13" fill="#fff">NICE</text></g>`;
+    case "chill":return `<g transform="rotate(-8 100 50)"><rect x="80" y="38" width="40" height="18" rx="9" fill="#2E9B57"/><text x="100" y="52" text-anchor="middle" font-family="Bagel Fat One, sans-serif" font-size="13" fill="#fff">420</text></g>`;
+    case "six7":return "";
+    default:return "";
+  }
+}
+function sparkles(t){
+  const many=t.key==="diamond",pts=[[46,70,0],[156,62,.4],[34,128,.8],[166,118,.2],[60,30,1.1],[142,28,.6]].concat(many?[[24,90,.3],[178,92,.9],[40,180,.5],[160,176,1.3],[100,16,.7],[18,150,1.5],[184,150,.1]]:[]);
+  const col=t.key==="golden"?"var(--glow)":t.key==="silver"?"#C9D0D8":many?"#C79BFF":"#BDEBFF";
+  return pts.map(([x,y,d],i)=>{const s=many&&i%2?12:9;return `<path class="spark" style="--d:${d}s" d="M${x} ${y-s} L${x+2.5} ${y-2.5} L${x+s} ${y} L${x+2.5} ${y+2.5} L${x} ${y+s} L${x-2.5} ${y+2.5} L${x-s} ${y} L${x-2.5} ${y-2.5} Z" fill="#fff" stroke="${col}" stroke-width="1.5"/>`}).join("");
+}
+function shards(net){
+  const pick=[3,7,11,14,17,21,25];
+  return pick.map((i,k)=>{const [x,y]=net.nodes[i];const dx=(x-100)*1.1,dy=-60-((k*37)%60),rot=(k%2?1:-1)*(120+k*20);
+    return `<polygon class="shard" style="--dx:${dx.toFixed(0)}px;--dy:${dy}px;--r:${rot}deg" points="${x-6},${y} ${x+6},${y-5} ${x+2},${y+7}" fill="#C81E33"/>`}).join("");
+}
+function crackPath(net){return "M"+net.nodes.map(([x,y])=>`${x.toFixed(1)} ${y.toFixed(1)}`).join(" L")}
+function speckles(seed){
+  const r=mulberry(hash("sp-"+seed));let out="";
+  for(let i=0;i<46;i++){const x=24+r()*152,y=20+r()*196;out+=`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${(.6+r()*1.3).toFixed(2)}" fill="${r()<.6?"#6E0C18":"#F06A7A"}" opacity="${(.15+r()*.25).toFixed(2)}"/>`}
+  return out;
+}
+function shellFace(seed){return `<path d="${SHELL}" fill="url(#gShell)"/>${speckles(seed)}<ellipse cx="70" cy="58" rx="22" ry="34" fill="url(#gSoft)" transform="rotate(18 70 58)"/>`}
+function eggSVG(net,frac,t,seed,pts){
+  // past the break point the crack gets deeper, up to a perfect week
+  const depth=3+Math.min(3,Math.max(0,((pts||0)-BREAK_LINE)/100));
+  const peek=`<g class="peek"><ellipse cx="100" cy="150" rx="30" ry="22" fill="var(--hole)"/>
+      <g class="eyes"><circle cx="91" cy="152" r="4.5" fill="#fff"/><circle cx="109" cy="152" r="4.5" fill="#fff"/><circle cx="92" cy="153" r="2.2" fill="#1A1D23"/><circle cx="110" cy="153" r="2.2" fill="#1A1D23"/></g>
+      <polygon points="96,160 104,160 100,166" fill="#F28C28"/></g>`;
+  return `<svg viewBox="0 0 200 240" aria-hidden="true"><defs>${GRADS}${clipPaths(net)}</defs>
+    <ellipse cx="100" cy="230" rx="62" ry="7" fill="rgba(0,0,0,.12)"/>
+    <g class="body">
+      <path d="${SHELL}" fill="url(#gShellIn)" clip-path="url(#cb)"/>
+      ${t&&!t.shell&&!t.peek?`<g class="chick">${chickParts(t)}</g>`:""}
+      <g class="whole">${shellFace(seed)}</g>
+      <g clip-path="url(#cb)">${shellFace(seed)}</g>
+      ${t&&t.peek?peek:""}
+      <g class="top"><g clip-path="url(#ct)">${shellFace(seed)}</g></g>
+      <path class="crackline" clip-path="url(#cs)" d="${crackPath(net)}" fill="none" stroke="#5E0A16" stroke-width="${depth.toFixed(2)}" stroke-linejoin="round" stroke-linecap="round" pathLength="1000" stroke-dasharray="1000" stroke-dashoffset="${(1000*(1-Math.max(0,Math.min(1,frac)))).toFixed(1)}"/>
+      ${t&&!t.shell&&!t.peek?shards(net):""}
+      ${t&&t.sparkle?sparkles(t):""}
+    </g>
+  </svg>`;
+}
+/* grow the crack from one share of the week to another */
+function growCrack(fromFrac,toFrac,ms){
+  return new Promise(res=>{
+    const p=$("egg").querySelector(".crackline");if(!p||toFrac<=fromFrac){res();return}
+    p.style.transition="none";p.setAttribute("stroke-dashoffset",(1000*(1-fromFrac)).toFixed(1));
+    p.getBoundingClientRect();
+    p.style.transition=`stroke-dashoffset ${ms}ms cubic-bezier(.4,.1,.3,1), opacity .3s ease`;
+    p.setAttribute("stroke-dashoffset",(1000*(1-Math.min(1,toFrac))).toFixed(1));
+    setTimeout(res,ms+120);
+  });
+}
+function miniSVG(t,locked){
+  if(locked)return `<svg viewBox="0 0 200 240" aria-hidden="true"><path d="${SHELL}" fill="var(--line)"/><text x="100" y="160" text-anchor="middle" font-family="Bagel Fat One, sans-serif" font-size="96" fill="var(--muted)">?</text></svg>`;
+  if(t.shell)return `<svg viewBox="0 0 200 240" aria-hidden="true">${DEFS}${shellFace("mini")}<path d="M17 150 L34 144 L42 156 L58 150 L66 162 M142 44 L134 62 L146 74 L132 86 L138 98" fill="none" stroke="#5E0A16" stroke-width="5" stroke-linecap="round"/></svg>`;
+  if(t.peek)return `<svg viewBox="0 0 200 240" aria-hidden="true">${DEFS}${shellFace("mini")}<ellipse cx="100" cy="150" rx="34" ry="25" fill="var(--hole)"/><circle cx="91" cy="152" r="5" fill="#fff"/><circle cx="109" cy="152" r="5" fill="#fff"/><circle cx="92" cy="153" r="2.4" fill="#1A1D23"/><circle cx="110" cy="153" r="2.4" fill="#1A1D23"/><polygon points="96,160 104,160 100,167" fill="#F28C28"/></svg>`;
+  return `<svg viewBox="22 30 156 156" aria-hidden="true">${DEFS}${chickParts(t)}</svg>`;
+}
+
+
+/* ---------- collection ---------- */
+let penSel=null;
+function slotHTML(t,list){
+  const locked=!list.length;
+  return `<button class="slot${locked?" locked":" b-"+t.rar}${penSel===t.key&&!locked?" sel":""}${t.exact!=null?" special":""}" data-k="${t.key}" ${locked?'aria-disabled="true"':""} aria-label="${locked?"Not hatched yet":t.name}">${list.length?`<span class="ct">×${list.length}</span>`:""}${miniSVG(t,locked)}<span class="nm">${locked?"???":t.name.replace(/ Chick$/,"")}</span>${locked?"":rarTag(t)}</button>`;
+}
+function renderCollection(){
+  const pen=STORE.get("pen",[]);
+  const by={};pen.forEach(p=>{const k=tierFor(p.total).key;(by[k]=by[k]||[]).push(p)});
+  $("coll").innerHTML=TIERS.map(t=>slotHTML(t,by[t.key]||[])).join("");
+  if($("coll2"))$("coll2").innerHTML=SPECIALS.map(t=>slotHTML(t,by[t.key]||[])).join("");
+  const show=(id,keys)=>{const d=$(id);if(!d)return;
+    if(penSel&&keys.includes(penSel)&&by[penSel]){const t=ALL_CHICKS.find(x=>x.key===penSel);d.hidden=false;
+      d.innerHTML=`<h4>${t.name} ×${by[penSel].length} ${rarTag(t)}</h4><ul>${by[penSel].slice().reverse().map(p=>`<li><span>Week of ${label(new Date(p.id+"T12:00:00"))}</span><b>${p.total}</b></li>`).join("")}</ul>`}
+    else d.hidden=true};
+  show("detail",TIERS.map(t=>t.key));show("detail2",SPECIALS.map(t=>t.key));
+}
+function wireCollection(){
+  const h=e=>{const b=e.target.closest(".slot");if(!b||b.classList.contains("locked"))return;penSel=penSel===b.dataset.k?null:b.dataset.k;renderCollection()};
+  $("coll").onclick=h;if($("coll2"))$("coll2").onclick=h;
+}
+
+/* ---------- history ---------- */
+function history(){return STORE.get("history",[])}
+
+/* how far the crack runs: before Sunday it stops at 80%; Sunday pushes it toward the edge */
+const BREAK_AT=300;
+const fracFor=p=>Math.max(0,Math.min(1,p/BREAK_AT));
+const preFrac=p=>.8*Math.min(1,p/450);
+const sunFrac=(week,sun)=>{const a=preFrac(week);return a+(.96-a)*Math.min(1,sun/100)};
+const EGGP2="M30 3C46 3 57 31 57 48C57 66 45 78 30 78C15 78 3 66 3 48C3 31 14 3 30 3Z";
+
+
+</script>
+</body></html>

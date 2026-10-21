@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<script>document.documentElement.setAttribute("data-theme","dark")</script><meta name="color-scheme" content="dark"><meta name="theme-color" content="#14171C">
+<title>Red Egg: Egg Flip</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Figtree:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700;800&display=swap">
+<style>
+/* Layout: one calm column; lives and score in a slim top bar, one big question card, two big answer buttons */
+:root{
+  --bg:#F3F1EE; --card:#FFFFFF; --ink:#16181D; --muted:#7A7F88; --line:#E3E0DB; --soft:#EFECE7;
+  --red:#D11F35; --good:#23935A; --yolk:#F6C343; --shell:#FBF8F3; --shell-edge:#D9D2C7;
+  --display:"Bagel Fat One","Arial Rounded MT Bold",system-ui,sans-serif;
+  --body:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#121317; --card:#1C1E24; --ink:#F2F1EE; --muted:#9097A1; --line:#2C2F37; --soft:#24272E;
+  --red:#F0384D; --good:#3FC27C; --yolk:#FFCF4D; --shell:#F4F0E8; --shell-edge:#B9B1A4; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#121317; --card:#1C1E24; --ink:#F2F1EE; --muted:#9097A1; --line:#2C2F37; --soft:#24272E;
+  --red:#F0384D; --good:#3FC27C; --yolk:#FFCF4D; --shell:#F4F0E8; --shell-edge:#B9B1A4; color-scheme:dark}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:14px 24px}
+.app{max-width:480px;margin:0 auto;min-height:100%;display:flex;flex-direction:column;gap:18px}
+.bar{display:flex;align-items:center;gap:12px}
+.back{display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--ink)}
+.back svg{width:20px;height:27px}
+.back b{font-family:var(--display);font-weight:400;font-size:1.2rem;letter-spacing:.01em}
+.lives{display:flex;gap:12px}
+.life{width:30px;height:38px;position:relative}
+.life svg{width:100%;height:100%;overflow:visible}
+.life.cracking svg{animation:wob .45s ease}
+@keyframes wob{25%{transform:rotate(-12deg)}50%{transform:rotate(10deg)}75%{transform:rotate(-6deg)}}
+.life .half{transition:transform .5s cubic-bezier(.3,1.4,.5,1)}
+.life.broken .l{transform:translate(-2px,2px) rotate(-10deg)}
+.life.broken .r{transform:translate(2px,2px) rotate(10deg)}
+.life .yolk{opacity:0;transition:opacity .3s .15s}
+.life.broken .yolk{opacity:1}
+.hud{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px;margin-top:-4px}
+.hud .lives{justify-content:center}
+.score{text-align:left;line-height:1}
+.score.right{text-align:right}
+.timebar{height:8px;border-radius:999px;background:var(--soft);overflow:hidden;margin-top:-6px}
+.timebar i{display:block;height:100%;width:100%;background:var(--ink);border-radius:999px;transform-origin:left;transition:background .3s}
+.timebar.low i{background:var(--red)}
+.score b{font:800 1.6rem var(--mono);font-variant-numeric:tabular-nums}
+.score span{display:block;font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:700;margin-top:3px}
+
+.stage{flex:1;display:flex;flex-direction:column;justify-content:center;gap:18px}
+.card{background:var(--card);border-radius:28px;padding:30px 24px 28px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:14px;box-shadow:0 1px 0 var(--line),0 18px 40px -24px rgba(0,0,0,.25);border:2px solid transparent;transition:border-color .25s}
+.card.in{animation:in .4s cubic-bezier(.2,1.2,.4,1)}
+@keyframes in{from{transform:translateY(16px) scale(.98);opacity:0}}
+.card.right{border-color:var(--good)}
+.card.wrong{border-color:var(--red);animation:shake .4s}
+@keyframes shake{20%{transform:translateX(-9px)}40%{transform:translateX(8px)}60%{transform:translateX(-5px)}80%{transform:translateX(3px)}}
+.kicker{font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;font-weight:800;color:var(--red)}
+.q{font-size:1.45rem;font-weight:800;line-height:1.25;text-wrap:balance;margin:0;min-height:2.5em;display:flex;align-items:center}
+.num{font:800 3.6rem var(--mono);letter-spacing:-.03em;line-height:1;font-variant-numeric:tabular-nums;transition:color .2s}
+.num.ok{color:var(--good)}.num.no{color:var(--red)}
+.unit{font-size:.95rem;color:var(--muted);font-weight:600;margin-top:-6px;min-height:1.2em}
+.was{font:600 .9rem var(--mono);color:var(--muted);min-height:1.2em}
+.btns{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.btns button{border:0;border-radius:22px;height:76px;font:800 1.25rem var(--body);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;touch-action:manipulation;transition:transform .1s}
+.btns button:active{transform:scale(.97)}
+.btns button svg{width:20px;height:20px}
+.btns .up{background:var(--ink);color:var(--bg)}
+.btns .down{background:var(--card);color:var(--ink);box-shadow:inset 0 0 0 2px var(--ink)}
+.btns button:disabled{opacity:.35;cursor:default}
+.btns button:focus-visible{outline:3px solid var(--red);outline-offset:3px}
+.run{display:flex;gap:4px;justify-content:center;flex-wrap:wrap;min-height:10px}
+.run i{width:10px;height:10px;border-radius:50%;background:var(--good)}
+.run i.x{background:var(--red)}
+.start,.end{text-align:center;display:flex;flex-direction:column;align-items:center;gap:14px}
+.start h1,.end h1{font-family:var(--display);font-weight:400;font-size:2.6rem;margin:0;line-height:1}
+.start p{margin:0;color:var(--muted);font-size:1.02rem;max-width:30ch}
+.go{border:0;border-radius:22px;height:64px;width:100%;font:800 1.2rem var(--body);background:var(--red);color:#fff;cursor:pointer}
+.ghost{border:0;background:transparent;color:var(--muted);font:700 .95rem var(--body);cursor:pointer;padding:8px}
+.end .big{font:800 5rem var(--mono);line-height:1;letter-spacing:-.04em}
+.end .sub{color:var(--muted);font-weight:700}
+.toast{font-size:.85rem;color:var(--good);min-height:1.2em}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head><body>
+<div class="app">
+  <div class="bar">
+    <a class="back" href="index.html" aria-label="Home"><svg viewBox="0 0 60 80" aria-hidden="true"><path d="M30 3C46 3 57 31 57 48C57 66 45 78 30 78C15 78 3 66 3 48C3 31 14 3 30 3Z" fill="var(--red)"/></svg><b>Egg Flip</b></a>
+  </div>
+  <div class="hud">
+    <div class="score"><b id="score">0</b><span>points</span></div>
+    <div class="lives" id="lives" aria-label="Lives"></div>
+    <div class="score right"><b id="secs">60</b><span>seconds</span></div>
+  </div>
+  <div class="timebar"><i id="tfill"></i></div>
+  <div class="stage" id="stage"></div>
+</div>
+<script>
+const OE_DATA={"EV": [["the Declaration of Independence was signed", 1776, 1, 3], ["Columbus first reached the Americas", 1492, 1, 3], ["the Titanic sank", 1912, 1, 3], ["humans first landed on the Moon", 1969, 1, 4], ["World War I began", 1914, 1, 3], ["World War II ended", 1945, 1, 3], ["the Berlin Wall fell", 1989, 1, 3], ["the first iPhone came out", 2007, 1, 1], ["Facebook launched", 2004, 1, 2], ["Google was founded", 1998, 1, 2], ["YouTube launched", 2005, 1, 2], ["Instagram launched", 2010, 1, 2], ["TikTok launched internationally", 2017, 2, 2], ["Twitter launched", 2006, 1, 2], ["Amazon was founded", 1994, 1, 2], ["Apple was founded", 1976, 1, 2], ["Microsoft was founded", 1975, 1, 2], ["Netflix was founded", 1997, 2, 2], ["the first Harry Potter book came out", 1997, 1, 1], ["the first Star Wars movie came out", 1977, 1, 1], ["Jurassic Park hit theaters", 1993, 1, 1], ["Toy Story hit theaters", 1995, 1, 1], ["Titanic (the movie) hit theaters", 1997, 1, 1], ["The Lion King (animated) hit theaters", 1994, 1, 1], ["Frozen hit theaters", 2013, 1, 1], ["Avatar hit theaters", 2009, 1, 1], ["the first Super Bowl was played", 1967, 1, 0], ["the first modern Olympics were held", 1896, 2, 0], ["the first FIFA World Cup was held", 1930, 2, 0], ["Michael Jordan won his first NBA title", 1991, 2, 0], ["the Wright brothers first flew", 1903, 1, 4], ["the telephone was patented", 1876, 2, 4], ["Abraham Lincoln was assassinated", 1865, 1, 3], ["the US Civil War began", 1861, 1, 3], ["the Great Depression began", 1929, 1, 3], ["Pearl Harbor was attacked", 1941, 1, 3], ["President Kennedy was assassinated", 1963, 1, 3], ["Martin Luther King Jr. gave his \"I Have a Dream\" speech", 1963, 1, 3], ["the 9/11 attacks happened", 2001, 1, 3], ["Barack Obama was first elected president", 2008, 1, 3], ["the Euro currency was introduced (as cash)", 2002, 2, 3], ["the Soviet Union dissolved", 1991, 1, 3], ["the Eiffel Tower was completed", 1889, 1, 3], ["the Statue of Liberty was dedicated", 1886, 1, 3], ["the Golden Gate Bridge opened", 1937, 2, 3], ["the Empire State Building opened", 1931, 2, 3], ["the Hoover Dam was completed", 1936, 3, 3], ["Mount Rushmore was completed", 1941, 2, 3], ["Disneyland opened", 1955, 1, 1], ["Walt Disney World opened", 1971, 2, 1], ["the first McDonald's opened", 1940, 2, 2], ["Coca-Cola was invented", 1886, 2, 3], ["the Beatles' first album came out", 1963, 2, 1], ["Elvis Presley died", 1977, 2, 1], ["Michael Jackson's Thriller came out", 1982, 1, 1], ["Nirvana's Nevermind came out", 1991, 2, 1], ["the first Pokémon games came out in Japan", 1996, 2, 2], ["Minecraft was fully released", 2011, 1, 2], ["Fortnite came out", 2017, 1, 2], ["the Nintendo Entertainment System came out in the US", 1985, 2, 2], ["the original PlayStation came out in Japan", 1994, 2, 2], ["the Xbox came out", 2001, 2, 2], ["the Nintendo Wii came out", 2006, 1, 2], ["Tetris was created", 1984, 2, 2], ["Pac-Man came out", 1980, 1, 2], ["the first email was sent", 1971, 3, 2], ["the World Wide Web was invented", 1989, 2, 2], ["Wikipedia launched", 2001, 2, 2], ["the first text message was sent", 1992, 3, 2], ["Bitcoin was created", 2009, 2, 2], ["ChatGPT was released", 2022, 1, 2], ["the COVID-19 pandemic was declared", 2020, 1, 3], ["Queen Elizabeth II died", 2022, 1, 3], ["Queen Elizabeth II became queen", 1952, 2, 3], ["Princess Diana died", 1997, 2, 3], ["Nelson Mandela was released from prison", 1990, 2, 3], ["the Chernobyl disaster happened", 1986, 2, 4], ["Hurricane Katrina hit New Orleans", 2005, 2, 4], ["the Space Shuttle first flew", 1981, 2, 4], ["Sputnik, the first satellite, launched", 1957, 2, 4], ["Yuri Gagarin became the first person in space", 1961, 2, 4], ["the Hubble Space Telescope launched", 1990, 2, 4], ["the first Mars rover landed (Sojourner)", 1997, 3, 4], ["Penicillin was discovered", 1928, 2, 4], ["Charles Darwin published On the Origin of Species", 1859, 3, 4], ["Albert Einstein published special relativity", 1905, 3, 4], ["the first Model T Ford was built", 1908, 2, 2], ["the US bought Alaska", 1867, 2, 3], ["Hawaii became a US state", 1959, 2, 3], ["Texas became a US state", 1845, 3, 3], ["California became a US state", 1850, 3, 3], ["the Louisiana Purchase happened", 1803, 2, 3], ["the US Constitution was signed", 1787, 2, 3], ["the Boston Tea Party happened", 1773, 2, 3], ["the French Revolution began", 1789, 2, 3], ["Napoleon lost at Waterloo", 1815, 2, 4], ["the Magna Carta was signed", 1215, 2, 3], ["William Shakespeare was born", 1564, 2, 3], ["Leonardo da Vinci painted the Mona Lisa (started)", 1503, 3, 3], ["Michelangelo finished the Sistine Chapel ceiling", 1512, 3, 3], ["the printing press was invented by Gutenberg", 1440, 2, 3], ["the Pilgrims landed at Plymouth Rock", 1620, 2, 3], ["Harvard University was founded", 1636, 2, 3], ["the Great Fire of London happened", 1666, 3, 3], ["Isaac Newton published his laws of motion", 1687, 3, 4], ["Mozart was born", 1756, 3, 3], ["Beethoven was born", 1770, 3, 4], ["the Panama Canal opened", 1914, 3, 3], ["the Suez Canal opened", 1869, 3, 3], ["the first transcontinental railroad in the US was completed", 1869, 3, 3], ["the Wall Street Crash happened", 1929, 2, 3], ["women got the vote nationwide in the US", 1920, 2, 3], ["the Korean War began", 1950, 3, 3], ["the Vietnam War ended", 1975, 2, 3], ["the first Monopoly game was sold by Parker Brothers", 1935, 3, 2], ["LEGO bricks were first sold", 1949, 3, 2], ["Barbie was introduced", 1959, 2, 1], ["the first Simpsons episode aired", 1989, 1, 1], ["Friends first aired", 1994, 1, 1], ["The Office (US) first aired", 2005, 1, 1], ["Breaking Bad first aired", 2008, 2, 1], ["Game of Thrones first aired", 2011, 1, 1], ["Stranger Things premiered", 2016, 1, 1], ["SpongeBob SquarePants premiered", 1999, 1, 1], ["Sesame Street premiered", 1969, 2, 1], ["MTV launched", 1981, 2, 1], ["the first Shrek movie came out", 2001, 1, 1], ["the first Iron Man movie came out", 2008, 1, 1], ["Avengers: Endgame came out", 2019, 1, 1], ["Finding Nemo came out", 2003, 1, 1], ["The Wizard of Oz came out", 1939, 2, 1], ["Snow White and the Seven Dwarfs came out", 1937, 2, 1], ["Gone with the Wind came out", 1939, 3, 1], ["The Godfather came out", 1972, 2, 1], ["Jaws came out", 1975, 2, 1], ["E.T. came out", 1982, 2, 1], ["Back to the Future came out", 1985, 1, 1], ["Home Alone came out", 1990, 1, 1], ["Forrest Gump came out", 1994, 2, 1], ["The Matrix came out", 1999, 2, 1], ["Spotify launched", 2008, 2, 2], ["Snapchat launched", 2011, 2, 2], ["WhatsApp launched", 2009, 2, 2], ["Uber launched", 2009, 2, 2], ["Airbnb was founded", 2008, 2, 2], ["Tesla was founded", 2003, 2, 2], ["SpaceX was founded", 2002, 2, 2], ["Starbucks opened its first store", 1971, 2, 2], ["Walmart opened its first store", 1962, 3, 2], ["Ford Motor Company was founded", 1903, 3, 2], ["Nintendo was founded", 1889, 3, 2], ["Sony was founded", 1946, 3, 2], ["Samsung was founded", 1938, 3, 2], ["Disney was founded", 1923, 2, 1], ["Warner Bros. was founded", 1923, 3, 1], ["the NBA was founded", 1946, 3, 0], ["the NFL was founded", 1920, 3, 0], ["Major League Baseball's first World Series was played", 1903, 3, 0], ["Jackie Robinson broke baseball's color barrier", 1947, 2, 0], ["Babe Ruth hit 60 home runs in a season", 1927, 3, 0], ["Usain Bolt set the 100m world record", 2009, 2, 0], ["Tiger Woods won his first Masters", 1997, 2, 0], ["Serena Williams won her first Grand Slam", 1999, 3, 0], ["Tom Brady won his first Super Bowl", 2002, 2, 0], ["LeBron James was drafted", 2003, 2, 0], ["Kobe Bryant scored 81 points in a game", 2006, 2, 0], ["Muhammad Ali first won the heavyweight title", 1964, 3, 0], ["the first Tour de France was held", 1903, 3, 0], ["the first Wimbledon was played", 1877, 3, 0], ["the first Kentucky Derby was run", 1875, 3, 0], ["the first Indianapolis 500 was run", 1911, 3, 0], ["the first X Games were held", 1995, 3, 0]], "FA": [["Height of the Eiffel Tower", 1083, "feet", 1, 3], ["Height of the Statue of Liberty, base to torch", 305, "feet", 1, 3], ["Height of the Empire State Building, to the tip", 1454, "feet", 2, 3], ["Height of the Burj Khalifa", 2717, "feet", 2, 5], ["Height of Mount Everest", 29032, "feet", 1, 5], ["Height of a regulation NBA hoop", 10, "feet", 1, 0], ["Length of an NFL field, including end zones", 120, "yards", 2, 0], ["Distance from home plate to first base", 90, "feet", 2, 0], ["Length of a marathon", 26.2, "miles", 1, 0], ["Length of an Olympic swimming pool", 50, "meters", 2, 0], ["Number of players on a soccer team's field", 11, "players", 1, 0], ["Number of squares on a chessboard", 64, "squares", 1, 0], ["Number of keys on a standard piano", 88, "keys", 1, 1], ["Number of bones in the adult human body", 206, "bones", 1, 4], ["Number of teeth in a full adult set", 32, "teeth", 1, 4], ["Number of US states", 50, "states", 1, 3], ["Number of countries in the United Nations", 193, "countries", 2, 3], ["Number of NFL teams", 32, "teams", 1, 0], ["Number of NBA teams", 30, "teams", 1, 0], ["Number of MLB teams", 30, "teams", 2, 0], ["Number of NHL teams", 32, "teams", 3, 0], ["Number of cards in a standard deck, without jokers", 52, "cards", 1, 5], ["Number of dots on a single standard die", 21, "dots", 2, 5], ["Number of minutes in a day", 1440, "minutes", 2, 5], ["Number of seconds in an hour", 3600, "seconds", 1, 5], ["Number of hours in a week", 168, "hours", 2, 5], ["Number of days in a leap year", 366, "days", 1, 5], ["Number of weeks in a year", 52, "weeks", 1, 5], ["Number of feet in a mile", 5280, "feet", 1, 5], ["Number of ounces in a pound", 16, "ounces", 1, 5], ["Number of cups in a gallon", 16, "cups", 2, 5], ["Number of teaspoons in a tablespoon", 3, "teaspoons", 2, 5], ["Days a chicken egg takes to hatch", 21, "days", 2, 4], ["Eggs in a dozen", 12, "eggs", 1, 4], ["Weight of a large chicken egg", 57, "grams", 3, 4], ["Calories in a large egg", 72, "calories", 3, 4], ["Eggs a typical laying hen lays per year", 300, "eggs", 2, 4], ["Weight of an ostrich egg", 1400, "grams", 3, 4], ["Speed of a cheetah at full sprint", 70, "mph", 2, 4], ["Top speed of a peregrine falcon diving", 240, "mph", 2, 4], ["Usain Bolt's 100m world record", 9.58, "seconds", 2, 0], ["Length of a blue whale", 100, "feet", 2, 4], ["Height of an adult giraffe", 18, "feet", 2, 4], ["Lifespan of a Greenland shark", 400, "years", 3, 4], ["Number of hearts an octopus has", 3, "hearts", 1, 4], ["Number of legs on a spider", 8, "legs", 1, 4], ["Number of legs on an insect", 6, "legs", 1, 4], ["Number of eyes a bee has", 5, "eyes", 3, 4], ["Distance from Earth to the Moon", 238900, "miles", 2, 4], ["Distance from Earth to the Sun", 93000000, "miles", 2, 4], ["Seconds for sunlight to reach Earth", 499, "seconds", 3, 4], ["Number of moons Mars has", 2, "moons", 2, 4], ["Number of planets in our solar system", 8, "planets", 1, 4], ["Hours in a day on Jupiter", 10, "hours", 3, 4], ["Earth days in a year on Mars", 687, "days", 3, 4], ["Temperature on the surface of Venus", 867, "°F", 3, 4], ["Speed of sound at sea level", 767, "mph", 3, 4], ["Boiling point of water at sea level", 212, "°F", 1, 4], ["Freezing point of water", 32, "°F", 1, 4], ["Normal human body temperature", 98.6, "°F", 1, 4], ["Average human heartbeats per minute at rest", 70, "beats", 2, 4], ["Length of the Great Wall of China (all branches)", 13171, "miles", 3, 4], ["Length of the Nile River", 4130, "miles", 3, 4], ["Depth of the Mariana Trench", 36000, "feet", 3, 4], ["Area of Texas", 268596, "square miles", 3, 3], ["Number of time zones in the contiguous US", 4, "time zones", 1, 5], ["Number of stars on the US flag", 50, "stars", 1, 3], ["Number of stripes on the US flag", 13, "stripes", 1, 3], ["Number of amendments to the US Constitution", 27, "amendments", 2, 3], ["Number of US senators", 100, "senators", 1, 3], ["Number of members in the US House", 435, "representatives", 2, 3], ["Number of Supreme Court justices", 9, "justices", 1, 3], ["Age to become US president", 35, "years old", 2, 3], ["Length of a US president's term", 4, "years", 1, 3], ["Number of Harry Potter books", 7, "books", 1, 1], ["Number of Star Wars main saga films", 9, "films", 2, 1], ["Number of seasons of Friends", 10, "seasons", 2, 1], ["Number of seasons of The Office (US)", 9, "seasons", 2, 1], ["Number of episodes of Breaking Bad", 62, "episodes", 3, 1], ["Number of original Pokémon in Red and Blue", 151, "Pokémon", 2, 2], ["Number of Grand Slam singles titles Serena Williams won", 23, "titles", 2, 0], ["Number of NBA championships Michael Jordan won", 6, "titles", 1, 0], ["Number of Super Bowls Tom Brady won", 7, "Super Bowls", 1, 0], ["Career home runs by Barry Bonds", 762, "home runs", 3, 0], ["Points Wilt Chamberlain scored in one game", 100, "points", 2, 0], ["Number of Olympic gold medals Michael Phelps won", 23, "golds", 2, 0], ["Number of strings on a standard guitar", 6, "strings", 1, 1], ["Number of strings on a violin", 4, "strings", 2, 1], ["Number of letters in the English alphabet", 26, "letters", 1, 5], ["Number of letters in the Hawaiian alphabet", 13, "letters", 3, 3], ["Number of countries in Africa", 54, "countries", 2, 3], ["Number of countries in South America", 12, "countries", 2, 3], ["Number of continents", 7, "continents", 1, 3], ["Number of oceans", 5, "oceans", 1, 4], ["Percentage of Earth's surface covered by water", 71, "%", 2, 4], ["Number of elements on the periodic table", 118, "elements", 2, 4], ["Number of chromosomes in a human cell", 46, "chromosomes", 3, 4], ["Number of muscles in the human body, roughly", 600, "muscles", 3, 4], ["Liters of blood in an adult human body", 5, "liters", 2, 4], ["Weight of the human brain", 3, "pounds", 2, 4], ["Length of a soccer match, regulation", 90, "minutes", 1, 0], ["Length of an NBA game, regulation", 48, "minutes", 2, 0], ["Length of an NHL game, regulation", 60, "minutes", 3, 0], ["Number of holes on a golf course", 18, "holes", 1, 0], ["Number of pins in bowling", 10, "pins", 1, 0], ["Highest possible score in a game of bowling", 300, "points", 2, 0], ["Number of points for a touchdown", 6, "points", 1, 0], ["Distance of a free throw line from the backboard", 15, "feet", 3, 0], ["Number of rings on the Olympic flag", 5, "rings", 1, 0], ["Cost of a Monopoly property, Boardwalk", 400, "dollars", 2, 2], ["Number of squares on a Monopoly board", 40, "spaces", 3, 2], ["Number of pieces each player starts with in chess", 16, "pieces", 2, 0], ["Number of tiles in a Scrabble set", 100, "tiles", 3, 2], ["Number of sides on a stop sign", 8, "sides", 1, 5], ["Number of lines in a sonnet", 14, "lines", 2, 1], ["Number of syllables in a haiku", 17, "syllables", 2, 1], ["Bits in a byte", 8, "bits", 2, 2], ["Weight of a US penny", 2.5, "grams", 3, 5], ["Number of Kit Kat fingers in a standard bar", 4, "fingers", 1, 5], ["Slices in a large pizza, typically", 8, "slices", 1, 5], ["Calories in a Big Mac", 590, "calories", 2, 5], ["Calories in a can of Coca-Cola", 140, "calories", 2, 3], ["Grams of sugar in a can of Coca-Cola", 39, "grams", 3, 3], ["Number of Starbucks stores worldwide", 40000, "stores", 3, 2], ["Number of McDonald's restaurants worldwide", 43000, "restaurants", 3, 2], ["Number of languages spoken in the world, roughly", 7000, "languages", 3, 5], ["Number of words in the English Oxford Dictionary, roughly", 600000, "words", 3, 2], ["Number of people who have walked on the Moon", 12, "people", 2, 4], ["Number of countries that have won the men's soccer World Cup", 8, "countries", 3, 0], ["Number of times Brazil has won the World Cup", 5, "times", 2, 0]], "EL": [["Hydrogen", 1, 1766, 2], ["Helium", 2, 1868, 2], ["Lithium", 3, 1817, 2], ["Beryllium", 4, 1798, 3], ["Boron", 5, 1807, 3], ["Carbon", 6, 0, 2], ["Nitrogen", 7, 1772, 2], ["Oxygen", 8, 1774, 2], ["Fluorine", 9, 1670, 3], ["Neon", 10, 1898, 2], ["Sodium", 11, 1807, 2], ["Magnesium", 12, 1808, 2], ["Aluminum", 13, 0, 2], ["Silicon", 14, 1854, 2], ["Phosphorus", 15, 1669, 3], ["Sulfur", 16, 0, 2], ["Chlorine", 17, 1774, 2], ["Argon", 18, 1894, 3], ["Potassium", 19, 1807, 2], ["Calcium", 20, 0, 2], ["Scandium", 21, 1876, 3], ["Titanium", 22, 1791, 2], ["Vanadium", 23, 1803, 3], ["Chromium", 24, 0, 3], ["Manganese", 25, 1774, 3], ["Iron", 26, 0, 2], ["Cobalt", 27, 0, 3], ["Nickel", 28, 1751, 2], ["Copper", 29, 0, 2], ["Zinc", 30, 1746, 2], ["Gallium", 31, 1875, 3], ["Germanium", 32, 1886, 3], ["Arsenic", 33, 0, 3], ["Selenium", 34, 1817, 3], ["Bromine", 35, 1826, 3], ["Krypton", 36, 1898, 3], ["Rubidium", 37, 1861, 3], ["Strontium", 38, 1790, 3], ["Yttrium", 39, 1794, 3], ["Zirconium", 40, 1789, 3], ["Niobium", 41, 1801, 3], ["Molybdenum", 42, 1778, 3], ["Technetium", 43, 1937, 3], ["Ruthenium", 44, 1827, 3], ["Rhodium", 45, 1803, 3], ["Palladium", 46, 1803, 3], ["Silver", 47, 0, 2], ["Cadmium", 48, 1817, 3], ["Indium", 49, 1863, 3], ["Tin", 50, 0, 2], ["Antimony", 51, 0, 3], ["Tellurium", 52, 1782, 3], ["Iodine", 53, 1811, 2], ["Xenon", 54, 1898, 3], ["Cesium", 55, 1860, 3], ["Barium", 56, 1808, 3], ["Lanthanum", 57, 1839, 3], ["Cerium", 58, 1803, 3], ["Praseodymium", 59, 1885, 3], ["Neodymium", 60, 1885, 3], ["Promethium", 61, 1947, 3], ["Samarium", 62, 1853, 3], ["Europium", 63, 1901, 3], ["Gadolinium", 64, 1880, 3], ["Terbium", 65, 1843, 3], ["Dysprosium", 66, 1886, 3], ["Holmium", 67, 1878, 3], ["Erbium", 68, 1842, 3], ["Thulium", 69, 1879, 3], ["Ytterbium", 70, 1878, 3], ["Lutetium", 71, 1907, 3], ["Hafnium", 72, 1923, 3], ["Tantalum", 73, 1802, 3], ["Tungsten", 74, 1783, 3], ["Rhenium", 75, 1925, 3], ["Osmium", 76, 1803, 3], ["Iridium", 77, 1803, 3], ["Platinum", 78, 0, 2], ["Gold", 79, 0, 2], ["Mercury", 80, 0, 2], ["Thallium", 81, 1861, 3], ["Lead", 82, 0, 2], ["Bismuth", 83, 0, 3], ["Polonium", 84, 1898, 3], ["Astatine", 85, 1940, 3], ["Radon", 86, 1900, 3], ["Francium", 87, 1939, 3], ["Radium", 88, 1898, 3], ["Actinium", 89, 1899, 3], ["Thorium", 90, 1828, 3], ["Protactinium", 91, 1913, 3], ["Uranium", 92, 1789, 2], ["Neptunium", 93, 1940, 3], ["Plutonium", 94, 1940, 2], ["Americium", 95, 1944, 3], ["Curium", 96, 1944, 3], ["Berkelium", 97, 1949, 3], ["Californium", 98, 1950, 3], ["Einsteinium", 99, 1952, 3], ["Fermium", 100, 1952, 3], ["Mendelevium", 101, 1955, 3], ["Nobelium", 102, 1957, 3], ["Lawrencium", 103, 1961, 3], ["Rutherfordium", 104, 1969, 3], ["Dubnium", 105, 1967, 3], ["Seaborgium", 106, 1974, 3], ["Bohrium", 107, 1976, 3], ["Hassium", 108, 1984, 3], ["Meitnerium", 109, 1982, 3], ["Darmstadtium", 110, 1994, 3], ["Roentgenium", 111, 1994, 3], ["Copernicium", 112, 1996, 3], ["Nihonium", 113, 2003, 3], ["Flerovium", 114, 1998, 3], ["Moscovium", 115, 2003, 3], ["Livermorium", 116, 2000, 3], ["Tennessine", 117, 2010, 3], ["Oganesson", 118, 2002, 3]], "TH": ["Sports", "Movies, TV & Music", "Tech & Games", "History", "Science & Space", "Everything"]};
+
+const $=id=>document.getElementById(id);
+/* ---- bank ---- */
+const {EV,FA,EL,TH}=OE_DATA;
+const D0=new Date(),MON=(()=>{const d=new Date(D0);d.setDate(d.getDate()-((d.getDay()+6)%7));return d})();
+const WEEK_NO=Math.round((new Date(MON.getFullYear(),MON.getMonth(),MON.getDate())-new Date(2026,0,5))/604800000);
+const THEME=((WEEK_NO%TH.length)+TH.length)%TH.length; // one theme per week; the last one mixes everything
+const inTheme=t=>THEME===TH.length-1||t===THEME;
+const POOL=(()=>{const P=[];
+  EV.forEach(([t,y,f,th])=>{if(inTheme(th))P.push({id:"y:"+t,q:`The year ${t}`,v:y,u:"",yr:1})});
+  FA.forEach(([t,v,u,f,th])=>{if(inTheme(th))P.push({id:"f:"+t,q:t,v,u,yr:0})});
+  if(inTheme(4))EL.forEach(([n,z,yd,f])=>{if(f===2)P.push({id:"z:"+n,q:`Atomic number of ${n.toLowerCase()}`,v:z,u:"",yr:0})});
+  const ev=EV.filter(e=>e[2]<=2&&inTheme(e[3]));
+  for(let i=0;i<ev.length;i++)for(let j=i+1;j<ev.length;j++){let [a,b]=[ev[i],ev[j]];const g=Math.abs(a[1]-b[1]);if(g<8||g>300)continue;if(a[1]>b[1])[a,b]=[b,a];
+    P.push({id:"g:"+a[0]+"|"+b[0],q:`Years between when ${a[0]} and when ${b[0]}`,v:g,u:"years",yr:0,gap:1})}
+  return P})();
+function rngOf(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function hstr(s){let h=2166136261;for(const c of s){h^=c.charCodeAt(0);h=Math.imul(h,16777619)}return h>>>0}
+function ordered(list,salt){const r=rngOf(hstr(salt)),a=list.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+const D=D0,TODAY=`${D.getFullYear()}-${D.getMonth()+1}-${D.getDate()}`;
+const store={get(k,d){try{const v=localStorage.getItem("redegg2:"+k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem("redegg2:"+k,JSON.stringify(v))}catch(e){}}};
+const SEEN=new Set(store.get("oeSeen",[]));
+// keep the "years between" questions to about one in four
+const ORDER=(()=>{const a=ordered(POOL.filter(q=>!q.gap),"oe|"+TODAY),g=ordered(POOL.filter(q=>q.gap),"oeg|"+TODAY),out=[];
+  while(a.length||g.length){for(let k=0;k<3&&a.length;k++)out.push(a.shift());if(g.length)out.push(g.shift())}return out})();
+let R=rngOf(hstr("oe-lines|"+TODAY));
+/* every question is the same difficulty: the line sits a fair distance from the truth */
+function lineFor(q){
+  const up=R()<.5;
+  if(q.yr){const off=4+Math.floor(R()*9);return q.v+(up?off:-off)}
+  if(q.v<12){const off=1+Math.floor(R()*Math.max(1,Math.round(q.v*.3)));let L=q.v+(up?off:-off);return Math.max(0,L===q.v?L+1:L)}
+  const d=.14+R()*.14,x=q.v*(up?1+d:1-d),mag=Math.pow(10,Math.floor(Math.log10(x))-1);
+  let L=Math.round(x/mag)*mag;if(L===q.v)L+=up?mag:-mag;return +L.toPrecision(6);
+}
+function nextQ(){return ORDER.find(q=>!G.used.has(q.id)&&!SEEN.has(q.id))||ORDER.find(q=>!G.used.has(q.id))||ORDER[0]}
+const fmt=n=>Number.isInteger(n)?n.toLocaleString("en-US"):n.toLocaleString("en-US",{maximumFractionDigits:2});
+const RUN_SECS=60,PER=5,EGG_BONUS=10;
+const scoreFor=(c,eggs)=>Math.min(100,c*PER+eggs*EGG_BONUS);
+const ARROW=up=>`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="${up?"M12 3 L21 14 H15 V21 H9 V14 H3 Z":"M12 21 L21 10 H15 V3 H9 V10 H3 Z"}" fill="currentColor"/></svg>`;
+const SHELLP="M15 2C23 2 28 15 28 24C28 33 22 38 15 38C8 38 2 33 2 24C2 15 7 2 15 2Z";
+function lifeSVG(){return `<svg viewBox="0 0 30 40" aria-hidden="true">
+  <ellipse class="yolk" cx="15" cy="34" rx="10" ry="4" fill="var(--yolk)"/>
+  <clipPath id="cl"><path d="M0 0 H15 L12 10 L17 17 L13 24 L16 40 H0 Z"/></clipPath><clipPath id="cr"><path d="M30 0 H15 L12 10 L17 17 L13 24 L16 40 H30 Z"/></clipPath>
+  <g class="half l" style="transform-origin:15px 38px"><path d="${SHELLP}" fill="var(--shell)" stroke="var(--shell-edge)" stroke-width="1.5" clip-path="url(#cl)"/></g>
+  <g class="half r" style="transform-origin:15px 38px"><path d="${SHELLP}" fill="var(--shell)" stroke="var(--shell-edge)" stroke-width="1.5" clip-path="url(#cr)"/></g>
+  <ellipse cx="10" cy="13" rx="3" ry="5" fill="#fff" opacity=".8" transform="rotate(20 10 13)"/>
+</svg>`}
+let G=null;
+function drawLives(){$("lives").innerHTML=[0,1,2].map(i=>`<div class="life${i<G.lost?" broken":""}" id="life${i}">${lifeSVG()}</div>`).join("")}
+function startScreen(){
+  if(G)clearInterval(G.tick);G={n:0,right:0,lost:0,used:new Set(),run:[],busy:false,left:RUN_SECS,last:0,tick:null,over:false};drawLives();$("score").textContent="0";drawTime();
+  const best=store.get("oeBest",0);
+  $("stage").innerHTML=`<div class="start"><span class="kicker">This week</span><h1>${TH[THEME]}</h1>${best?`<p>Best: <b>${best}</b></p>`:""}<button class="go" id="goBtn">Start</button></div>`;
+  $("goBtn").onclick=()=>{layout();ask();G.last=performance.now();G.tick=setInterval(tick,50)};
+}
+// the clock only runs while a question is on screen
+function tick(){const now=performance.now();if(!G.busy){G.left=Math.max(0,G.left-(now-G.last)/1000)}G.last=now;drawTime();if(G.left<=0&&!G.over)end()}
+function drawTime(){$("secs").textContent=Math.ceil(G.left);$("tfill").style.transform=`scaleX(${G.left/RUN_SECS})`;document.querySelector(".timebar").classList.toggle("low",G.left<10)}
+function layout(){
+  $("stage").innerHTML=`<div class="card" id="card"><span class="kicker" id="kick"></span><p class="q" id="q"></p><div class="num" id="num"></div><div class="unit" id="unit"></div><div class="was" id="was"></div></div>
+    <div class="btns"><button class="up" id="up"></button><button class="down" id="down"></button></div>
+    <div class="run" id="run"></div>`;
+  $("up").onclick=()=>answer(true);$("down").onclick=()=>answer(false);
+}
+function ask(){
+  const q=nextQ();G.used.add(q.id);G.q=q;G.L=lineFor(q);
+  const c=$("card");c.className="card";void c.offsetWidth;c.classList.add("in");
+  $("kick").textContent=TH[THEME];$("q").textContent=q.q;
+  const n=$("num");n.className="num";n.textContent=q.yr?G.L:fmt(G.L);
+  $("unit").textContent=q.yr?"":q.u;$("was").textContent="";
+  $("up").innerHTML=ARROW(true)+(q.yr?"Later":"Over");$("down").innerHTML=ARROW(false)+(q.yr?"Earlier":"Under");
+  $("up").disabled=$("down").disabled=false;G.busy=false;
+}
+function countTo(el,a,b,ms,yr){const t0=performance.now();const dec=!Number.isInteger(b);const step=t=>{const p=Math.min(1,(t-t0)/ms),e=1-Math.pow(1-p,3),v=a+(b-a)*e;el.textContent=yr?Math.round(v):dec?fmt(+v.toFixed(2)):fmt(Math.round(v));if(p<1)requestAnimationFrame(step);else el.textContent=yr?b:fmt(b)};requestAnimationFrame(step)}
+function answer(over){
+  if(G.busy)return;G.busy=true;$("up").disabled=$("down").disabled=true;
+  const q=G.q,ok=over?q.v>G.L:q.v<G.L;
+  SEEN.add(q.id);store.set("oeSeen",[...SEEN]);
+  $("was").textContent=`not ${q.yr?G.L:fmt(G.L)}`;
+  const n=$("num");countTo(n,G.L,q.v,650,q.yr);setTimeout(()=>n.classList.add(ok?"ok":"no"),300);
+  $("card").classList.add(ok?"right":"wrong");
+  G.run.push(ok);$("run").innerHTML=G.run.map(r=>`<i class="${r?"":"x"}"></i>`).join("");
+  if(ok){G.right++;$("score").textContent=Math.min(100,G.right*PER)}
+  else{const lf=$("life"+G.lost);G.lost++;lf.classList.add("cracking");setTimeout(()=>lf.classList.add("broken"),250)}
+  G.n++;
+  setTimeout(()=>{if(G.over)return;if(G.lost>=3)end();else ask()},950);
+}
+function end(){
+  if(G.over)return;G.over=true;clearInterval(G.tick);
+  const eggs=3-G.lost,pts=scoreFor(G.right,eggs),best=Math.max(store.get("oeBest",0),pts);store.set("oeBest",best);
+  const share=`The Red Egg · Egg Flip\n${G.run.map(r=>r?"🟩":"🟥").join("")}\n${TH[THEME]} · ${pts}/100`;
+  $("stage").innerHTML=`<div class="end"><div class="big">${pts}</div><div class="sub">${G.right} right${eggs?` · ${eggs} egg${eggs>1?"s":""} left +${eggs*EGG_BONUS}`:""}</div><div class="run">${G.run.map(r=>`<i class="${r?"":"x"}"></i>`).join("")}</div>
+    <button class="go" id="copy">Copy result</button><div class="toast" id="toast"></div><button class="ghost" id="again">Play again</button></div>`;
+  $("copy").onclick=()=>{try{navigator.clipboard.writeText(share).then(()=>$("toast").textContent="Copied",()=>{})}catch(e){}};
+  $("again").onclick=startScreen;
+}
+startScreen();
+</script>
+</body></html>

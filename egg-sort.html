@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
+<script>document.documentElement.setAttribute("data-theme","dark")</script><meta name="color-scheme" content="dark"><meta name="theme-color" content="#14171C">
+<title>Red Egg: Scrambled</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: single centered play column; carton tray of eggs is the hero, check log below */
+:root{
+  --bg:#ECEFF2; --surface:#FFFFFF; --tray:#DCE1E6; --ink:#1A1D23; --muted:#5E6673;
+  --line:#C9D0D8; --red:#D11F35; --red-ink:#FFFFFF; --good:#2E9B57; --gold:#E9A800;
+  --t1:#B98500; --t2:#2E9B57; --t3:#2F6FDB; --t4:#7A6F62; --t5:#8A5A3C;
+  --display:"Bagel Fat One","Arial Rounded MT Bold",system-ui,sans-serif;
+  --body:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#14171C; --surface:#1E232A; --tray:#262C34; --ink:#EEF1F5; --muted:#9AA3B0;
+  --line:#353D47; --red:#F0384D; --red-ink:#FFFFFF; --good:#47C474; --gold:#FFC93C;   --t1:#FFC93C; --t2:#47C474; --t3:#6EA0FF; --t4:#B3A898; --t5:#C08A66; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#14171C; --surface:#1E232A; --tray:#262C34; --ink:#EEF1F5; --muted:#9AA3B0;
+  --line:#353D47; --red:#F0384D; --red-ink:#FFFFFF; --good:#47C474; --gold:#FFC93C;  --t1:#FFC93C; --t2:#47C474; --t3:#6EA0FF; --t4:#B3A898; --t5:#C08A66; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.45;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 40px}
+.wrap{max-width:560px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px}
+.brand h1{font-family:var(--display);font-weight:400;font-size:1.9rem;line-height:1;margin:0;letter-spacing:.01em}
+.brand h1 span{color:var(--red)}
+.meta{font-size:.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-weight:600;text-align:right}
+.meta b{display:block;color:var(--ink);font-size:.95rem;letter-spacing:.02em;text-transform:none}
+.progress{display:flex;gap:6px;justify-content:center}
+.progress svg{width:26px;height:36px;transition:transform .2s}
+.progress .cur{transform:translateY(-3px) scale(1.12)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:14px}
+.roundhead{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap}
+.roundhead h2{font-family:var(--display);font-weight:400;font-size:1.35rem;margin:0}
+.roundhead .stat{font-family:var(--mono);font-size:.85rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.tray{background:var(--tray);border-radius:14px;padding:18px 8px 12px;display:flex;justify-content:center;gap:4px}
+.slot{flex:1 1 0;max-width:58px;min-width:0;display:flex;flex-direction:column;align-items:center;gap:6px;
+  background:none;border:0;padding:0;cursor:pointer;color:var(--muted);font:600 .7rem var(--mono)}
+.slot svg{width:100%;height:auto;max-width:52px;transition:transform .18s cubic-bezier(.3,1.6,.6,1),filter .18s;filter:drop-shadow(0 3px 2px rgba(0,0,0,.18))}
+.slot:hover svg{transform:translateY(-3px)}
+.slot.sel svg{transform:translateY(-12px) rotate(-6deg);filter:drop-shadow(0 10px 6px rgba(0,0,0,.25))}
+.slot.pop svg{animation:pop .28s ease}
+.slot:focus-visible{outline:3px solid var(--red);outline-offset:4px;border-radius:8px}
+.slot.done svg{animation:wobble .5s ease}
+@keyframes pop{40%{transform:scale(.88)}}
+@keyframes wobble{25%{transform:rotate(-8deg)}50%{transform:rotate(7deg)}75%{transform:rotate(-3deg)}}
+.clock{display:flex;align-items:baseline;gap:6px;justify-content:center;font-family:var(--mono);font-variant-numeric:tabular-nums}
+.clock .time{font-size:2.6rem;font-weight:700;line-height:1;min-width:4ch;text-align:right}
+.clock .time.idle{color:var(--muted)}
+.clock .unit{color:var(--muted);font-size:.9rem}
+.clock .tot{color:var(--muted);font-size:.8rem;margin-left:10px}
+.result{min-height:2.6em;text-align:center;font-weight:600;font-size:1.05rem;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:6px 10px}
+.result .n{font-family:var(--mono);font-size:1.5rem;color:var(--red);margin:0 .25em;font-variant-numeric:tabular-nums}
+.result.win{color:var(--good)}
+.actions{display:flex;gap:10px}
+button.primary,button.ghost{font:700 1rem var(--body);border-radius:12px;padding:14px 18px;cursor:pointer;flex:1}
+button.primary{background:var(--red);color:var(--red-ink);border:0}
+button.primary:disabled{opacity:.45;cursor:default}
+button.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+button.primary:focus-visible,button.ghost:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.log h3{margin:0 0 8px;font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted)}
+.log ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px;max-height:220px;overflow-y:auto}
+.log li{display:grid;grid-template-columns:2.2em 1fr auto;align-items:center;gap:8px;font-family:var(--mono);font-size:.82rem;font-variant-numeric:tabular-nums}
+.log .dots{display:flex;gap:4px;flex-wrap:wrap}
+.log .dots i{width:14px;height:18px;border-radius:50% 50% 50% 50%/60% 60% 40% 40%;display:block}
+.log .cnt{font-weight:700}
+.log .idx{color:var(--muted)}
+.log .empty{font-family:var(--body);color:var(--muted);font-size:.9rem}
+details{font-size:.92rem;color:var(--muted)}
+details summary{cursor:pointer;font-weight:600;color:var(--ink)}
+details p{margin:.5em 0 0;max-width:62ch}
+.end{align-items:center;text-align:center}
+.end .score{font-family:var(--display);font-size:4rem;line-height:1;color:var(--red)}
+.end .score small{font-size:1.4rem;color:var(--muted)}
+.end .tier{font-family:var(--display);font-size:1.5rem}
+.end table{border-collapse:collapse;font-family:var(--mono);font-size:.85rem;font-variant-numeric:tabular-nums;width:100%;max-width:340px}
+.end td,.end th{padding:5px 6px;border-bottom:1px solid var(--line);text-align:right}
+.end th{color:var(--muted);font-weight:500;font-family:var(--body);font-size:.75rem;text-transform:uppercase;letter-spacing:.08em}
+.end td:first-child,.end th:first-child{text-align:left}
+.share{font-family:var(--mono);white-space:pre;background:var(--tray);border-radius:10px;padding:12px 16px;font-size:.9rem;text-align:left;user-select:all}
+.chick svg{width:120px;height:120px}
+.note{margin:0;max-width:42ch;color:var(--muted)}
+.toast{font-size:.85rem;color:var(--good);min-height:1.2em}
+.pts{font-family:var(--mono);font-size:2rem;font-weight:700;line-height:1;color:var(--ink);font-variant-numeric:tabular-nums}
+.pts small{font-size:.95rem;color:var(--muted);font-weight:500}
+.pill{display:inline-block;font:700 .78rem var(--body);text-transform:uppercase;letter-spacing:.08em;padding:4px 10px;border-radius:999px;border:1.5px solid currentColor;white-space:nowrap}
+.pill.t1{color:var(--t1)}.pill.t2{color:var(--t2)}.pill.t3{color:var(--t3)}.pill.t4{color:var(--t4)}.pill.t5{color:var(--t5)}
+.end td .pill{font-size:.64rem;padding:2px 7px}
+body.mode-sunday #progress{display:none}
+.backlink{display:block;color:var(--muted);text-decoration:none;font-weight:700;margin-bottom:2px}
+body.mode-sunday .backlink{color:var(--red);pointer-events:none}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+</head><body>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <svg width="30" height="40" viewBox="0 0 60 80" aria-hidden="true"><path d="M30 3C46 3 57 31 57 48C57 66 45 78 30 78C15 78 3 66 3 48C3 31 14 3 30 3Z" fill="var(--red)"/><ellipse cx="20" cy="30" rx="6" ry="11" fill="#fff" opacity=".35" transform="rotate(20 20 30)"/></svg>
+      <h1>The <span>Red</span> Egg</h1>
+    </div>
+    <div class="meta">Scrambled<b id="dateLabel"></b></div>
+  </header>
+
+  <div class="progress" id="progress" aria-label="Round progress"></div>
+
+  <section class="card" id="game">
+    <div class="roundhead">
+      <h2 id="roundTitle">Round 1</h2>
+      <span class="stat" id="roundStat"></span>
+    </div>
+    <div class="clock"><span class="time" id="timer">0.0</span><span class="unit">sec</span><span class="tot" id="totalTime"></span></div>
+    <div class="tray" id="tray" role="group" aria-label="Eggs"></div>
+    <div class="result" id="result" aria-live="polite">Tap two eggs to swap them.</div>
+    <div class="actions">
+      <button class="primary" id="checkBtn">Check</button>
+      <button class="primary" id="nextBtn" hidden>Next round</button>
+    </div>
+    <div class="log">
+      <h3>Your swaps</h3>
+      <ol id="log"></ol>
+    </div>
+  </section>
+
+  <section class="card end" id="end" hidden></section>
+
+  <details>
+    <summary>How to play</summary>
+    <p>There's a hidden right order for the eggs. Tap one egg, then another, to swap them. After every swap you're told how many eggs are in the right spot, but not which ones. Use your past swaps to work it out.</p>
+    <p>Round 1 has 3 eggs and each round adds one, up to 7. The clock starts on your first tap and stops when the order is right. Faster means more points. Your 5 rounds add up to a score out of 100.</p>
+  </details>
+</div>
+
+<script>
+/* ---- daily rules shared by every page: same puzzle for everyone, one play per day, streaks ---- */
+const DAY_KEYS=["egg-sort","blind-stop","flash","trivia","bridge","pecking-order","sunday"];
+const DAY_NAMES=["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
+const pad2=n=>String(n).padStart(2,"0");
+const ymd=d=>`${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`;
+const NOW=new Date(),LOCALDAY=ymd(NOW),TODAY_IDX=(NOW.getDay()+6)%7;
+const CUR_MONDAY=(()=>{const d=new Date(NOW);d.setDate(d.getDate()-TODAY_IDX);return ymd(d)})();
+const WEEK_NO=Math.round((new Date(CUR_MONDAY+"T12:00:00")-new Date("2026-01-05T12:00:00"))/604800000);
+/* the date a day's game belongs to this week, so a catch-up gets the same puzzle everyone played that day */
+function gameDate(key){const i=DAY_KEYS.indexOf(key);const d=new Date(CUR_MONDAY+"T12:00:00");d.setDate(d.getDate()+Math.max(0,i));return ymd(d)}
+const SUN_KEYS=["egg-sort","blind-stop","flash","trivia","bridge","pecking-order"];
+function hashStr(s){let h=2166136261;for(const c of s){h^=c.charCodeAt(0);h=Math.imul(h,16777619)}return h>>>0}
+function rngFrom(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function seededOrder(list,salt){const r=rngFrom(hashStr(salt)),a=list.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+const RS={get(k,d){try{const v=localStorage.getItem("redegg2:"+k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem("redegg2:"+k,JSON.stringify(v))}catch(e){}}};
+/* a new egg every Monday */
+function currentWeek(){let w=RS.get("week",null);if(!w||!w.id||w.id<CUR_MONDAY){w={id:CUR_MONDAY,days:{},sunday:{}};RS.set("week",w)}w.days=w.days||{};w.sunday=w.sunday||{};return w}
+function markPlayed(){const s=RS.get("playDays",[]);if(!s.includes(LOCALDAY)){s.push(LOCALDAY);RS.set("playDays",s)}}
+function dayStreak(){const s=new Set(RS.get("playDays",[]));const d=new Date(NOW);if(!s.has(ymd(d)))d.setDate(d.getDate()-1);let n=0;while(s.has(ymd(d))){n++;d.setDate(d.getDate()-1)}return n}
+function bestDayStreak(){const s=[...new Set(RS.get("playDays",[]))].sort();let best=0,run=0,prev=null;for(const k of s){const d=new Date(k+"T12:00:00");run=prev&&Math.round((d-prev)/864e5)===1?run+1:1;best=Math.max(best,run);prev=d}return best}
+function weekStreak(){const ids=new Set(RS.get("pen",[]).map(p=>p.id));const d=new Date(CUR_MONDAY+"T12:00:00");if(!ids.has(ymd(d)))d.setDate(d.getDate()-7);let n=0;while(ids.has(ymd(d))){n++;d.setDate(d.getDate()-7)}return n}
+/* stop replays and off-day plays (testing can unlock every day) */
+function dailyGate(mode,key,name){
+  if(mode==="practice"||RS.get("unlockAll",false))return false;
+  const w=currentWeek();let msg=null;
+  if(mode==="day"){
+    if(key in w.days)msg=`You already played today's ${name}. You scored <b>${Math.round(w.days[key])}</b>. A new puzzle is waiting tomorrow.`;
+    else if(DAY_KEYS.indexOf(key)>TODAY_IDX)msg=`${name} is ${DAY_NAMES[DAY_KEYS.indexOf(key)]}'s game. It unlocks on ${DAY_NAMES[DAY_KEYS.indexOf(key)]}.`;
+    else if(SUN_KEYS.every(k=>k in w.sunday))msg=`This week's egg has already hatched, so ${name} can't be caught up. A new egg starts Monday.`;
+  }else if(mode==="sunday"){
+    if(TODAY_IDX!==6)msg=`The Red Egg is played on Sunday.`;
+    else if(key in w.sunday)msg=`You already played this round of the Red Egg.`;
+  }
+  if(!msg)return false;
+  const wrap=document.querySelector(".wrap");
+  [...wrap.children].forEach(el=>{if(el.tagName!=="HEADER")el.hidden=true});
+  wrap.insertAdjacentHTML("beforeend",`<section class="card" style="align-items:center;text-align:center;gap:16px"><p style="margin:0;font-size:1.05rem;max-width:36ch">${msg}</p><a href="index.html" style="display:block;width:100%;text-align:center;text-decoration:none;border-radius:16px;padding:16px;font:700 1.05rem var(--body);background:var(--btn);color:var(--btn-ink)">Back to the egg</a></section>`);
+  return true;
+}
+
+/* ---- The Red Egg week hooks ---- */
+const GAME={key:"egg-sort",name:"Scrambled"};
+const SUNDAY_ORDER=[["egg-sort","Scrambled",3],["blind-stop","Blind Stop",3],["flash","Flash",3],["trivia","Trivia",5],["bridge","Link Up",4],["pecking-order","Pecking Order",0]];
+const SUNDAY_MULT=5/6; // six Sunday rounds share 100 points
+const MODE=location.hash==="#sunday"?"sunday":location.hash==="#day"?"day":"practice";
+const STORE={get(k,d){try{const v=localStorage.getItem("redegg2:"+k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem("redegg2:"+k,JSON.stringify(v))}catch(e){}}};
+function weekData(){return currentWeek()}
+function saveWeek(w){STORE.set("week",w)}
+const SIDX=SUNDAY_ORDER.findIndex(g=>g[0]===GAME.key);
+function lastPts(){return S.scores[S.scores.length-1]}
+function TITLE(d){return MODE==="sunday"?`Sunday · ${SIDX+1} of ${SUNDAY_ORDER.length}`:d}
+function shown(p){return MODE==="sunday"?(p*SUNDAY_MULT).toFixed(1):p.toFixed(1)}
+function nextLabel(d){if(MODE!=="sunday")return d;const n=SUNDAY_ORDER[SIDX+1];return n?`Next: ${n[1]}`:"Crack the egg"}
+function sundayNext(){if(MODE!=="sunday")return false;markPlayed();const w=weekData();w.sunday=w.sunday||{};w.sunday[GAME.key]=+(lastPts()*SUNDAY_MULT).toFixed(1);saveWeek(w);const n=SUNDAY_ORDER[SIDX+1];location.href=n?`${n[0]}.html#sunday`:"index.html#crack";return true}
+function sundayInit(setup){if(MODE!=="sunday")return;S.round=SUNDAY_ORDER[SIDX][2];setup()}
+function onDayDone(total){if(MODE!=="day")return;markPlayed();const w=weekData();w.days=w.days||{};w.days[GAME.key]=total;saveWeek(w);const h=STORE.get("history",[]);h.push({game:GAME.key,score:total,week:w.id||"",at:Date.now()});STORE.set("history",h);
+  setTimeout(()=>{const a=document.querySelector("#end .actions");if(!a)return;const b=document.createElement("button");b.className="primary";b.textContent="Back to the egg";b.onclick=()=>{location.href="index.html"};a.prepend(b);const ag=document.getElementById("againBtn");if(ag)ag.remove()},0)}
+if(MODE!=="practice"){
+  document.body.classList.add("mode-"+MODE);
+  const m=document.querySelector("header .meta");
+  if(m){const a=document.createElement("a");a.href="index.html";a.className="backlink";a.textContent=MODE==="sunday"?"Sunday":"← Home";m.prepend(a)}
+  if(MODE==="sunday")document.querySelectorAll("header a").forEach(x=>{x.style.pointerEvents="none";x.setAttribute("tabindex","-1")});
+}
+/* ---- end hooks ---- */
+const COLORS=["#F28C28","#F2C230","#3BA55C","#1FA6A0","#2F6FDB","#7A4FD1","#E66BA8","#8A5A3C"];
+const ROUNDS=5;
+const EGG="M30 3C46 3 57 31 57 48C57 66 45 78 30 78C15 78 3 66 3 48C3 31 14 3 30 3Z";
+
+const TIERS=[[19,"Perfect Yolk","t1"],[15,"Sunny Side Up","t2"],[10,"Over Easy","t3"],[5,"Cracked","t4"],[0,"Rotten Egg","t5"]];
+function tierOf(pts){const p=pts*(5/ROUNDS)*(20/20);const t=TIERS.find(([m])=>p>=m-1e-9);return t}
+function pill(pts){const [,n,c]=tierOf(pts);return `<span class="pill ${c}">${n}</span>`}
+// share-card squares match the round ratings: Perfect Yolk, Sunny Side Up, Over Easy, Cracked, Rotten Egg
+function EMO(pts){return {t1:"🟨",t2:"🟩",t3:"🟦",t4:"⬜",t5:"🟫"}[tierOf(pts)[2]]}
+function mulberry(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function hash(s){let h=2166136261;for(const c of s){h^=c.charCodeAt(0);h=Math.imul(h,16777619)}return h>>>0}
+function shuffle(arr,r){const a=arr.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+
+const today=new Date();
+const dayKey=today.toISOString().slice(0,10);
+document.getElementById("dateLabel").textContent=today.toLocaleDateString(undefined,{weekday:"long",month:"short",day:"numeric"});
+
+let rand,S;
+function newGame(seed){
+  rand=mulberry(seed);
+  S={round:0,scores:[],times:[]};
+  document.getElementById("end").hidden=true;document.getElementById("progress").hidden=false;
+  document.getElementById("game").hidden=false;
+  startRound();
+}
+const PAR={3:2,4:4,5:7,6:11,7:16};
+function par(n){return PAR[n]}
+let tick=null;
+function elapsed(){return S.start==null?0:((S.stop??performance.now())-S.start)/1000}
+function startClock(){if(S.start!=null)return;S.start=performance.now();tick=setInterval(drawClock,100);drawClock()}
+function stopClock(){S.stop=performance.now();clearInterval(tick);drawClock()}
+function drawClock(){const t=document.getElementById("timer");t.textContent=elapsed().toFixed(1);t.classList.toggle("idle",S.start==null);const tot=S.times.reduce((a,b)=>a+b,0);document.getElementById("totalTime").textContent=S.times.length?`total ${tot.toFixed(1)}s`:""}
+function startRound(){
+  const n=S.round+3;
+  const palette=shuffle(COLORS.map((_,i)=>i),rand).slice(0,n);
+  S.target=palette;
+  let cur;
+  do{cur=shuffle(palette,rand)}while(cur.some((c,i)=>c===palette[i]));
+  S.cur=cur;S.sel=null;S.checks=0;S.history=[];S.solved=false;S.start=null;S.stop=null;clearInterval(tick);drawClock();
+  document.getElementById("checkBtn").hidden=true;
+  document.getElementById("nextBtn").hidden=true;
+  setResult(`<span class="n">0</span> of ${n} in the right spot. The clock starts on your first tap.`);
+  render();
+}
+function eggSVG(color,opts={}){
+  const crack=opts.crack?`<path d="M8 44 L18 38 L24 47 L32 36 L40 46 L47 39 L54 44" fill="none" stroke="var(--bg)" stroke-width="3.5" stroke-linejoin="round"/>`:"";
+  return `<svg viewBox="0 0 60 80" aria-hidden="true"><path d="${EGG}" fill="${color}" ${opts.stroke?`stroke="${opts.stroke}" stroke-width="3"`:""}/><ellipse cx="20" cy="30" rx="6" ry="11" fill="#fff" opacity="${opts.dim?0:.32}" transform="rotate(20 20 30)"/>${crack}</svg>`;
+}
+function render(){
+  const n=S.cur.length;
+  document.getElementById("roundTitle").textContent=TITLE(`Round ${S.round+1} of ${ROUNDS}`);
+  document.getElementById("roundStat").textContent=`${n} eggs · ${S.checks} swap${S.checks===1?"":"s"}`;
+  const tray=document.getElementById("tray");
+  tray.innerHTML=S.cur.map((c,i)=>`<button class="slot${S.sel===i?" sel":""}${S.solved?" done":""}" data-i="${i}" id="egg${i}" aria-label="Egg ${i+1}${S.sel===i?", selected":""}" ${S.solved?"disabled":""}>${eggSVG(COLORS[c])}<span>${i+1}</span></button>`).join("");
+  const prog=document.getElementById("progress");
+  prog.innerHTML=Array.from({length:ROUNDS},(_,i)=>{
+    const done=i<S.scores.length;
+    return `<span class="${i===S.round&&!done?"cur":""}">${eggSVG(done?"var(--ink)":i===S.round?"var(--muted)":"var(--line)",{dim:!done&&i!==S.round})}</span>`;
+  }).join("");
+  const log=document.getElementById("log");
+  log.innerHTML=S.history.length?S.history.slice().reverse().map((h,k)=>`<li><span class="idx">#${S.history.length-k}</span><span class="dots">${h.arr.map(c=>`<i style="background:${COLORS[c]}"></i>`).join("")}</span><span class="cnt">${h.ok}/${h.arr.length}</span></li>`).join(""):`<li class="empty">Every swap is checked for you and shows up here.</li>`;
+}
+function setResult(html,win){const r=document.getElementById("result");r.innerHTML=html;r.classList.toggle("win",!!win)}
+
+document.getElementById("tray").addEventListener("click",e=>{
+  const b=e.target.closest(".slot");if(!b||S.solved)return;
+  const i=+b.dataset.i;
+  startClock();
+  if(S.sel===null){S.sel=i;render();document.getElementById("egg"+i).focus();return}
+  if(S.sel===i){S.sel=null;render();return}
+  const a=S.sel;[S.cur[a],S.cur[i]]=[S.cur[i],S.cur[a]];S.sel=null;render();
+  [a,i].forEach(k=>document.getElementById("egg"+k).classList.add("pop"));
+  document.getElementById("egg"+i).focus();
+  autoCheck();
+});
+
+// every swap is checked automatically
+function autoCheck(){
+  if(S.solved)return;
+  const ok=S.cur.filter((c,i)=>c===S.target[i]).length;
+  S.checks++;S.history.push({arr:S.cur.slice(),ok});
+  const n=S.cur.length;
+  if(ok===n){
+    S.solved=true;stopClock();
+    const t=Math.max(elapsed(),0.1);
+    const pts=(100/ROUNDS)*Math.min(1,par(n)/t);
+    S.scores.push(pts);S.times.push(t);drawClock();
+    setResult(`<span class="pts">+${shown(pts)} <small>pts</small></span>${pill(pts)}`,true);
+    document.getElementById("checkBtn").hidden=true;
+    const nb=document.getElementById("nextBtn");
+    nb.textContent=nextLabel(S.round+1<ROUNDS?"Next round":"See your score");
+    nb.hidden=false;render();nb.focus();
+  }else{
+    setResult(`<span class="n">${ok}</span> of ${n} in the right spot`);
+    render();
+    const lastEgg=document.querySelector(".slot:focus");
+  }
+}
+
+document.getElementById("nextBtn").addEventListener("click",()=>{
+  if(sundayNext())return;S.round++;
+  if(S.round<ROUNDS)startRound();else finish();
+});
+
+function tierFor(s){
+  if(s>=92)return{name:"Golden Chick",fill:"var(--gold)",crown:true};
+  if(s>=78)return{name:"Fluffy Chick",fill:"#F7D046"};
+  if(s>=60)return{name:"Regular Chick",fill:"#F2C230"};
+  if(s>=40)return{name:"Scruffy Chick",fill:"#D9B04A",scruff:true};
+  return{name:"Still in the Shell",shell:true};
+}
+function chickSVG(t){
+  if(t.shell)return `<svg viewBox="0 0 120 120" aria-hidden="true"><path d="M60 8C84 8 100 50 100 74C100 98 82 114 60 114C38 114 20 98 20 74C20 50 36 8 60 8Z" fill="var(--red)"/><polygon points="56,52 70,58 56,64" fill="#F28C28"/><circle cx="50" cy="50" r="3.5" fill="#1A1D23"/><path d="M24 62 L36 54 L44 64 L54 52 L66 62 L76 50 L86 60 L98 54" fill="none" stroke="var(--bg)" stroke-width="3"/></svg>`;
+  return `<svg viewBox="0 0 120 120" aria-hidden="true">
+    ${t.crown?`<path d="M42 22 L50 8 L60 20 L70 8 L78 22 Z" fill="var(--gold)" stroke="var(--ink)" stroke-width="2" stroke-linejoin="round"/>`:""}
+    ${t.scruff?`<path d="M54 22 L50 12 M60 20 L62 9 M66 22 L72 14" stroke="${t.fill}" stroke-width="4" stroke-linecap="round"/>`:""}
+    <circle cx="60" cy="44" r="22" fill="${t.fill}"/>
+    <ellipse cx="60" cy="80" rx="30" ry="26" fill="${t.fill}"/>
+    <circle cx="52" cy="40" r="3.5" fill="#1A1D23"/><circle cx="68" cy="40" r="3.5" fill="#1A1D23"/>
+    <polygon points="54,48 66,48 60,57" fill="#F28C28"/>
+    <path d="M28 88 L36 80 L44 92 L52 82 L60 94 L68 82 L76 92 L84 80 L92 88 L92 106 Q60 118 28 106 Z" fill="var(--red)"/>
+  </svg>`;
+}
+function finish(){
+  const total=Math.round(S.scores.reduce((a,b)=>a+b,0));
+  onDayDone(total);
+  const t=tierFor(total);
+  const marks=S.scores.map(p=>EMO(p)).join("");
+  const totT=S.times.reduce((a,b)=>a+b,0);
+  const share=`The Red Egg · Scrambled\n${dayKey}\n${marks}\n${total}/100 · ${totT.toFixed(1)}s`;
+  const rows=S.scores.map((p,i)=>`<tr><td>Round ${i+1}</td><td>${i+3}</td><td>${S.times[i].toFixed(1)}s</td><td>${p.toFixed(1)}</td><td>${pill(p)}</td></tr>`).join("");
+  const end=document.getElementById("end");
+  end.innerHTML=`<div class="tier">Scrambled</div>
+    <div class="score">${total}<small>/100</small></div>
+    <p class="note">Today's score goes toward your egg. It cracks on Sunday, and your whole week decides which chick hatches.</p>
+    <table><thead><tr><th>Round</th><th>Eggs</th><th>Time</th><th>Pts</th><th>Rating</th></tr></thead><tbody>${rows}</tbody></table>
+    <div class="share" id="shareText">${share}</div>
+    <div class="actions" style="width:100%"><button class="primary" id="copyBtn">Copy result</button><button class="ghost" id="againBtn">Practice again</button></div>
+    <div class="toast" id="toast" aria-live="polite"></div>`;
+  document.getElementById("game").hidden=true;end.hidden=false;
+  S.round=ROUNDS;render();document.getElementById("progress").hidden=true;
+  document.getElementById("copyBtn").onclick=()=>{
+    const done=()=>document.getElementById("toast").textContent="Copied";
+    try{navigator.clipboard.writeText(share).then(done,()=>selectShare())}catch(e){selectShare()}
+  };
+  document.getElementById("againBtn").onclick=()=>newGame(Math.floor(Math.random()*1e9));
+}
+function selectShare(){const r=document.createRange();r.selectNodeContents(document.getElementById("shareText"));const s=getSelection();s.removeAllRanges();s.addRange(r);document.getElementById("toast").textContent="Selected. Copy it to share."}
+
+// Testing: every play is random. The live site will use newGame(hash("red-egg-sort-"+dayKey)) so everyone gets the same daily puzzle.
+newGame(MODE==="practice"?Math.floor(Math.random()*1e9):(GAME.key==="trivia"?hashStr("trivia|"+CUR_MONDAY):hashStr(GAME.key+"|"+MODE+"|"+(MODE==="day"?gameDate(GAME.key):LOCALDAY))));
+sundayInit(startRound);
+dailyGate(MODE,GAME.key,GAME.name);
+</script>
+
+</body></html>

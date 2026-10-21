@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}[hidden]{display:none!important}</style>
+<script>document.documentElement.setAttribute("data-theme","dark")</script><meta name="color-scheme" content="dark"><meta name="theme-color" content="#14171C">
+<title>Red Egg: Clutch</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: same play column as every Red Egg game; round header, stage, result, one action button */
+:root{
+  --bg:#ECEFF2; --surface:#FFFFFF; --tray:#DCE1E6; --cup:#C6CED7; --ink:#1A1D23; --muted:#5E6673;
+  --line:#C9D0D8; --red:#D11F35; --good:#2E9B57; --bad:#8A5A3C; --btn:#1A1D23; --btn-ink:#FFFFFF; --box:#FFFFFF; --shell:#F4F1EC;
+  --t1:#B98500; --t2:#2E9B57; --t3:#2F6FDB; --t4:#7A6F62; --t5:#8A5A3C;
+  --display:"Bagel Fat One","Arial Rounded MT Bold",system-ui,sans-serif;
+  --body:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#14171C; --surface:#1E232A; --tray:#262C34; --cup:#333B45; --ink:#EEF1F5; --muted:#9AA3B0;
+  --line:#353D47; --red:#F0384D; --good:#47C474; --bad:#C08A66; --btn:#EEF1F5; --btn-ink:#14171C; --box:#1A1E24; --shell:#D9D4CC;
+  --t1:#FFC93C; --t2:#47C474; --t3:#6EA0FF; --t4:#B3A898; --t5:#C08A66; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#14171C; --surface:#1E232A; --tray:#262C34; --cup:#333B45; --ink:#EEF1F5; --muted:#9AA3B0;
+  --line:#353D47; --red:#F0384D; --good:#47C474; --bad:#C08A66; --btn:#EEF1F5; --btn-ink:#14171C; --box:#1A1E24; --shell:#D9D4CC;
+  --t1:#FFC93C; --t2:#47C474; --t3:#6EA0FF; --t4:#B3A898; --t5:#C08A66; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.45;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 40px}
+.wrap{max-width:560px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit}
+.brand h1{font-family:var(--display);font-weight:400;font-size:1.9rem;line-height:1;margin:0}
+.brand h1 span{color:var(--red)}
+.meta{font-size:.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-weight:600;text-align:right;flex-shrink:0}
+.meta b{display:block;color:var(--ink);font-size:.95rem;letter-spacing:.02em;text-transform:none}
+.meta a{display:block;color:var(--muted);text-decoration:none;font-weight:700;margin-bottom:2px}
+.progress{display:flex;gap:6px;justify-content:center}
+.progress svg{width:26px;height:36px;transition:transform .2s}
+.progress .cur{transform:translateY(-3px) scale(1.12)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:14px}
+.roundhead{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap}
+.roundhead h2{font-family:var(--display);font-weight:400;font-size:1.35rem;margin:0}
+.roundhead .stat{font-size:.85rem;color:var(--muted);font-weight:600}
+.big{width:100%;border:0;border-radius:16px;padding:18px;font:700 1.15rem var(--body);cursor:pointer;background:var(--btn);color:var(--btn-ink)}
+.big:disabled{opacity:.4;cursor:default}
+button:focus-visible,input:focus-visible{outline:3px solid var(--red);outline-offset:2px}
+.result{min-height:5em;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
+.result .sub{color:var(--muted);font-size:.92rem;max-width:46ch}
+.pts{font-family:var(--mono);font-size:2rem;font-weight:700;line-height:1;color:var(--ink);font-variant-numeric:tabular-nums}
+.pts small{font-size:.95rem;color:var(--muted);font-weight:500}
+.pill{display:inline-block;font:700 .78rem var(--body);text-transform:uppercase;letter-spacing:.08em;padding:4px 10px;border-radius:999px;border:1.5px solid currentColor;white-space:nowrap}
+.pill.t1{color:var(--t1)}.pill.t2{color:var(--t2)}.pill.t3{color:var(--t3)}.pill.t4{color:var(--t4)}.pill.t5{color:var(--t5)}
+.end td .pill{font-size:.64rem;padding:2px 7px}
+details{font-size:.92rem;color:var(--muted)}
+details summary{cursor:pointer;font-weight:600;color:var(--ink)}
+details p{margin:.5em 0 0;max-width:62ch}
+.end{align-items:center;text-align:center}
+.end .tier{font-family:var(--display);font-size:1.5rem}
+.end .score{font-family:var(--display);font-size:4rem;line-height:1}
+.end .score small{font-size:1.4rem;color:var(--muted)}
+.end .note{margin:0;max-width:42ch;color:var(--muted)}
+.end table{border-collapse:collapse;font-family:var(--mono);font-size:.82rem;font-variant-numeric:tabular-nums;width:100%;max-width:420px}
+.end td,.end th{padding:5px;border-bottom:1px solid var(--line);text-align:right}
+.end th{color:var(--muted);font-weight:500;font-family:var(--body);font-size:.72rem;text-transform:uppercase;letter-spacing:.08em}
+.end td:nth-child(-n+2),.end th:nth-child(-n+2){text-align:left}
+.share{font-family:var(--mono);white-space:pre;background:var(--tray);border-radius:10px;padding:12px 16px;font-size:.9rem;text-align:left;user-select:all}
+.actions{display:flex;gap:10px;width:100%}
+.actions button,.actions a{font:700 1rem var(--body);border-radius:12px;padding:14px 18px;cursor:pointer;flex:1;text-align:center;text-decoration:none}
+.actions .primary{background:var(--btn);color:var(--btn-ink);border:0}
+.actions .ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+.toast{font-size:.85rem;color:var(--good);min-height:1.2em}
+#stage{display:flex;flex-direction:column;gap:14px}
+.cl-top{display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center}
+.cat{background:var(--tray);border-radius:14px;padding:12px 14px;min-height:76px;display:flex;flex-direction:column;justify-content:center}
+.cat small{font-size:.68rem;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);font-weight:700}
+.cat b{font-family:var(--display);font-weight:400;font-size:1.45rem;line-height:1.1;text-wrap:balance;transition:filter .4s,opacity .4s}
+.cat.hidden b{filter:blur(9px);opacity:.6;user-select:none}
+.ring{position:relative;width:76px;height:76px}
+.ring svg{width:76px;height:76px;transform:rotate(-90deg)}
+.ring .bg{fill:none;stroke:var(--tray);stroke-width:7}
+.ring .fg{fill:none;stroke:var(--red);stroke-width:7;stroke-linecap:round;transition:stroke .3s}
+.ring.low .fg{stroke:var(--bad)}
+.ring .num{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1}
+.ring .num b{font:700 1.5rem var(--mono)}
+.ring .num span{font-size:.62rem;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.08em}
+.guess{display:flex;gap:8px}
+.guess input{flex:1;min-width:0;font:600 1.15rem var(--body);padding:13px 14px;border-radius:12px;border:2px solid var(--line);background:var(--box);color:var(--ink)}
+.guess input:focus{outline:none;border-color:var(--ink)}
+.guess input:disabled{opacity:.6}
+.guess input.bad{animation:shake .35s;border-color:var(--bad)}
+.guess input.dupe{animation:shake .35s;border-color:var(--muted)}
+@keyframes shake{20%{transform:translateX(-7px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(3px)}}
+.guess button{border:0;border-radius:12px;padding:0 18px;font:700 1rem var(--body);background:var(--btn);color:var(--btn-ink);cursor:pointer}
+.guess button:disabled{opacity:.4}
+.flash{min-height:1.3em;text-align:center;font-weight:700;font-size:.92rem;color:var(--muted);margin-top:-4px}
+.flash.ok{color:var(--good)}
+.basket{position:relative;height:200px;margin:0 auto;width:100%;max-width:330px}
+.basket .eggs{position:absolute;left:12%;right:12%;bottom:44px;top:0;overflow:visible}
+.basket .e{position:absolute;width:30px;height:40px;animation:fall .55s cubic-bezier(.45,0,.6,1.4) both}
+.basket .e svg{width:100%;height:100%;filter:drop-shadow(0 2px 2px rgba(0,0,0,.18))}
+@keyframes fall{0%{transform:translateY(-200px) rotate(-30deg);opacity:0}15%{opacity:1}100%{transform:translateY(0) rotate(var(--r))}}
+.basket .front{position:absolute;left:0;right:0;bottom:0;height:74px;pointer-events:none;z-index:2}
+.basket .front svg{width:100%;height:100%}
+.basket .count{z-index:3;position:absolute;left:0;right:0;bottom:12px;text-align:center;font:700 1.6rem var(--mono);color:#FFF6E8;text-shadow:0 2px 0 rgba(0,0,0,.25);pointer-events:none}
+.basket .count small{display:block;font:700 .62rem var(--body);letter-spacing:.12em;text-transform:uppercase;opacity:.9}
+.chips{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;min-height:28px}
+.chips span{font-size:.8rem;font-weight:700;padding:4px 10px;border-radius:999px;background:var(--tray);animation:chip .3s ease both}
+.chips span.miss{background:transparent;border:1.5px dashed var(--line);color:var(--muted)}
+@keyframes chip{from{transform:scale(.6);opacity:0}}
+.plus{position:fixed;pointer-events:none;font:700 1.4rem var(--mono);color:var(--good);animation:rise .8s ease-out forwards;z-index:9}
+@keyframes rise{to{transform:translateY(-50px);opacity:0}}
+
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head><body>
+<div class="wrap">
+  <header>
+    <a class="brand" href="index.html"><svg width="30" height="40" viewBox="0 0 60 80" aria-hidden="true"><path d="M30 3C46 3 57 31 57 48C57 66 45 78 30 78C15 78 3 66 3 48C3 31 14 3 30 3Z" fill="var(--red)"/><ellipse cx="20" cy="30" rx="6" ry="11" fill="#fff" opacity=".35" transform="rotate(20 20 30)"/></svg><h1>The <span>Red</span> Egg</h1></a>
+    <div class="meta"><a href="index.html">← Home</a>Clutch<b>Friday demo</b></div>
+  </header>
+  <div class="progress" id="progress" aria-label="Round progress"></div>
+  <section class="card" id="game">
+    <div class="roundhead"><h2 id="roundTitle">Round 1 of 5</h2><span class="stat" id="roundStat"></span></div>
+    <div id="stage"></div>
+    <div class="result" id="result" aria-live="polite"></div>
+    <button class="big" id="nextBtn" hidden>Next round</button>
+  </section>
+  <section class="card end" id="end" hidden></section>
+  <details><summary>How to play</summary><p>Each round has a hidden category. Tap Start, then name as many as you can in 20 seconds, pressing Enter after each one. Small typos are fine.</p>
+<p>The more you get, the more points, up to 20 a round and 100 for the game.</p>
+</details>
+</div>
+<script>
+const ROUNDS=5;
+const $=id=>document.getElementById(id);
+const TIERS=[[19,"Perfect Yolk","t1"],[15,"Sunny Side Up","t2"],[10,"Over Easy","t3"],[5,"Cracked","t4"],[0,"Rotten Egg","t5"]];
+const tierOf=p=>TIERS.find(([m])=>p>=m-1e-9);
+const pill=p=>{const [,n,c]=tierOf(p);return `<span class="pill ${c}">${n}</span>`};
+const EMO=p=>({t1:"🟨",t2:"🟩",t3:"🟦",t4:"⬜",t5:"🟫"})[tierOf(p)[2]];
+const EGGP="M30 3C46 3 57 31 57 48C57 66 45 78 30 78C15 78 3 66 3 48C3 31 14 3 30 3Z";
+const eggIcon=(c,dim)=>`<svg viewBox="0 0 60 80" aria-hidden="true"><path d="${EGGP}" fill="${c}"/><ellipse cx="20" cy="30" rx="6" ry="11" fill="#fff" opacity="${dim?0:.32}" transform="rotate(20 20 30)"/></svg>`;
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+const G={round:0,results:[]};
+function drawProgress(){
+  $("progress").innerHTML=Array.from({length:ROUNDS},(_,i)=>{const done=i<G.results.length;
+    return `<span class="${i===G.round&&!done?"cur":""}">${eggIcon(done?"var(--ink)":i===G.round?"var(--muted)":"var(--line)",!done&&i!==G.round)}</span>`}).join("");
+}
+function setResult(h){$("result").innerHTML=h}
+function hint(t){setResult(`<span class="sub">${t}</span>`)}
+function roundDone(pts,msg,extra){
+  G.results.push(Object.assign({pts},extra||{}));
+  setResult(`<span class="pts">+${pts.toFixed(1)} <small>pts</small></span>${pill(pts)}<span class="sub">${msg}</span>`);
+  const b=$("nextBtn");b.hidden=false;b.textContent=G.round+1<ROUNDS?"Next round":"See your score";drawProgress();b.focus();
+}
+$("nextBtn").onclick=()=>{$("nextBtn").hidden=true;G.round++;if(G.round<ROUNDS)begin();else finish()};
+function begin(){$("roundTitle").textContent=`Round ${G.round+1} of ${ROUNDS}`;setResult("");drawProgress();startRound(G.round)}
+function finish(){
+  const total=Math.round(G.results.reduce((a,r)=>a+r.pts,0));
+  const share=`The Red Egg · Clutch\n${G.results.map(r=>EMO(r.pts)).join("")}\n${total}/100`;
+  const rows=G.results.map((r,i)=>`<tr><td>${i+1}</td><td>${r.label||""}</td><td>${r.detail||""}</td><td>${r.pts.toFixed(1)}</td><td>${pill(r.pts)}</td></tr>`).join("");
+  $("end").innerHTML=`<div class="tier">Clutch</div><div class="score">${total}<small>/100</small></div>
+    <table><thead><tr><th>Rd</th><th>${COLS[0]}</th><th>${COLS[1]}</th><th>Pts</th><th>Rating</th></tr></thead><tbody>${rows}</tbody></table>
+    <div class="share" id="shareText">${share}</div>
+    <div class="actions"><button class="primary" id="againBtn">Play again</button><a class="ghost" href="index.html">Home</a></div>
+    <button class="actions ghost" id="copyBtn" style="width:auto;padding:10px 16px;border-radius:12px;font:700 .95rem var(--body);background:transparent;color:var(--ink);border:1.5px solid var(--line)">Copy result</button><div class="toast" id="toast" aria-live="polite"></div>`;
+  $("game").hidden=true;$("progress").hidden=true;$("end").hidden=false;window.scrollTo({top:0,behavior:"smooth"});
+  $("againBtn").onclick=()=>{G.round=0;G.results=[];$("end").hidden=true;$("game").hidden=false;$("progress").hidden=false;init&&init();begin()};
+  $("copyBtn").onclick=()=>{try{navigator.clipboard.writeText(share).then(()=>$("toast").textContent="Copied",sel)}catch(e){sel()}};
+  function sel(){const r=document.createRange();r.selectNodeContents($("shareText"));const s=getSelection();s.removeAllRanges();s.addRange(r);$("toast").textContent="Selected. Copy it to share."}
+}
+const LISTS=[["US states", 8, [["Alabama"], ["Alaska"], ["Arizona"], ["Arkansas"], ["California"], ["Colorado"], ["Connecticut"], ["Delaware"], ["Florida"], ["Georgia"], ["Hawaii"], ["Idaho"], ["Illinois"], ["Indiana"], ["Iowa"], ["Kansas"], ["Kentucky"], ["Louisiana"], ["Maine"], ["Maryland"], ["Massachusetts"], ["Michigan"], ["Minnesota"], ["Mississippi"], ["Missouri"], ["Montana"], ["Nebraska"], ["Nevada"], ["New Hampshire"], ["New Jersey"], ["New Mexico"], ["New York"], ["North Carolina"], ["North Dakota"], ["Ohio"], ["Oklahoma"], ["Oregon"], ["Pennsylvania"], ["Rhode Island"], ["South Carolina"], ["South Dakota"], ["Tennessee"], ["Texas"], ["Utah"], ["Vermont"], ["Virginia"], ["Washington"], ["West Virginia"], ["Wisconsin"], ["Wyoming"]]], ["Countries in Europe", 7, [["Albania"], ["Andorra"], ["Austria"], ["Belarus"], ["Belgium"], ["Bosnia and Herzegovina", "bosnia"], ["Bulgaria"], ["Croatia"], ["Cyprus"], ["Czech Republic", "czechia"], ["Denmark"], ["Estonia"], ["Finland"], ["France"], ["Germany"], ["Greece"], ["Hungary"], ["Iceland"], ["Ireland"], ["Italy"], ["Kosovo"], ["Latvia"], ["Liechtenstein"], ["Lithuania"], ["Luxembourg"], ["Malta"], ["Moldova"], ["Monaco"], ["Montenegro"], ["Netherlands", "holland"], ["North Macedonia", "macedonia"], ["Norway"], ["Poland"], ["Portugal"], ["Romania"], ["Russia"], ["San Marino"], ["Serbia"], ["Slovakia"], ["Slovenia"], ["Spain"], ["Sweden"], ["Switzerland"], ["Ukraine"], ["United Kingdom", "uk", "england", "scotland", "wales", "great britain", "britain"], ["Vatican City", "vatican"]]], ["Planets in our solar system", 6, [["Mercury"], ["Venus"], ["Earth"], ["Mars"], ["Jupiter"], ["Saturn"], ["Uranus"], ["Neptune"]]], ["NFL teams", 7, [["Cardinals"], ["Falcons"], ["Ravens"], ["Bills"], ["Panthers"], ["Bears"], ["Bengals"], ["Browns"], ["Cowboys"], ["Broncos"], ["Lions"], ["Packers"], ["Texans"], ["Colts"], ["Jaguars", "jags"], ["Chiefs"], ["Raiders"], ["Chargers"], ["Rams"], ["Dolphins"], ["Vikings"], ["Patriots", "pats"], ["Saints"], ["Giants"], ["Jets"], ["Eagles"], ["Steelers"], ["49ers", "niners", "forty niners", "fortyniners"], ["Seahawks"], ["Buccaneers", "bucs"], ["Titans"], ["Commanders"]]], ["NBA teams", 7, [["Hawks"], ["Celtics"], ["Nets"], ["Hornets"], ["Bulls"], ["Cavaliers", "cavs"], ["Mavericks", "mavs"], ["Nuggets"], ["Pistons"], ["Warriors"], ["Rockets"], ["Pacers"], ["Clippers"], ["Lakers"], ["Grizzlies"], ["Heat"], ["Bucks"], ["Timberwolves", "wolves"], ["Pelicans"], ["Knicks"], ["Thunder"], ["Magic"], ["76ers", "sixers", "seventy sixers"], ["Suns"], ["Trail Blazers", "blazers", "trailblazers"], ["Kings"], ["Spurs"], ["Raptors"], ["Jazz"], ["Wizards"]]], ["Zodiac signs", 7, [["Aries"], ["Taurus"], ["Gemini"], ["Cancer"], ["Leo"], ["Virgo"], ["Libra"], ["Scorpio"], ["Sagittarius"], ["Capricorn"], ["Aquarius"], ["Pisces"]]], ["Countries in South America", 6, [["Argentina"], ["Bolivia"], ["Brazil"], ["Chile"], ["Colombia"], ["Ecuador"], ["Guyana"], ["Paraguay"], ["Peru"], ["Suriname"], ["Uruguay"], ["Venezuela"]]], ["Fruits", 9, [["Apple"], ["Apricot"], ["Avocado"], ["Banana"], ["Blackberry"], ["Blueberry"], ["Boysenberry"], ["Cantaloupe"], ["Cherry"], ["Clementine"], ["Coconut"], ["Cranberry"], ["Currant"], ["Date"], ["Dragon fruit", "dragonfruit", "pitaya"], ["Durian"], ["Elderberry"], ["Fig"], ["Gooseberry"], ["Grape"], ["Grapefruit"], ["Guava"], ["Honeydew"], ["Huckleberry"], ["Jackfruit"], ["Kiwi", "kiwifruit"], ["Kumquat"], ["Lemon"], ["Lime"], ["Lychee", "litchi"], ["Mandarin"], ["Mango"], ["Melon"], ["Mulberry"], ["Nectarine"], ["Olive"], ["Orange"], ["Papaya"], ["Passion fruit", "passionfruit"], ["Peach"], ["Pear"], ["Persimmon"], ["Pineapple"], ["Plantain"], ["Plum"], ["Pomegranate"], ["Pomelo"], ["Prune"], ["Quince"], ["Raisin"], ["Raspberry"], ["Rhubarb"], ["Star fruit", "starfruit", "carambola"], ["Strawberry"], ["Tangerine"], ["Tomato"], ["Watermelon"], ["Acai"], ["Jujube"], ["Loquat"], ["Mangosteen"], ["Rambutan"], ["Soursop"], ["Tamarind"], ["Ugli fruit"], ["Feijoa"], ["Salak"], ["Cloudberry"], ["Lingonberry"], ["Gooseberries", "gooseberries"]]], ["Vegetables", 8, [["Artichoke"], ["Arugula"], ["Asparagus"], ["Beet", "beetroot"], ["Bell pepper", "pepper", "peppers"], ["Bok choy"], ["Broccoli"], ["Brussels sprouts", "brussel sprouts", "sprouts"], ["Cabbage"], ["Carrot"], ["Cauliflower"], ["Celery"], ["Chard", "swiss chard"], ["Collard greens", "collards"], ["Corn"], ["Cucumber"], ["Eggplant", "aubergine"], ["Endive"], ["Fennel"], ["Garlic"], ["Green bean", "green beans", "string beans"], ["Jalapeno"], ["Kale"], ["Leek"], ["Lettuce"], ["Mushroom"], ["Okra"], ["Onion"], ["Parsnip"], ["Pea", "peas"], ["Potato"], ["Pumpkin"], ["Radish"], ["Rutabaga"], ["Scallion", "green onion"], ["Shallot"], ["Spinach"], ["Squash"], ["Sweet potato", "yam"], ["Tomato"], ["Turnip"], ["Watercress"], ["Zucchini", "courgette"], ["Butternut squash"], ["Kohlrabi"], ["Celeriac"], ["Jicama"], ["Romaine"], ["Iceberg"], ["Bean sprouts"], ["Snow peas"], ["Edamame"], ["Ginger"], ["Horseradish"], ["Chili pepper", "chili", "chile"]]], ["Dog breeds", 6, [["Labrador", "lab", "labrador retriever"], ["Golden Retriever", "golden"], ["German Shepherd"], ["Bulldog", "english bulldog"], ["French Bulldog", "frenchie"], ["Poodle"], ["Beagle"], ["Rottweiler"], ["Dachshund", "wiener dog"], ["Yorkshire Terrier", "yorkie"], ["Boxer"], ["Siberian Husky", "husky"], ["Great Dane"], ["Doberman"], ["Shih Tzu"], ["Chihuahua"], ["Pug"], ["Corgi"], ["Border Collie"], ["Australian Shepherd", "aussie"], ["Cocker Spaniel"], ["Pomeranian"], ["Maltese"], ["Boston Terrier"], ["Shiba Inu"], ["Bernese Mountain Dog", "bernese"], ["Saint Bernard", "st bernard"], ["Mastiff"], ["Greyhound"], ["Whippet"], ["Dalmatian"], ["Collie"], ["Bloodhound"], ["Basset Hound"], ["Akita"], ["Chow Chow", "chow"], ["Pit Bull", "pitbull"], ["Schnauzer"], ["Newfoundland"], ["Samoyed"], ["Malamute", "alaskan malamute"], ["Shetland Sheepdog", "sheltie"], ["Cavalier King Charles Spaniel", "cavalier"], ["Jack Russell", "jack russell terrier"], ["Bichon Frise", "bichon"], ["Havanese"], ["Weimaraner"], ["Vizsla"], ["Great Pyrenees"], ["Afghan Hound"], ["Irish Setter"], ["Labradoodle"], ["Goldendoodle"], ["Cockapoo"], ["Bull Terrier"], ["Pointer"], ["Papillon"], ["Pekingese"], ["Lhasa Apso"], ["Scottish Terrier", "scottie"], ["Westie", "west highland terrier"], ["Shar Pei"], ["Rhodesian Ridgeback"], ["Australian Cattle Dog", "heeler", "blue heeler"], ["Bullmastiff"], ["Cane Corso"], ["Belgian Malinois", "malinois"], ["Sheepdog", "old english sheepdog"], ["Borzoi"], ["Basenji"], ["Springer Spaniel"], ["Airedale"], ["Wolfhound", "irish wolfhound"]]], ["Musical instruments", 7, [["Piano"], ["Guitar"], ["Violin"], ["Viola"], ["Cello"], ["Double bass", "bass", "upright bass"], ["Harp"], ["Flute"], ["Piccolo"], ["Clarinet"], ["Oboe"], ["Bassoon"], ["Saxophone", "sax"], ["Trumpet"], ["Trombone"], ["Tuba"], ["French horn", "horn"], ["Drums", "drum"], ["Snare drum"], ["Cymbals", "cymbal"], ["Xylophone"], ["Marimba"], ["Glockenspiel"], ["Triangle"], ["Tambourine"], ["Harmonica"], ["Accordion"], ["Banjo"], ["Mandolin"], ["Ukulele", "uke"], ["Bagpipes", "bagpipe"], ["Organ"], ["Harpsichord"], ["Synthesizer", "synth"], ["Keyboard"], ["Recorder"], ["Bongos"], ["Congas"], ["Timpani"], ["Sitar"], ["Didgeridoo"], ["Kazoo"], ["Cowbell"], ["Maracas"], ["Castanets"], ["Bugle"], ["Cornet"], ["Euphonium"], ["Sousaphone"], ["Lute"], ["Lyre"], ["Zither"], ["Dulcimer"], ["Theremin"], ["Electric guitar"], ["Bass guitar"], ["Steel drum", "steelpan"], ["Tabla"], ["Djembe"], ["Ocarina"], ["Pan flute", "panpipes"], ["Fiddle"], ["Celesta"], ["Vibraphone"]]], ["Pizza toppings", 7, [["Pepperoni"], ["Sausage"], ["Mushrooms", "mushroom"], ["Onions", "onion"], ["Green peppers", "peppers", "bell peppers", "pepper"], ["Olives", "olive", "black olives"], ["Bacon"], ["Ham"], ["Pineapple"], ["Extra cheese", "cheese", "mozzarella"], ["Spinach"], ["Tomatoes", "tomato"], ["Jalapenos", "jalapeno"], ["Chicken"], ["Anchovies", "anchovy"], ["Basil"], ["Garlic"], ["Meatballs", "meatball"], ["Ground beef", "beef"], ["Feta"], ["Parmesan"], ["Ricotta"], ["Goat cheese"], ["Artichoke", "artichokes"], ["Arugula"], ["Prosciutto"], ["Salami"], ["Banana peppers"], ["Red onion"], ["Sun-dried tomatoes"], ["Roasted peppers"], ["Broccoli"], ["Corn"], ["Barbecue chicken", "bbq chicken"], ["Buffalo chicken"], ["Shrimp"], ["Eggplant"], ["Zucchini"], ["Pesto"], ["Hot honey"], ["Oregano"], ["Red pepper flakes", "chili flakes"], ["Capers"], ["Egg"], ["Truffle"], ["Canadian bacon"]]], ["Farm animals", 7, [["Cow"], ["Bull"], ["Calf"], ["Pig"], ["Piglet"], ["Horse"], ["Pony"], ["Donkey"], ["Mule"], ["Sheep"], ["Lamb"], ["Ram"], ["Goat"], ["Chicken"], ["Hen"], ["Rooster"], ["Chick"], ["Duck"], ["Goose"], ["Turkey"], ["Llama"], ["Alpaca"], ["Rabbit"], ["Cat"], ["Dog"], ["Ox"], ["Buffalo"], ["Yak"], ["Emu"], ["Ostrich"], ["Quail"], ["Pigeon"], ["Peacock"], ["Guinea fowl"]]], ["Car brands", 7, [["Toyota"], ["Honda"], ["Ford"], ["Chevrolet", "chevy"], ["Nissan"], ["Hyundai"], ["Kia"], ["Subaru"], ["Mazda"], ["Volkswagen", "vw"], ["BMW"], ["Mercedes", "mercedes benz"], ["Audi"], ["Lexus"], ["Acura"], ["Infiniti"], ["Tesla"], ["Porsche"], ["Ferrari"], ["Lamborghini","lambo"], ["Maserati"], ["Bentley"], ["Rolls-Royce", "rolls royce"], ["Jaguar"], ["Land Rover", "range rover"], ["Volvo"], ["Jeep"], ["Dodge"], ["Ram"], ["Chrysler"], ["Cadillac"], ["Buick"], ["GMC"], ["Lincoln"], ["Mini"], ["Fiat"], ["Alfa Romeo"], ["Mitsubishi"], ["Genesis"], ["Bugatti"], ["McLaren"], ["Aston Martin"], ["Lotus"], ["Rivian"], ["Lucid"], ["Polestar"], ["Peugeot"], ["Renault"], ["Citroen"], ["Skoda"], ["Seat"], ["Suzuki"], ["Isuzu"], ["Pontiac"], ["Saturn"], ["Hummer"], ["Saab"], ["Smart"], ["Koenigsegg"], ["Pagani"]]], ["Parts of the body", 9, [["Head"], ["Hair"], ["Face"], ["Forehead"], ["Eye"], ["Eyebrow"], ["Eyelash"], ["Eyelid"], ["Ear"], ["Nose"], ["Nostril"], ["Mouth"], ["Lip"], ["Tongue"], ["Tooth", "teeth"], ["Gum"], ["Cheek"], ["Chin"], ["Jaw"], ["Neck"], ["Throat"], ["Shoulder"], ["Arm"], ["Elbow"], ["Forearm"], ["Wrist"], ["Hand"], ["Palm"], ["Finger"], ["Thumb"], ["Knuckle"], ["Fingernail", "nail"], ["Chest"], ["Back"], ["Stomach", "belly", "tummy"], ["Waist"], ["Hip"], ["Butt", "buttocks", "bottom"], ["Leg"], ["Thigh"], ["Knee"], ["Shin"], ["Calf"], ["Ankle"], ["Foot", "feet"], ["Heel"], ["Toe"], ["Brain"], ["Heart"], ["Lung"], ["Liver"], ["Kidney"], ["Skin"], ["Bone"], ["Muscle"], ["Spine"], ["Rib"], ["Skull"], ["Belly button", "navel"], ["Armpit"], ["Temple"], ["Scalp"], ["Collarbone"], ["Pelvis"], ["Intestine"], ["Bladder"], ["Pancreas"], ["Spleen"], ["Appendix"], ["Tonsil"], ["Kneecap"], ["Shoulder blade"], ["Esophagus"], ["Vein"], ["Artery"], ["Blood"]]], ["Breakfast foods", 7, [["Eggs", "egg"], ["Bacon"], ["Sausage"], ["Pancakes", "pancake"], ["Waffles", "waffle"], ["French toast"], ["Toast"], ["Cereal"], ["Oatmeal", "porridge"], ["Granola"], ["Yogurt", "yoghurt"], ["Bagel"], ["Muffin"], ["Croissant"], ["Biscuits", "biscuit"], ["Hash browns", "hashbrowns"], ["Omelette", "omelet"], ["Grits"], ["Fruit"], ["Smoothie"], ["Orange juice", "oj", "juice"], ["Coffee"], ["Tea"], ["Donut", "doughnut"], ["Breakfast burrito"], ["Avocado toast"], ["Scrambled eggs"], ["Eggs Benedict"], ["Crepes", "crepe"], ["Cinnamon roll"], ["Danish"], ["Scone"], ["English muffin"], ["Ham"], ["Home fries"], ["Quiche"], ["Frittata"], ["Shakshuka"], ["Chilaquiles"], ["Huevos rancheros"], ["Breakfast sandwich"], ["Bacon egg and cheese"], ["Pop-Tarts", "pop tarts", "poptart"], ["Cream of wheat"], ["Bran flakes"], ["Cornflakes"], ["Frosted flakes"], ["Cheerios"], ["Lucky Charms"], ["Fruit loops", "froot loops"], ["Acai bowl"], ["Berries"], ["Banana"], ["Hash"], ["Corned beef hash"], ["Chicken and waffles"]]], ["Sports played with a ball", 6, [["Soccer", "football"], ["Basketball"], ["Baseball"], ["Softball"], ["American football"], ["Tennis"], ["Volleyball"], ["Golf"], ["Rugby"], ["Cricket"], ["Hockey", "field hockey"], ["Table tennis", "ping pong"], ["Badminton"], ["Handball"], ["Water polo"], ["Bowling"], ["Dodgeball"], ["Kickball"], ["Lacrosse"], ["Squash"], ["Racquetball"], ["Pickleball"], ["Polo"], ["Billiards", "pool", "snooker"], ["Croquet"], ["Bocce"], ["Netball"], ["Beach volleyball"], ["Wiffle ball", "wiffleball"], ["Paddleball"], ["Four square", "foursquare"], ["Tetherball"], ["Futsal"], ["Sepak takraw"], ["Jai alai"], ["Australian rules football", "aussie rules"], ["Gaelic football"], ["Hurling"], ["Curling"], ["Ultimate frisbee", "ultimate"]]], ["Disney animated movies", 6, [["Snow White"], ["Pinocchio"], ["Fantasia"], ["Dumbo"], ["Bambi"], ["Cinderella"], ["Alice in Wonderland"], ["Peter Pan"], ["Lady and the Tramp"], ["Sleeping Beauty"], ["101 Dalmatians", "one hundred and one dalmatians"], ["The Sword in the Stone"], ["The Jungle Book"], ["The Aristocats", "aristocats"], ["Robin Hood"], ["The Rescuers"], ["The Fox and the Hound"], ["The Black Cauldron"], ["Oliver and Company"], ["The Little Mermaid", "little mermaid"], ["Beauty and the Beast"], ["Aladdin"], ["The Lion King", "lion king"], ["Pocahontas"], ["The Hunchback of Notre Dame", "hunchback"], ["Hercules"], ["Mulan"], ["Tarzan"], ["Fantasia 2000"], ["The Emperor's New Groove", "emperors new groove"], ["Atlantis"], ["Lilo and Stitch", "lilo & stitch"], ["Treasure Planet"], ["Brother Bear"], ["Home on the Range"], ["Chicken Little"], ["Meet the Robinsons"], ["Bolt"], ["The Princess and the Frog", "princess and the frog"], ["Tangled"], ["Winnie the Pooh"], ["Wreck-It Ralph", "wreck it ralph"], ["Frozen"], ["Big Hero 6"], ["Zootopia"], ["Moana"], ["Ralph Breaks the Internet"], ["Frozen 2", "frozen ii"], ["Raya and the Last Dragon", "raya"], ["Encanto"], ["Strange World"], ["Wish"], ["Moana 2"], ["Toy Story"], ["Finding Nemo"], ["Up"], ["Inside Out"], ["Coco"], ["Cars"], ["Monsters Inc", "monsters, inc."], ["The Incredibles", "incredibles"], ["Ratatouille"], ["WALL-E", "wall e", "walle"], ["Brave"], ["Soul"], ["Luca"], ["Turning Red"], ["Elemental"]]], ["US presidents (last names)", 6, [["Washington"], ["Adams"], ["Jefferson"], ["Madison"], ["Monroe"], ["Jackson"], ["Van Buren"], ["Harrison"], ["Tyler"], ["Polk"], ["Taylor"], ["Fillmore"], ["Pierce"], ["Buchanan"], ["Lincoln"], ["Johnson"], ["Grant"], ["Hayes"], ["Garfield"], ["Arthur"], ["Cleveland"], ["McKinley"], ["Roosevelt"], ["Taft"], ["Wilson"], ["Harding"], ["Coolidge"], ["Hoover"], ["Truman"], ["Eisenhower"], ["Kennedy"], ["Nixon"], ["Ford"], ["Carter"], ["Reagan"], ["Bush"], ["Clinton"], ["Obama"], ["Trump"], ["Biden"]]], ["Sea creatures", 8, [["Shark"], ["Whale"], ["Dolphin"], ["Octopus"], ["Squid"], ["Jellyfish"], ["Starfish", "sea star"], ["Crab"], ["Lobster"], ["Shrimp"], ["Seahorse"], ["Sea turtle", "turtle"], ["Seal"], ["Sea lion"], ["Walrus"], ["Orca", "killer whale"], ["Manta ray", "ray", "stingray"], ["Clownfish"], ["Eel"], ["Pufferfish"], ["Swordfish"], ["Tuna"], ["Salmon"], ["Cod"], ["Sardine"], ["Anchovy"], ["Clam"], ["Oyster"], ["Mussel"], ["Scallop"], ["Sea urchin", "urchin"], ["Coral"], ["Sponge"], ["Narwhal"], ["Beluga"], ["Manatee"], ["Otter", "sea otter"], ["Penguin"], ["Barracuda"], ["Marlin"], ["Angelfish"], ["Anglerfish"], ["Cuttlefish"], ["Nautilus"], ["Sea cucumber"], ["Krill"], ["Plankton"], ["Barnacle"], ["Hammerhead"], ["Blue whale"], ["Humpback"], ["Sea slug", "nudibranch"], ["Moray eel"], ["Halibut"], ["Flounder"], ["Grouper"], ["Mackerel"], ["Herring"], ["Lionfish"], ["Blowfish"], ["Sunfish"], ["Whale shark"]]]];
+const COLS=["Category","Found"];
+const ROUND_SECS=20;
+let R,orderQ;
+const norm=s=>s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/&/g," and ").replace(/[^a-z0-9 ]/g,"").replace(/^the /,"").replace(/\s+/g," ").trim();
+const squish=s=>norm(s).replace(/ /g,"");
+function lev(a,b){if(Math.abs(a.length-b.length)>3)return 9;const d=Array.from({length:a.length+1},(_,i)=>[i]);for(let j=1;j<=b.length;j++)d[0][j]=j;
+  for(let i=1;i<=a.length;i++)for(let j=1;j<=b.length;j++){d[i][j]=Math.min(d[i-1][j]+1,d[i][j-1]+1,d[i-1][j-1]+(a[i-1]===b[j-1]?0:1));if(i>1&&j>1&&a[i-1]===b[j-2]&&a[i-2]===b[j-1])d[i][j]=Math.min(d[i][j],d[i-2][j-2]+1)}return d[a.length][b.length]}
+function matchAnswer(txt,list){
+  const raw=squish(txt);if(!raw)return -1;
+  // the guess, plus singular versions of it
+  const gs=[...new Set([raw,raw.replace(/ies$/,"y"),raw.replace(/es$/,""),raw.replace(/s$/,"")])].filter(Boolean);
+  const forms=a=>{const x=squish(a);return [x,x.replace(/ies$/,"y"),x.replace(/es$/,""),x.replace(/s$/,"")]};
+  for(let k=0;k<list.length;k++)if(list[k].some(a=>forms(a).some(f=>gs.includes(f))))return k;
+  // forgive typos: the longer the word, the more slack
+  const tol=n=>n>=11?3:n>=7?2:n>=4?1:0;
+  let best=-1,bd=99,tie=false;
+  for(let k=0;k<list.length;k++)for(const a of list[k])for(const f of forms(a))for(const g of gs){
+    const d=lev(g,f);if(d<bd){bd=d;best=k;tie=false}else if(d===bd&&best!==k)tie=true;
+  }
+  return best>=0&&!tie&&bd<=tol(Math.min(raw.length,squish(list[best][0]).length))?best:-1;
+}
+function init(){orderQ=shuffle(LISTS).slice(0,5)}
+function eggSmall(c){return `<svg viewBox="0 0 60 80" aria-hidden="true"><path d="${EGGP}" fill="${c}"/><ellipse cx="20" cy="30" rx="6" ry="11" fill="#fff" opacity=".35" transform="rotate(20 20 30)"/></svg>`}
+const EGGCOLS=["#F2C230","#F28C28","#3BA55C","#1FA6A0","#2F6FDB","#7A4FD1","#E66BA8","#F4F1EC","#D11F35"];
+const BASKET=`<svg viewBox="0 0 330 96" preserveAspectRatio="none" aria-hidden="true">
+  <path d="M6 8 Q165 34 324 8 L300 88 Q165 100 30 88 Z" fill="#B9874E"/>
+  <path d="M6 8 Q165 34 324 8 L300 88 Q165 100 30 88 Z" fill="none" stroke="#8A5E2E" stroke-width="3"/>
+  <g stroke="#8A5E2E" stroke-width="2" opacity=".55" fill="none">
+    <path d="M14 30 Q165 54 316 30"/><path d="M20 50 Q165 72 310 50"/><path d="M25 70 Q165 88 305 70"/>
+    ${Array.from({length:13},(_,i)=>{const x=30+i*22.5;return `<path d="M${x} ${16+Math.abs(165-x)/14} L${x+(x<165?4:-4)} 90"/>`}).join("")}
+  </g>
+  <path d="M2 8 Q165 36 328 8" fill="none" stroke="#7A4F22" stroke-width="9" stroke-linecap="round"/>
+  <path d="M2 8 Q165 36 328 8" fill="none" stroke="#C99A5F" stroke-width="3" stroke-linecap="round" opacity=".7"/>
+</svg>`;
+function startRound(i){
+  const [name,par,list]=orderQ[i];
+  R={name,par,list,found:[],phase:"ready",t0:0,timer:null};
+  $("roundStat").textContent="";
+  $("stage").innerHTML=`<div class="cl-top">
+      <div class="cat hidden" id="cat"><small>As many as possible</small><b id="catName">${"?????? ????".slice(0,Math.max(6,Math.min(14,name.length)))}</b></div>
+      <div class="ring" id="ring"><svg viewBox="0 0 76 76"><circle class="bg" cx="38" cy="38" r="33"/><circle class="fg" id="arc" cx="38" cy="38" r="33" stroke-dasharray="207.3" stroke-dashoffset="0"/></svg><div class="num"><b id="secs">${ROUND_SECS}</b><span>sec</span></div></div>
+    </div>
+    <div class="guess"><input id="gin" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="send" placeholder="" disabled aria-label="Your answer"><button id="gbtn" disabled>Add</button></div>
+    <div class="flash" id="flash"></div>
+    <div class="basket" id="basket"><div class="eggs" id="eggs"></div><div class="front">${BASKET}</div><div class="count"><span id="cnt">0</span></div></div>
+    <div class="chips" id="chips"></div>
+    <button class="big" id="startBtn">Start</button>`;
+  $("startBtn").onclick=go;
+  const add=()=>{if(R.phase!=="play")return;const inp=$("gin"),v=inp.value;if(!v.trim())return;inp.value="";
+    const k=matchAnswer(v,R.list);inp.classList.remove("bad","dupe");void inp.offsetWidth;
+    if(k<0){inp.classList.add("bad");flash("Not on the list",false);return}
+    if(R.found.includes(k)){inp.classList.add("dupe");flash(`Already got ${R.list[k][0]}`,false);return}
+    R.found.push(k);flash(`${R.list[k][0]}!`,true);pop();dropEgg(R.found.length-1);chip(R.list[k][0],false);$("cnt").textContent=R.found.length};
+  $("gin").onkeydown=e=>{if(e.key==="Enter"){e.preventDefault();add()}};
+  $("gbtn").onclick=()=>{add();$("gin").focus()};
+  hint("");
+}
+function flash(t,ok){const f=$("flash");f.textContent=t;f.className="flash"+(ok?" ok":"")}
+function pop(){const r=$("gin").getBoundingClientRect(),p=document.createElement("div");p.className="plus";p.textContent="+1";p.style.left=(r.right-80)+"px";p.style.top=(r.top-4)+"px";document.body.appendChild(p);setTimeout(()=>p.remove(),850)}
+// eggs pile up in rows from the bottom of the basket
+function dropEgg(n){
+  const box=$("eggs"),W=box.clientWidth,per=Math.max(6,Math.floor(W/30)),row=Math.floor(n/per),col=n%per;
+  const off=row%2?15:0,x=Math.min(W-30,col*(W-30)/(per-1)+off-(row%2?7:0));
+  const e=document.createElement("div");e.className="e";
+  e.style.left=x+"px";e.style.bottom=(row*20)+"px";e.style.setProperty("--r",((n*37)%30-15)+"deg");
+  e.innerHTML=eggSmall(EGGCOLS[n%EGGCOLS.length]);box.appendChild(e);
+}
+function chip(t,miss){const c=document.createElement("span");c.textContent=t;if(miss)c.className="miss";$("chips").appendChild(c)}
+function go(){
+  R.phase="play";R.t0=performance.now();$("startBtn").hidden=true;
+  $("catName").textContent=R.name;$("cat").classList.remove("hidden");
+  const inp=$("gin");inp.disabled=false;$("gbtn").disabled=false;inp.placeholder="";inp.focus();
+  hint("");
+  R.timer=setInterval(()=>{
+    const left=Math.max(0,ROUND_SECS-(performance.now()-R.t0)/1000);
+    $("secs").textContent=Math.ceil(left);$("arc").setAttribute("stroke-dashoffset",(207.3*(1-left/ROUND_SECS)).toFixed(1));
+    $("ring").classList.toggle("low",left<5);
+    if(left<=0)stop();
+  },50);
+}
+function stop(){
+  clearInterval(R.timer);R.phase="done";
+  const inp=$("gin");inp.disabled=true;$("gbtn").disabled=true;inp.blur();
+  const missed=shuffle(R.list.map((_,k)=>k).filter(k=>!R.found.includes(k))).slice(0,5);
+  missed.forEach(k=>chip(R.list[k][0],true));
+  const n=R.found.length,pts=20*Math.min(1,n/R.par);
+  roundDone(pts,`${n} in the basket`,{label:R.name,detail:`${n}`});
+}
+
+init&&init();begin();
+</script>
+</body></html>

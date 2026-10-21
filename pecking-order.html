@@ -1,0 +1,419 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}[hidden]{display:none!important}</style>
+<script>document.documentElement.setAttribute("data-theme","dark")</script><meta name="color-scheme" content="dark"><meta name="theme-color" content="#14171C">
+<title>Red Egg: Pecking Order</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: same play column as every Red Egg game; round header, stage, result, one action button */
+:root{
+  --bg:#ECEFF2; --surface:#FFFFFF; --tray:#DCE1E6; --cup:#C6CED7; --ink:#1A1D23; --muted:#5E6673;
+  --line:#C9D0D8; --red:#D11F35; --good:#2E9B57; --bad:#8A5A3C; --btn:#1A1D23; --btn-ink:#FFFFFF; --box:#FFFFFF; --shell:#F4F1EC;
+  --t1:#B98500; --t2:#2E9B57; --t3:#2F6FDB; --t4:#7A6F62; --t5:#8A5A3C;
+  --display:"Bagel Fat One","Arial Rounded MT Bold",system-ui,sans-serif;
+  --body:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#14171C; --surface:#1E232A; --tray:#262C34; --cup:#333B45; --ink:#EEF1F5; --muted:#9AA3B0;
+  --line:#353D47; --red:#F0384D; --good:#47C474; --bad:#C08A66; --btn:#EEF1F5; --btn-ink:#14171C; --box:#1A1E24; --shell:#D9D4CC;
+  --t1:#FFC93C; --t2:#47C474; --t3:#6EA0FF; --t4:#B3A898; --t5:#C08A66; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#14171C; --surface:#1E232A; --tray:#262C34; --cup:#333B45; --ink:#EEF1F5; --muted:#9AA3B0;
+  --line:#353D47; --red:#F0384D; --good:#47C474; --bad:#C08A66; --btn:#EEF1F5; --btn-ink:#14171C; --box:#1A1E24; --shell:#D9D4CC;
+  --t1:#FFC93C; --t2:#47C474; --t3:#6EA0FF; --t4:#B3A898; --t5:#C08A66; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.45;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 40px}
+.wrap{max-width:560px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit}
+.brand h1{font-family:var(--display);font-weight:400;font-size:1.9rem;line-height:1;margin:0}
+.brand h1 span{color:var(--red)}
+.meta{font-size:.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-weight:600;text-align:right;flex-shrink:0}
+.meta b{display:block;color:var(--ink);font-size:.95rem;letter-spacing:.02em;text-transform:none}
+.meta a{display:block;color:var(--muted);text-decoration:none;font-weight:700;margin-bottom:2px}
+.progress{display:flex;gap:6px;justify-content:center}
+.progress svg{width:26px;height:36px;transition:transform .2s}
+.progress .cur{transform:translateY(-3px) scale(1.12)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:14px}
+.roundhead{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap}
+.roundhead h2{font-family:var(--display);font-weight:400;font-size:1.35rem;margin:0}
+.roundhead .stat{font-size:.85rem;color:var(--muted);font-weight:600}
+.big{width:100%;border:0;border-radius:16px;padding:18px;font:700 1.15rem var(--body);cursor:pointer;background:var(--btn);color:var(--btn-ink)}
+.big:disabled{opacity:.4;cursor:default}
+button:focus-visible,input:focus-visible{outline:3px solid var(--red);outline-offset:2px}
+.result{min-height:5em;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
+.result .sub{color:var(--muted);font-size:.92rem;max-width:46ch}
+.pts{font-family:var(--mono);font-size:2rem;font-weight:700;line-height:1;color:var(--ink);font-variant-numeric:tabular-nums}
+.pts small{font-size:.95rem;color:var(--muted);font-weight:500}
+.pill{display:inline-block;font:700 .78rem var(--body);text-transform:uppercase;letter-spacing:.08em;padding:4px 10px;border-radius:999px;border:1.5px solid currentColor;white-space:nowrap}
+.pill.t1{color:var(--t1)}.pill.t2{color:var(--t2)}.pill.t3{color:var(--t3)}.pill.t4{color:var(--t4)}.pill.t5{color:var(--t5)}
+.end td .pill{font-size:.64rem;padding:2px 7px}
+details{font-size:.92rem;color:var(--muted)}
+details summary{cursor:pointer;font-weight:600;color:var(--ink)}
+details p{margin:.5em 0 0;max-width:62ch}
+.end{align-items:center;text-align:center}
+.end .tier{font-family:var(--display);font-size:1.5rem}
+.end .score{font-family:var(--display);font-size:4rem;line-height:1}
+.end .score small{font-size:1.4rem;color:var(--muted)}
+.end .note{margin:0;max-width:42ch;color:var(--muted)}
+.end table{border-collapse:collapse;font-family:var(--mono);font-size:.82rem;font-variant-numeric:tabular-nums;width:100%;max-width:420px}
+.end td,.end th{padding:5px;border-bottom:1px solid var(--line);text-align:right}
+.end th{color:var(--muted);font-weight:500;font-family:var(--body);font-size:.72rem;text-transform:uppercase;letter-spacing:.08em}
+.end td:nth-child(-n+2),.end th:nth-child(-n+2){text-align:left}
+.share{font-family:var(--mono);white-space:pre;background:var(--tray);border-radius:10px;padding:12px 16px;font-size:.9rem;text-align:left;user-select:all}
+.actions{display:flex;gap:10px;width:100%}
+.actions button,.actions a{font:700 1rem var(--body);border-radius:12px;padding:14px 18px;cursor:pointer;flex:1;text-align:center;text-decoration:none}
+.actions .primary{background:var(--btn);color:var(--btn-ink);border:0}
+.actions .ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+.toast{font-size:.85rem;color:var(--good);min-height:1.2em}
+#stage{display:flex;flex-direction:column;gap:14px}
+.prompt{display:flex;justify-content:space-between;align-items:baseline;gap:10px;background:var(--tray);border-radius:14px;padding:12px 16px}
+.prompt b{font-size:1.1rem}
+.prompt span{font-size:.8rem;color:var(--muted);font-weight:600;text-align:right}
+.ladder{display:flex;flex-direction:column;gap:7px}
+.end-lbl{font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);font-weight:700;padding-left:4px}
+.item{display:grid;grid-template-columns:2em 1fr auto;align-items:center;gap:10px;border:2px solid var(--line);background:var(--box);border-radius:12px;padding:12px 12px;font:600 1rem var(--body);color:var(--ink);text-align:left;cursor:pointer;touch-action:manipulation;transition:transform .15s,border-color .15s,background .2s}
+.item .n{font:700 .85rem var(--mono);color:var(--muted)}
+.item .v{font:600 .8rem var(--mono);color:var(--muted)}
+.item.sel{border-color:var(--ink);transform:translateX(6px)}
+.item.locked{border-color:var(--good);background:color-mix(in srgb,var(--good) 14%,var(--box));cursor:default}
+.item.locked .n{color:var(--good)}
+.item.pop{animation:pop .25s ease}
+@keyframes pop{40%{transform:scale(.97)}}
+.tries{display:flex;gap:5px;justify-content:center}
+.tries i{width:12px;height:16px;border-radius:50%/60% 60% 40% 40%;background:var(--line);display:block}
+.tries i.used{background:var(--ink)}
+
+.dragbox{position:relative;touch-action:none;user-select:none;-webkit-user-select:none}
+.dragbox .item{position:absolute;left:0;right:0;top:0;height:50px;padding:0 12px;grid-template-columns:2em 1fr auto auto;cursor:grab;transition:transform .2s cubic-bezier(.3,1.3,.5,1),border-color .15s,background .2s,box-shadow .15s}
+.dragbox .item .nm{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dragbox .item.dragging{transition:none;z-index:5;cursor:grabbing;border-color:var(--ink);box-shadow:0 10px 24px rgba(0,0,0,.18)}
+.dragbox .item.locked{cursor:default}
+.grip{display:flex;flex-direction:column;gap:3px;padding-left:4px}
+.grip i{display:block;width:16px;height:2px;border-radius:1px;background:var(--line)}
+.item.locked .grip{visibility:hidden}
+
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head><body>
+<div class="wrap">
+  <header>
+    <a class="brand" href="index.html"><svg width="30" height="40" viewBox="0 0 60 80" aria-hidden="true"><path d="M30 3C46 3 57 31 57 48C57 66 45 78 30 78C15 78 3 66 3 48C3 31 14 3 30 3Z" fill="var(--red)"/><ellipse cx="20" cy="30" rx="6" ry="11" fill="#fff" opacity=".35" transform="rotate(20 20 30)"/></svg><h1>The <span>Red</span> Egg</h1></a>
+    <div class="meta"><a href="index.html" id="backlink">← Home</a>Pecking Order<b id="metaSub">Practice</b></div>
+  </header>
+  <div class="progress" id="progress" aria-label="Round progress"></div>
+  <section class="card" id="game">
+    <div class="roundhead"><h2 id="roundTitle">Round 1 of 5</h2><span class="stat" id="roundStat"></span></div>
+    <div id="stage"></div>
+    <div class="result" id="result" aria-live="polite"></div>
+    <button class="big" id="nextBtn" hidden>Next round</button>
+  </section>
+  <section class="card end" id="end" hidden></section>
+  <details><summary>How to play</summary><p>Each round gives you five things to put in order, like oldest to newest or biggest to smallest. Drag items up and down to reorder them, then submit.</p>
+<p>Anything in the right spot locks in green, so you can work out the rest from there. Get the whole order right in one try for 20 points; each extra try costs 4. You have five tries per round.</p>
+</details>
+</div>
+<script>
+/* ---- daily rules shared by every page: same puzzle for everyone, one play per day, streaks ---- */
+const DAY_KEYS=["egg-sort","blind-stop","flash","trivia","bridge","pecking-order","sunday"];
+const DAY_NAMES=["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
+const pad2=n=>String(n).padStart(2,"0");
+const ymd=d=>`${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`;
+const NOW=new Date(),LOCALDAY=ymd(NOW),TODAY_IDX=(NOW.getDay()+6)%7;
+const CUR_MONDAY=(()=>{const d=new Date(NOW);d.setDate(d.getDate()-TODAY_IDX);return ymd(d)})();
+const WEEK_NO=Math.round((new Date(CUR_MONDAY+"T12:00:00")-new Date("2026-01-05T12:00:00"))/604800000);
+/* the date a day's game belongs to this week, so a catch-up gets the same puzzle everyone played that day */
+function gameDate(key){const i=DAY_KEYS.indexOf(key);const d=new Date(CUR_MONDAY+"T12:00:00");d.setDate(d.getDate()+Math.max(0,i));return ymd(d)}
+const SUN_KEYS=["egg-sort","blind-stop","flash","trivia","bridge","pecking-order"];
+function hashStr(s){let h=2166136261;for(const c of s){h^=c.charCodeAt(0);h=Math.imul(h,16777619)}return h>>>0}
+function rngFrom(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function seededOrder(list,salt){const r=rngFrom(hashStr(salt)),a=list.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+const RS={get(k,d){try{const v=localStorage.getItem("redegg2:"+k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem("redegg2:"+k,JSON.stringify(v))}catch(e){}}};
+/* a new egg every Monday */
+function currentWeek(){let w=RS.get("week",null);if(!w||!w.id||w.id<CUR_MONDAY){w={id:CUR_MONDAY,days:{},sunday:{}};RS.set("week",w)}w.days=w.days||{};w.sunday=w.sunday||{};return w}
+function markPlayed(){const s=RS.get("playDays",[]);if(!s.includes(LOCALDAY)){s.push(LOCALDAY);RS.set("playDays",s)}}
+function dayStreak(){const s=new Set(RS.get("playDays",[]));const d=new Date(NOW);if(!s.has(ymd(d)))d.setDate(d.getDate()-1);let n=0;while(s.has(ymd(d))){n++;d.setDate(d.getDate()-1)}return n}
+function bestDayStreak(){const s=[...new Set(RS.get("playDays",[]))].sort();let best=0,run=0,prev=null;for(const k of s){const d=new Date(k+"T12:00:00");run=prev&&Math.round((d-prev)/864e5)===1?run+1:1;best=Math.max(best,run);prev=d}return best}
+function weekStreak(){const ids=new Set(RS.get("pen",[]).map(p=>p.id));const d=new Date(CUR_MONDAY+"T12:00:00");if(!ids.has(ymd(d)))d.setDate(d.getDate()-7);let n=0;while(ids.has(ymd(d))){n++;d.setDate(d.getDate()-7)}return n}
+/* stop replays and off-day plays (testing can unlock every day) */
+function dailyGate(mode,key,name){
+  if(mode==="practice"||RS.get("unlockAll",false))return false;
+  const w=currentWeek();let msg=null;
+  if(mode==="day"){
+    if(key in w.days)msg=`You already played today's ${name}. You scored <b>${Math.round(w.days[key])}</b>. A new puzzle is waiting tomorrow.`;
+    else if(DAY_KEYS.indexOf(key)>TODAY_IDX)msg=`${name} is ${DAY_NAMES[DAY_KEYS.indexOf(key)]}'s game. It unlocks on ${DAY_NAMES[DAY_KEYS.indexOf(key)]}.`;
+    else if(SUN_KEYS.every(k=>k in w.sunday))msg=`This week's egg has already hatched, so ${name} can't be caught up. A new egg starts Monday.`;
+  }else if(mode==="sunday"){
+    if(TODAY_IDX!==6)msg=`The Red Egg is played on Sunday.`;
+    else if(key in w.sunday)msg=`You already played this round of the Red Egg.`;
+  }
+  if(!msg)return false;
+  const wrap=document.querySelector(".wrap");
+  [...wrap.children].forEach(el=>{if(el.tagName!=="HEADER")el.hidden=true});
+  wrap.insertAdjacentHTML("beforeend",`<section class="card" style="align-items:center;text-align:center;gap:16px"><p style="margin:0;font-size:1.05rem;max-width:36ch">${msg}</p><a href="index.html" style="display:block;width:100%;text-align:center;text-decoration:none;border-radius:16px;padding:16px;font:700 1.05rem var(--body);background:var(--btn);color:var(--btn-ink)">Back to the egg</a></section>`);
+  return true;
+}
+
+const MODE=location.hash==="#sunday"?"sunday":location.hash==="#day"?"day":"practice";
+const GAMEKEY="pecking-order",SUN_POS="6 of 6",SUN_MULT=5/6;
+const ROUNDS=MODE==="sunday"?1:5;
+const RND=MODE==="practice"?Math.random:rngFrom(hashStr("pecking|"+MODE+"|"+(MODE==="day"?gameDate("pecking-order"):LOCALDAY)));
+if(MODE==="sunday"){document.querySelectorAll("header a").forEach(x=>{x.style.pointerEvents="none";x.setAttribute("tabindex","-1")});document.getElementById("metaSub").textContent="Sunday · "+SUN_POS;const b=document.getElementById("backlink");b.textContent="Sunday";b.style.color="var(--red)";b.style.pointerEvents="none";document.getElementById("progress").hidden=true}
+else if(MODE==="day")document.getElementById("metaSub").textContent="Saturday";
+dailyGate(MODE,GAMEKEY,"Pecking Order");
+const $=id=>document.getElementById(id);
+const TIERS=[[19,"Perfect Yolk","t1"],[15,"Sunny Side Up","t2"],[10,"Over Easy","t3"],[5,"Cracked","t4"],[0,"Rotten Egg","t5"]];
+const tierOf=p=>TIERS.find(([m])=>p>=m-1e-9);
+const pill=p=>{const [,n,c]=tierOf(p);return `<span class="pill ${c}">${n}</span>`};
+const EMO=p=>({t1:"🟨",t2:"🟩",t3:"🟦",t4:"⬜",t5:"🟫"})[tierOf(p)[2]];
+const EGGP="M30 3C46 3 57 31 57 48C57 66 45 78 30 78C15 78 3 66 3 48C3 31 14 3 30 3Z";
+const eggIcon=(c,dim)=>`<svg viewBox="0 0 60 80" aria-hidden="true"><path d="${EGGP}" fill="${c}"/><ellipse cx="20" cy="30" rx="6" ry="11" fill="#fff" opacity="${dim?0:.32}" transform="rotate(20 20 30)"/></svg>`;
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(RND()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+const G={round:0,results:[]};
+function drawProgress(){
+  $("progress").innerHTML=Array.from({length:ROUNDS},(_,i)=>{const done=i<G.results.length;
+    return `<span class="${i===G.round&&!done?"cur":""}">${eggIcon(done?"var(--ink)":i===G.round?"var(--muted)":"var(--line)",!done&&i!==G.round)}</span>`}).join("");
+}
+function setResult(h){$("result").innerHTML=h}
+function hint(t){setResult(`<span class="sub">${t}</span>`)}
+function roundDone(pts,msg,extra){
+  G.results.push(Object.assign({pts},extra||{}));
+  setResult(`<span class="pts">+${(MODE==="sunday"?pts*SUN_MULT:pts).toFixed(1)} <small>pts</small></span>${pill(pts)}<span class="sub">${msg}</span>`);
+  const b=$("nextBtn");b.hidden=false;b.textContent=MODE==="sunday"?"Crack the egg":G.round+1<ROUNDS?"Next round":"See your score";drawProgress();b.focus();
+}
+$("nextBtn").onclick=()=>{
+  if(MODE==="sunday"){markPlayed();const w=currentWeek();w.sunday[GAMEKEY]=+(G.results[0].pts*SUN_MULT).toFixed(1);RS.set("week",w);location.href="index.html#crack";return}
+  $("nextBtn").hidden=true;G.round++;if(G.round<ROUNDS)begin();else finish()};
+function begin(){$("roundTitle").textContent=MODE==="sunday"?"Sunday · "+SUN_POS:`Round ${G.round+1} of ${ROUNDS}`;setResult("");drawProgress();startRound(G.round)}
+function finish(){
+  const total=Math.round(G.results.reduce((a,r)=>a+r.pts,0));
+  if(MODE==="day"){markPlayed();const w=currentWeek();w.days[GAMEKEY]=total;RS.set("week",w);const h=RS.get("history",[]);h.push({game:GAMEKEY,score:total,week:w.id,at:Date.now()});RS.set("history",h)}
+  const share=`The Red Egg · Pecking Order\n${G.results.map(r=>EMO(r.pts)).join("")}\n${total}/100`;
+  const rows=G.results.map((r,i)=>`<tr><td>${i+1}</td><td>${r.label||""}</td><td>${r.detail||""}</td><td>${r.pts.toFixed(1)}</td><td>${pill(r.pts)}</td></tr>`).join("");
+  $("end").innerHTML=`<div class="tier">Pecking Order</div><div class="score">${total}<small>/100</small></div>
+    <table><thead><tr><th>Rd</th><th>${COLS[0]}</th><th>${COLS[1]}</th><th>Pts</th><th>Rating</th></tr></thead><tbody>${rows}</tbody></table>
+    <div class="share" id="shareText">${share}</div>
+    <div class="actions">${MODE==="day"?`<a class="primary" href="index.html">Back to the egg</a>`:`<button class="primary" id="againBtn">Play again</button><a class="ghost" href="index.html">Home</a>`}</div>
+    <button class="actions ghost" id="copyBtn" style="width:auto;padding:10px 16px;border-radius:12px;font:700 .95rem var(--body);background:transparent;color:var(--ink);border:1.5px solid var(--line)">Copy result</button><div class="toast" id="toast" aria-live="polite"></div>`;
+  $("game").hidden=true;$("progress").hidden=true;$("end").hidden=false;window.scrollTo({top:0,behavior:"smooth"});
+  if($("againBtn"))$("againBtn").onclick=()=>{G.round=0;G.results=[];$("end").hidden=true;$("game").hidden=false;$("progress").hidden=false;init&&init();begin()};
+  $("copyBtn").onclick=()=>{try{navigator.clipboard.writeText(share).then(()=>$("toast").textContent="Copied",sel)}catch(e){sel()}};
+  function sel(){const r=document.createRange();r.selectNodeContents($("shareText"));const s=getSelection();s.removeAllRanges();s.addRange(r);$("toast").textContent="Selected. Copy it to share."}
+}
+const COLS=["Order","Tries"];
+// [instruction, top label, bottom label, [[item, value shown after], ...] in correct order]
+const BANK=[
+ ["Oldest to newest","Oldest","Newest",[["Oxford University","c. 1096"],["Harvard University","1636"],["The Eiffel Tower","1889"],["The Titanic sinks","1912"],["The first iPhone","2007"]]],
+ ["Biggest to smallest by area","Biggest","Smallest",[["Russia","17.1M km²"],["Brazil","8.5M km²"],["India","3.3M km²"],["France","0.64M km²"],["Japan","0.38M km²"]]],
+ ["Tallest to shortest","Tallest","Shortest",[["Burj Khalifa","828 m"],["Shanghai Tower","632 m"],["One World Trade Center","541 m"],["Empire State Building","443 m"],["Eiffel Tower","330 m"]]],
+ ["Biggest egg to smallest","Biggest","Smallest",[["Ostrich","about 1,400 g"],["Emu","about 600 g"],["Goose","about 150 g"],["Chicken","about 57 g"],["Quail","about 10 g"]]],
+ ["Released first to last","First","Last",[["Pac-Man","1980"],["Tetris","1984"],["Super Mario Bros.","1985"],["Minecraft","2011"],["Fortnite","2017"]]],
+ ["Founded first to last","First","Last",[["Coca-Cola","1886"],["Nintendo","1889"],["Ford","1903"],["Disney","1923"],["Apple","1976"]]],
+ ["Closest to the Sun to farthest","Closest","Farthest",[["Venus","2nd"],["Earth","3rd"],["Mars","4th"],["Saturn","6th"],["Neptune","8th"]]],
+ ["Most people to fewest","Most","Fewest",[["California","39M"],["Texas","29M"],["New York","20M"],["Ohio","12M"],["Wyoming","0.6M"]]],
+ ["Heaviest to lightest","Heaviest","Lightest",[["Blue whale","about 150 t"],["African elephant","about 6 t"],["Hippo","about 1.5 t"],["Horse","about 0.5 t"],["Ostrich","about 0.1 t"]]],
+ ["Oldest to newest","Oldest","Newest",[["The Great Pyramid of Giza","c. 2560 BC"],["The Colosseum","AD 80"],["Machu Picchu","c. 1450"],["The Statue of Liberty","1886"],["The Sydney Opera House","1973"]]],
+ ["Most legs to fewest","Most","Fewest",[["Centipede","dozens"],["Spider","8"],["Ant","6"],["Dog","4"],["Chicken","2"]]],
+ ["Biggest to smallest","Biggest","Smallest",[["Jupiter","139,820 km wide"],["Saturn","116,460 km"],["Uranus","50,724 km"],["Neptune","49,244 km"],["Earth","12,742 km"]]],
+ ["Biggest to smallest","Biggest","Smallest",[["Pacific Ocean","1st"],["Atlantic Ocean","2nd"],["Indian Ocean","3rd"],["Southern Ocean","4th"],["Arctic Ocean","5th"]]],
+ ["Biggest to smallest","Biggest","Smallest",[["Asia","44.6M km²"],["Africa","30.4M km²"],["North America","24.7M km²"],["Antarctica","14.2M km²"],["Australia","8.6M km²"]]],
+ ["First to last","First","Last",[["Abraham Lincoln","16th president"],["Theodore Roosevelt","26th"],["Franklin D. Roosevelt","32nd"],["John F. Kennedy","35th"],["Ronald Reagan","40th"]]],
+ ["Oldest state to newest","Oldest","Newest",[["Delaware","1787"],["Texas","1845"],["California","1850"],["Alaska","Jan 1959"],["Hawaii","Aug 1959"]]],
+ ["Fastest to slowest","Fastest","Slowest",[["Peregrine falcon (diving)","240+ mph"],["Cheetah","about 70 mph"],["Horse","about 55 mph"],["Usain Bolt","about 27 mph"],["Giant tortoise","under 1 mph"]]],
+ ["Released first to last","First","Last",[["Snow White","1937"],["Star Wars","1977"],["Jurassic Park","1993"],["Toy Story","1995"],["Avatar","2009"]]],
+ ["Tallest to shortest","Tallest","Shortest",[["Mount Everest","8,849 m"],["K2","8,611 m"],["Denali","6,190 m"],["Kilimanjaro","5,895 m"],["Mont Blanc","4,806 m"]]],
+ ["Most players on the field to fewest","Most","Fewest",[["Rugby union","15 a side"],["Soccer","11"],["Baseball","9"],["Ice hockey","6"],["Basketball","5"]]],
+ ["Launched first to last","First","Last",[["Facebook","2004"],["YouTube","2005"],["Twitter","2006"],["Instagram","2010"],["TikTok","2016"]]],
+ ["Hottest to coldest","Hottest","Coldest",[["Venus","about 464°C"],["Mercury","about 167°C"],["Earth","about 15°C"],["Mars","about −65°C"],["Jupiter","about −110°C"]]],
+ ["Most people to fewest","Most","Fewest",[["India","1.4B"],["United States","340M"],["Brazil","212M"],["Japan","124M"],["Canada","41M"]]],
+ ["Earliest in the year to latest","Earliest","Latest",[["Valentine's Day","Feb 14"],["St. Patrick's Day","Mar 17"],["Fourth of July","Jul 4"],["Halloween","Oct 31"],["Thanksgiving (US)","late Nov"]]],
+ ["Biggest coin to smallest","Biggest","Smallest",[["Half dollar","30.6 mm"],["Quarter","24.3 mm"],["Nickel","21.2 mm"],["Penny","19.1 mm"],["Dime","17.9 mm"]]],
+ ["First to last","First","Last",[["Sputnik launches","1957"],["First person in space","1961"],["First Moon landing","1969"],["First Space Shuttle flight","1981"],["First ISS module","1998"]]],
+ ["Released first to last","First","Last",[["Atari 2600","1977"],["NES","1985 (US)"],["PlayStation","1994"],["Xbox","2001"],["Nintendo Switch","2017"]]],
+ ["Hardest to softest","Hardest","Softest",[["Diamond","10 on the Mohs scale"],["Ruby","9"],["Quartz","7"],["Fluorite","4"],["Talc","1"]]],
+ ["Longest life to shortest","Longest","Shortest",[["Greenland shark","about 400 years"],["Giant tortoise","150+ years"],["Human","about 79 years"],["Dog","about 12 years"],["Mayfly (adult)","about a day"]]],
+ ["Biggest to smallest by area","Biggest","Smallest",[["Alaska","665k sq mi"],["Texas","268k sq mi"],["California","164k sq mi"],["Montana","147k sq mi"],["Florida","66k sq mi"]]],
+ ["Premiered first to last","First","Last",[["The Simpsons","1989"],["Friends","1994"],["The Office (US)","2005"],["Breaking Bad","2008"],["Stranger Things","2016"]]],
+ ["Released first to last","First","Last",[["Abbey Road (The Beatles)","1969"],["Thriller (Michael Jackson)","1982"],["Nevermind (Nirvana)","1991"],["21 (Adele)","2011"],["1989 (Taylor Swift)","2014"]]],
+ ["Highest city to lowest","Highest","Lowest",[["La Paz","about 3,640 m"],["Mexico City","about 2,240 m"],["Denver","about 1,610 m"],["Madrid","about 650 m"],["Amsterdam","about sea level"]]],
+ ["Most sides to fewest","Most","Fewest",[["Octagon","8"],["Heptagon","7"],["Hexagon","6"],["Pentagon","5"],["Triangle","3"]]],
+ ["Oldest to newest","Oldest","Newest",[["Stonehenge","c. 3000 BC"],["The Parthenon","438 BC"],["Notre-Dame de Paris","1345"],["The Taj Mahal","1653"],["The Golden Gate Bridge","1937"]]],
+ ["Oldest to newest","Oldest","Newest",[["Magna Carta","1215"],["Columbus reaches the Americas","1492"],["The Mayflower lands","1620"],["The US Declaration of Independence","1776"],["The French Revolution begins","1789"]]],
+ ["First to last","First","Last",[["World War I begins","1914"],["The Great Depression begins","1929"],["World War II ends","1945"],["The Berlin Wall falls","1989"],["9/11 attacks","2001"]]],
+ ["Released first to last","First","Last",[["The Lion King","1994"],["Titanic","1997"],["Shrek","2001"],["Frozen","2013"],["Barbie","2023"]]],
+ ["Released first to last","First","Last",[["The Hobbit","1937"],["Charlotte's Web","1952"],["The Fellowship of the Ring","1954"],["Harry Potter and the Sorcerer's Stone","1997"],["The Hunger Games","2008"]]],
+ ["Biggest to smallest by area","Biggest","Smallest",[["Canada","9.98M km²"],["United States","9.83M km²"],["Australia","7.7M km²"],["Mexico","1.96M km²"],["Germany","0.36M km²"]]],
+ ["Most people to fewest","Most","Fewest",[["Tokyo metro","about 37M"],["New York metro","about 20M"],["London","about 9M"],["Chicago","about 2.7M"],["Boston","about 0.65M"]]],
+ ["Biggest to smallest","Biggest","Smallest",[["Lake Superior","82,100 km²"],["Lake Huron","59,600 km²"],["Lake Michigan","58,000 km²"],["Lake Erie","25,700 km²"],["Lake Ontario","18,960 km²"]]],
+ ["Most to fewest","Most","Fewest",[["Players on a rugby league team","13"],["Players on a soccer team","11"],["Players on a volleyball team","6"],["Players on a basketball team","5"],["Players on a doubles tennis side","2"]]],
+ ["Longest to shortest","Longest","Shortest",[["Marathon","42.2 km"],["Half marathon","21.1 km"],["10K","10 km"],["5K","5 km"],["Mile","1.6 km"]]],
+ ["Most to fewest","Most","Fewest",[["Days in a leap year","366"],["Days in a regular year","365"],["Weeks in a year","52"],["Days in February (leap year)","29"],["Months in a year","12"]]],
+ ["Biggest to smallest","Biggest","Smallest",[["Gallon","3.79 L"],["Liter","1 L"],["Quart","0.95 L"],["Pint","0.47 L"],["Cup","0.24 L"]]],
+ ["Biggest to smallest","Biggest","Smallest",[["Mile","1,609 m"],["Kilometer","1,000 m"],["Meter","1 m"],["Yard","0.91 m"],["Foot","0.30 m"]]],
+ ["Most points to fewest","Most","Fewest",[["Touchdown","6"],["Field goal","3"],["Safety","2"],["Extra point kick","1"],["Missed field goal","0"]]],
+ ["Most valuable to least","Most","Least",[["$100 bill","$100"],["$50 bill","$50"],["$20 bill","$20"],["Half dollar coin","$0.50"],["Quarter","$0.25"]]],
+ ["Hottest to coolest","Hottest","Coolest",[["Surface of the Sun","about 5,500°C"],["Lava","about 1,100°C"],["Boiling water","100°C"],["Human body","37°C"],["Freezing water","0°C"]]],
+ ["Fastest to slowest","Fastest","Slowest",[["Light","300,000 km/s"],["The Space Shuttle in orbit","about 7.8 km/s"],["Sound in air","about 0.34 km/s"],["A commercial jet","about 0.25 km/s"],["A cheetah","about 0.03 km/s"]]],
+ ["Largest to smallest","Largest","Smallest",[["The Sun","1.39M km wide"],["Jupiter","139,820 km"],["Earth","12,742 km"],["The Moon","3,475 km"],["Pluto","2,377 km"]]],
+ ["Founded first to last","First","Last",[["Microsoft","1975"],["Apple","1976"],["Amazon","1994"],["Google","1998"],["Facebook","2004"]]],
+ ["Founded first to last","First","Last",[["McDonald's","1940"],["Burger King","1953"],["Starbucks","1971"],["Chipotle","1993"],["Shake Shack","2004"]]],
+ ["First to last","First","Last",[["George Washington","1st president"],["Thomas Jefferson","3rd"],["Andrew Jackson","7th"],["Ulysses S. Grant","18th"],["Woodrow Wilson","28th"]]],
+ ["Oldest to newest","Oldest","Newest",[["The Great Wall's first walls","c. 7th century BC"],["The Roman Empire begins","27 BC"],["The first modern Olympics","1896"],["The first World Cup","1930"],["The first Super Bowl","1967"]]],
+ ["Released first to last","First","Last",[["Walkman","1979"],["CD player","1982"],["iPod","2001"],["Spotify","2008"],["AirPods","2016"]]],
+ ["Tallest to shortest","Tallest","Shortest",[["Giraffe","about 5.5 m"],["African elephant","about 3.3 m"],["Ostrich","about 2.7 m"],["Grizzly bear (standing)","about 2.4 m"],["Emperor penguin","about 1.1 m"]]],
+ ["Most eggs at once to fewest","Most","Fewest",[["Ocean sunfish","up to 300 million"],["Salmon","thousands"],["Sea turtle","about 100"],["Chicken (per clutch)","about 12"],["Emperor penguin","1"]]],
+ ["Longest to shortest","Longest","Shortest",[["Elephant pregnancy","about 22 months"],["Human pregnancy","about 9 months"],["Dog pregnancy","about 2 months"],["Chicken egg incubation","21 days"],["Mouse pregnancy","about 20 days"]]],
+ ["Biggest to smallest","Biggest","Smallest",[["Blue whale heart","about 180 kg"],["Elephant heart","about 20 kg"],["Horse heart","about 4 kg"],["Human heart","about 0.3 kg"],["Hummingbird heart","about 0.0002 kg"]]],
+ ["Most to fewest","Most","Fewest",[["Countries in Africa","54"],["US states","50"],["Countries in Europe","about 44"],["Countries in South America","12"],["Continents","7"]]],
+ ["Highest to lowest","Highest","Lowest",[["A cruising jet","about 11,000 m"],["Mount Everest summit","8,849 m"],["Clouds (typical cumulus)","about 2,000 m"],["Burj Khalifa top","828 m"],["The Dead Sea shore","−430 m"]]],
+ ["Oldest to newest","Oldest","Newest",[["Monopoly","1935"],["Scrabble","1948"],["Twister","1966"],["UNO","1971"],["Settlers of Catan","1995"]]],
+ ["Released first to last","First","Last",[["Game Boy","1989"],["Nintendo 64","1996"],["Wii","2006"],["Nintendo Switch","2017"],["Nintendo Switch 2","2025"]]],
+ ["Biggest to smallest","Biggest","Smallest",[["Basketball","about 24 cm"],["Soccer ball","about 22 cm"],["Volleyball","about 21 cm"],["Baseball","about 7.4 cm"],["Golf ball","about 4.3 cm"]]],
+ ["Most to fewest players","Most","Fewest",[["Baseball team on the field","9"],["Ice hockey team on the ice","6"],["Basketball team on the court","5"],["Beach volleyball team","2"],["Singles tennis","1"]]],
+ ["Most calories to fewest","Most","Fewest",[["A tablespoon of olive oil","about 120"],["A banana","about 105"],["A large egg","about 72"],["A cup of broccoli","about 30"],["A cup of black coffee","about 2"]]],
+ ["Oldest to newest","Oldest","Newest",[["The wheel","c. 3500 BC"],["Paper","c. AD 105"],["Gunpowder","9th century"],["The telescope","1608"],["The steam locomotive","1804"]]],
+ ["Biggest to smallest by area","Biggest","Smallest",[["Greenland","2.17M km²"],["New Guinea","0.79M km²"],["Borneo","0.75M km²"],["Madagascar","0.59M km²"],["Iceland","0.10M km²"]]],
+ ["Most people to fewest","Most","Fewest",[["China","1.4B"],["Indonesia","about 280M"],["Nigeria","about 230M"],["Germany","about 84M"],["Australia","about 27M"]]],
+ ["Longest to shortest","Longest","Shortest",[["A day on Venus","243 Earth days"],["A day on Mercury","176 Earth days"],["A day on Mars","24.6 hours"],["A day on Earth","24 hours"],["A day on Jupiter","about 10 hours"]]],
+ ["First invented to last","First","Last",[["Printing press","c. 1440"],["Telephone","1876"],["Light bulb (Edison)","1879"],["Television","1927"],["Internet (ARPANET)","1969"]]],
+ ["Most career points to fewest","Most","Fewest",[["Kareem Abdul-Jabbar","38,387"],["Karl Malone","36,928"],["Kobe Bryant","33,643"],["Michael Jordan","32,292"],["Shaquille O'Neal","28,596"]]],
+ ["Most career home runs to fewest","Most","Fewest",[["Barry Bonds","762"],["Hank Aaron","755"],["Babe Ruth","714"],["Willie Mays","660"],["Ken Griffey Jr.","630"]]],
+ ["Most Grand Slam singles titles to fewest","Most","Fewest",[["Serena Williams","23"],["Rafael Nadal","22"],["Roger Federer","20"],["Pete Sampras","14"],["Andre Agassi","8"]]],
+ ["Most Olympic golds to fewest","Most","Fewest",[["Michael Phelps","23"],["Carl Lewis","9"],["Usain Bolt","8"],["Simone Biles","7"],["Michael Johnson","4"]]],
+ ["Founded first to last","First","Last",[["MLB (National League)","1876"],["NHL","1917"],["NFL","1920"],["NBA","1946"],["MLS (first season)","1996"]]],
+ ["First held to last","First","Last",[["Modern Olympics","1896"],["Tour de France","1903"],["FIFA World Cup","1930"],["Super Bowl","1967"],["X Games","1995"]]],
+ ["Heaviest ball to lightest","Heaviest","Lightest",[["Bowling ball","up to 16 lb"],["Basketball","22 oz"],["Soccer ball","15 oz"],["Baseball","5 oz"],["Golf ball","1.6 oz"]]],
+ ["Longest to shortest","Longest","Shortest",[["Home plate to first base","90 ft"],["Pitcher's mound to home plate","60.5 ft"],["Soccer penalty spot to goal","36 ft"],["NBA three-point line","23.75 ft"],["Free-throw line to backboard","15 ft"]]],
+ ["Longest to shortest","Longest","Shortest",[["Soccer match","90 min"],["Rugby match","80 min"],["NBA game","48 min"],["College basketball game","40 min"],["Boxing round","3 min"]]],
+ ["Best golf score to worst","Best","Worst",[["Albatross","3 under"],["Eagle","2 under"],["Birdie","1 under"],["Par","even"],["Bogey","1 over"]]],
+ ["Heaviest weight class to lightest","Heaviest","Lightest",[["Heavyweight","over 200 lb"],["Light heavyweight","175 lb"],["Middleweight","160 lb"],["Welterweight","147 lb"],["Lightweight","135 lb"]]],
+ ["Hosted first to last","First","Last",[["Beijing","2008"],["London","2012"],["Rio de Janeiro","2016"],["Tokyo","2021"],["Paris","2024"]]],
+ ["Released first to last","First","Last",[["Iron Man","2008"],["The Avengers","2012"],["Black Panther","2018"],["Avengers: Endgame","2019"],["Spider-Man: No Way Home","2021"]]],
+ ["Released first to last","First","Last",[["Toy Story","1995"],["Finding Nemo","2003"],["The Incredibles","2004"],["Up","2009"],["Coco","2017"]]],
+ ["Released first to last","First","Last",[["Cinderella","1950"],["The Little Mermaid","1989"],["Aladdin","1992"],["Frozen","2013"],["Moana","2016"]]],
+ ["Released first to last","First","Last",[["A New Hope","1977"],["The Empire Strikes Back","1980"],["The Phantom Menace","1999"],["The Force Awakens","2015"],["The Rise of Skywalker","2019"]]],
+ ["Released first to last","First","Last",[["Sorcerer's Stone","1997"],["Chamber of Secrets","1998"],["Prisoner of Azkaban","1999"],["Goblet of Fire","2000"],["Order of the Phoenix","2003"]]],
+ ["Premiered first to last","First","Last",[["I Love Lucy","1951"],["Sesame Street","1969"],["Seinfeld","1989"],["SpongeBob SquarePants","1999"],["Game of Thrones","2011"]]],
+ ["Debuted first to last","First","Last",[["Mickey Mouse","1928"],["Superman","1938"],["Bugs Bunny","1940"],["Spider-Man","1962"],["Pikachu","1996"]]],
+ ["Released first to last","First","Last",[["Heartbreak Hotel (Elvis)","1956"],["Bohemian Rhapsody (Queen)","1975"],["Like a Prayer (Madonna)","1989"],["Crazy in Love (Beyoncé)","2003"],["Old Town Road (Lil Nas X)","2019"]]],
+ ["Released first to last","First","Last",[["Fearless","2008"],["Red","2012"],["Reputation","2017"],["Folklore","2020"],["The Tortured Poets Department","2024"]]],
+ ["Released first to last","First","Last",[["Super Mario Bros.","1985"],["Pokémon Red and Green","1996"],["Halo","2001"],["Minecraft","2011"],["Fortnite","2017"]]],
+ ["Released first to last","First","Last",[["Macintosh","1984"],["iPod","2001"],["iPhone","2007"],["iPad","2010"],["Apple Watch","2015"]]],
+ ["Released first to last","First","Last",[["NES","1983"],["Nintendo 64","1996"],["GameCube","2001"],["Wii","2006"],["Switch","2017"]]],
+ ["Opened first to last","First","Last",[["Disneyland","1955"],["Walt Disney World","1971"],["Tokyo Disneyland","1983"],["Disneyland Paris","1992"],["Shanghai Disneyland","2016"]]],
+ ["Painted first to last","First","Last",[["Mona Lisa","c. 1503"],["Girl with a Pearl Earring","c. 1665"],["The Starry Night","1889"],["American Gothic","1930"],["Campbell's Soup Cans","1962"]]],
+ ["Published first to last","First","Last",[["Romeo and Juliet","c. 1597"],["Pride and Prejudice","1813"],["The Great Gatsby","1925"],["To Kill a Mockingbird","1960"],["The Da Vinci Code","2003"]]],
+ ["Born first to last","First","Last",[["Cleopatra","69 BC"],["Leonardo da Vinci","1452"],["William Shakespeare","1564"],["Napoleon","1769"],["Albert Einstein","1879"]]],
+ ["First to last","First","Last",[["Thomas Jefferson","3rd"],["Andrew Jackson","7th"],["Theodore Roosevelt","26th"],["Franklin D. Roosevelt","32nd"],["Ronald Reagan","40th"]]],
+ ["Began first to last","First","Last",[["American Revolution","1775"],["War of 1812","1812"],["US Civil War","1861"],["Korean War","1950"],["Gulf War","1990"]]],
+ ["Built first to last","First","Last",[["The Colosseum","AD 80"],["Machu Picchu","c. 1450"],["Taj Mahal","1653"],["Eiffel Tower","1889"],["Sydney Opera House","1973"]]],
+ ["Oldest to newest","Oldest","Newest",[["The universe begins","13.8 billion years ago"],["Earth forms","4.5 billion years ago"],["Dinosaurs die out","66 million years ago"],["First modern humans","about 300,000 years ago"],["The Great Pyramid","about 4,500 years ago"]]],
+ ["Founded first to last","First","Last",[["Mercedes-Benz (Benz & Cie.)","1883"],["Ford","1903"],["Toyota","1937"],["Honda","1948"],["Tesla","2003"]]],
+ ["Longest to shortest","Longest","Shortest",[["Amazon","6,400 km"],["Mississippi","3,730 km"],["Danube","2,850 km"],["Rhine","1,230 km"],["Thames","346 km"]]],
+ ["Farthest north to farthest south","North","South",[["Reykjavík","64° N"],["Oslo","60° N"],["London","51° N"],["Madrid","40° N"],["Cairo","30° N"]]],
+ ["Farthest east to farthest west","East","West",[["Tokyo","140° E"],["Dubai","55° E"],["Paris","2° E"],["New York","74° W"],["Los Angeles","118° W"]]],
+ ["Biggest desert to smallest","Biggest","Smallest",[["Sahara","9.2M km²"],["Arabian","2.3M km²"],["Gobi","1.3M km²"],["Kalahari","0.9M km²"],["Mojave","0.12M km²"]]],
+ ["Tallest waterfall to shortest","Tallest","Shortest",[["Angel Falls","979 m"],["Yosemite Falls","739 m"],["Victoria Falls","108 m"],["Iguazu Falls","82 m"],["Niagara Falls","51 m"]]],
+ ["Most people to fewest","Most","Fewest",[["New York City","8.3M"],["Los Angeles","3.8M"],["Chicago","2.7M"],["Houston","2.3M"],["Miami","0.45M"]]],
+ ["Tallest statue to shortest","Tallest","Shortest",[["Statue of Unity (India)","182 m"],["Spring Temple Buddha","128 m"],["Statue of Liberty (with pedestal)","93 m"],["Christ the Redeemer","30 m"],["Michelangelo's David","5 m"]]],
+ ["Deepest to shallowest","Deepest","Shallowest",[["Mariana Trench","10,935 m"],["Titanic wreck","3,800 m"],["Grand Canyon","1,857 m"],["Deepest scuba dive","332 m"],["Olympic diving pool","5 m"]]],
+ ["Hottest melting point to coolest","Hottest","Coolest",[["Tungsten","3,422 °C"],["Iron","1,538 °C"],["Gold","1,064 °C"],["Lead","327 °C"],["Ice","0 °C"]]],
+ ["Highest atomic number to lowest","Highest","Lowest",[["Gold","79"],["Iron","26"],["Oxygen","8"],["Carbon","6"],["Hydrogen","1"]]],
+ ["Most moons to fewest","Most","Fewest",[["Saturn","270+"],["Jupiter","95+"],["Uranus","28"],["Neptune","16"],["Mars","2"]]],
+ ["Closest to Earth to farthest","Closest","Farthest",[["The Moon","384,000 km"],["The Sun","150M km"],["Pluto","about 5.9B km"],["Proxima Centauri","4.2 light-years"],["Andromeda Galaxy","2.5M light-years"]]],
+ ["Longest wavelength to shortest","Longest","Shortest",[["Red","about 700 nm"],["Orange","about 610 nm"],["Yellow","about 580 nm"],["Green","about 530 nm"],["Violet","about 400 nm"]]],
+ ["Loudest to quietest","Loudest","Quietest",[["Jet engine up close","about 140 dB"],["Rock concert","about 110 dB"],["Lawn mower","about 90 dB"],["Normal talking","about 60 dB"],["Whisper","about 30 dB"]]],
+ ["Heaviest organ to lightest","Heaviest","Lightest",[["Skin","about 4 kg"],["Liver","about 1.5 kg"],["Heart","about 300 g"],["Kidney","about 150 g"],["Eyeball","about 7 g"]]],
+ ["Most sleep per day to least","Most","Least",[["Koala","about 20 h"],["Cat","about 15 h"],["Dog","about 12 h"],["Human adult","about 8 h"],["Giraffe","about 2 h"]]],
+ ["Widest wingspan to narrowest","Widest","Narrowest",[["Wandering albatross","3.5 m"],["Andean condor","3.2 m"],["Bald eagle","2.1 m"],["Barn owl","1 m"],["Hummingbird","about 10 cm"]]],
+ ["Fastest to slowest","Fastest","Slowest",[["Fighter jet","about 1,500 mph"],["Concorde","1,350 mph"],["Commercial jet","about 575 mph"],["Bullet train","about 200 mph"],["Car on the highway","about 65 mph"]]],
+ ["Heaviest to lightest","Heaviest","Lightest",[["Car","about 1,500 kg"],["Grand piano","about 400 kg"],["Refrigerator","about 100 kg"],["Bowling ball","about 7 kg"],["Laptop","about 1.5 kg"]]],
+ ["Biggest volume to smallest","Biggest","Smallest",[["Olympic swimming pool","2.5M L"],["Hot tub","about 1,500 L"],["Bathtub","about 300 L"],["Bucket","about 10 L"],["Soda can","0.355 L"]]],
+ ["Spiciest to mildest","Spiciest","Mildest",[["Carolina Reaper","about 1.6M SHU"],["Ghost pepper","about 1M SHU"],["Habanero","about 200K SHU"],["Jalapeño","about 5K SHU"],["Bell pepper","0 SHU"]]],
+ ["Most caffeine to least","Most","Least",[["Cup of coffee (8 oz)","about 95 mg"],["Red Bull (8.4 oz)","80 mg"],["Shot of espresso","about 63 mg"],["Can of Coke","34 mg"],["Cup of decaf","about 2 mg"]]],
+ ["Biggest to smallest","Biggest","Smallest",[["Trenta","30 oz"],["Venti (iced)","24 oz"],["Grande","16 oz"],["Tall","12 oz"],["Short","8 oz"]]],
+ ["Biggest to smallest","Biggest","Smallest",[["King bed","76 × 80 in"],["Queen bed","60 × 80 in"],["Full bed","54 × 75 in"],["Twin bed","38 × 75 in"],["Crib","28 × 52 in"]]],
+ ["Biggest to smallest","Biggest","Smallest",[["Terabyte","10¹² bytes"],["Gigabyte","10⁹ bytes"],["Megabyte","10⁶ bytes"],["Kilobyte","10³ bytes"],["Byte","1 byte"]]],
+ ["Best poker hand to worst","Best","Worst",[["Royal flush","1st"],["Four of a kind","3rd"],["Full house","4th"],["Flush","5th"],["One pair","9th"]]],
+ ["Most expensive to cheapest","Most","Cheapest",[["Boardwalk","$400"],["Park Place","$350"],["Pennsylvania Avenue","$320"],["Illinois Avenue","$240"],["Baltic Avenue","$60"]]],
+ ["Most points to fewest","Most","Fewest",[["Q","10"],["K","5"],["H","4"],["B","3"],["E","1"]]],
+ ["Highest rank to lowest","Highest","Lowest",[["General","O-10"],["Colonel","O-6"],["Major","O-4"],["Captain","O-3"],["Lieutenant","O-1/O-2"]]],
+ ["Most strings to fewest","Most","Fewest",[["Harp","47"],["12-string guitar","12"],["Guitar","6"],["Banjo","5"],["Violin","4"]]]
+];
+const MAXTRIES=5;
+let R,orderQ;
+function init(){
+  if(MODE==="practice"){orderQ=shuffle(BANK).slice(0,5);return}
+  // everyone gets the same sets; the bank is used in a fixed order so weeks don't repeat
+  const perm=seededOrder(BANK,"pecking-bank"),base=(WEEK_NO*6)%perm.length,week=[0,1,2,3,4,5].map(k=>perm[(base+k)%perm.length]);
+  orderQ=MODE==="sunday"?[week[5]]:week.slice(0,5);
+}
+const ROWH=58;
+function startRound(i){
+  const [inst,top,bot,items]=orderQ[i];
+  let cur;do{cur=shuffle(items.map((_,k)=>k))}while(cur.every((v,k)=>v===k));
+  R={inst,top,bot,items,cur,locked:new Set(),tries:0,done:false,drag:null};
+  $("roundStat").textContent=`${MAXTRIES} tries`;
+  $("stage").innerHTML=`<div class="prompt"><b>${inst}</b><span>Drag to reorder</span></div>
+    <div class="ladder"><span class="end-lbl">${top}</span><div class="dragbox" id="ladder" style="height:${items.length*ROWH-8}px">${items.map((it,v)=>`<div class="item" data-v="${v}" role="listitem"><span class="n"></span><span class="nm">${it[0]}</span><span class="v"></span><span class="grip" aria-hidden="true"><i></i><i></i><i></i></span></div>`).join("")}</div><span class="end-lbl">${bot}</span></div>
+    <div class="tries" id="tries"></div>
+    <button class="big" id="subBtn">Submit order</button>`;
+  const box=$("ladder");
+  box.onpointerdown=e=>{
+    const el=e.target.closest(".item");if(!el||R.done)return;const v=+el.dataset.v,slot=R.cur.indexOf(v);if(R.locked.has(slot))return;
+    e.preventDefault();el.setPointerCapture(e.pointerId);
+    R.drag={el,v,y0:e.clientY,s0:slot};el.classList.add("dragging");
+  };
+  box.onpointermove=e=>{
+    const d=R.drag;if(!d)return;
+    const n=R.items.length,y=Math.max(0,Math.min((n-1)*ROWH,d.s0*ROWH+e.clientY-d.y0));
+    d.el.style.transform=`translateY(${y}px) scale(1.03)`;
+    const target=Math.round(y/ROWH),now=R.cur.indexOf(d.v);
+    if(target!==now&&!R.locked.has(target)){
+      // move within the unlocked spots only; locked eggs stay where they are
+      const P=R.cur.map((_,s)=>s).filter(s=>!R.locked.has(s)),V=P.map(s=>R.cur[s]);
+      V.splice(V.indexOf(d.v),1);V.splice(P.indexOf(target),0,d.v);P.forEach((s,i)=>R.cur[s]=V[i]);
+      layout();
+    }
+  };
+  const end=()=>{const d=R.drag;if(!d)return;R.drag=null;d.el.classList.remove("dragging");layout()};
+  box.onpointerup=end;box.onpointercancel=end;
+  $("subBtn").onclick=submit;
+  draw();hint("Drag them into order, then submit. Anything in the right spot locks in green.");
+}
+function layout(){
+  R.cur.forEach((v,slot)=>{
+    const el=document.querySelector(`.item[data-v="${v}"]`);
+    el.querySelector(".n").textContent=slot+1;
+    el.classList.toggle("locked",R.locked.has(slot));
+    el.querySelector(".v").textContent=R.done?R.items[v][1]:"";
+    if(!R.drag||R.drag.el!==el)el.style.transform=`translateY(${slot*ROWH}px)`;
+  });
+}
+function draw(){
+  layout();
+  $("tries").innerHTML=Array.from({length:MAXTRIES},(_,k)=>`<i class="${k<R.tries?"used":""}"></i>`).join("");
+}
+function submit(){
+  if(R.done)return;R.tries++;
+  R.cur.forEach((v,k)=>{if(v===k)R.locked.add(k)});
+  const right=R.locked.size;
+  if(right===R.items.length||R.tries>=MAXTRIES){
+    R.done=true;
+    if(right<R.items.length){R.cur=R.items.map((_,k)=>k);}
+    draw();$("subBtn").hidden=true;
+    const pts=right===R.items.length&&R.tries<=MAXTRIES&&R.cur.every((v,k)=>v===k)&&R.locked.size===5?20-4*(R.tries-1):0;
+    const solved=pts>0;
+    roundDone(solved?pts:0,solved?`Got it in ${R.tries} ${R.tries===1?"try":"tries"}.`:"Out of tries. Here's the right order.",{label:R.inst,detail:solved?`${R.tries}`:"—"});
+    return;
+  }
+  draw();hint(`${right} of 5 in the right spot. ${MAXTRIES-R.tries} ${MAXTRIES-R.tries===1?"try":"tries"} left.`);
+}
+
+init&&init();begin();
+</script>
+</body></html>

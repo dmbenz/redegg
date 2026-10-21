@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
+<script>document.documentElement.setAttribute("data-theme","dark")</script><meta name="color-scheme" content="dark"><meta name="theme-color" content="#14171C">
+<title>Red Egg: Trivia</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: same play column; the question sits on the tray, four answer buttons stack below */
+:root{
+  --bg:#ECEFF2; --surface:#FFFFFF; --tray:#DCE1E6; --ink:#1A1D23; --muted:#5E6673;
+  --line:#C9D0D8; --red:#D11F35; --good:#2E9B57; --bad:#8A5A3C; --btn:#1A1D23; --btn-ink:#FFFFFF; --opt:#FFFFFF;
+  --t1:#B98500; --t2:#2E9B57; --t3:#2F6FDB; --t4:#7A6F62; --t5:#8A5A3C;
+  --display:"Bagel Fat One","Arial Rounded MT Bold",system-ui,sans-serif;
+  --body:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#14171C; --surface:#1E232A; --tray:#262C34; --ink:#EEF1F5; --muted:#9AA3B0;
+  --line:#353D47; --red:#F0384D; --good:#47C474; --bad:#C08A66; --btn:#EEF1F5; --btn-ink:#14171C; --opt:#1A1E24;
+  --t1:#FFC93C; --t2:#47C474; --t3:#6EA0FF; --t4:#B3A898; --t5:#C08A66; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#14171C; --surface:#1E232A; --tray:#262C34; --ink:#EEF1F5; --muted:#9AA3B0;
+  --line:#353D47; --red:#F0384D; --good:#47C474; --bad:#C08A66; --btn:#EEF1F5; --btn-ink:#14171C; --opt:#1A1E24;
+  --t1:#FFC93C; --t2:#47C474; --t3:#6EA0FF; --t4:#B3A898; --t5:#C08A66; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.45;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 40px}
+.wrap{max-width:560px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px}
+.brand h1{font-family:var(--display);font-weight:400;font-size:1.9rem;line-height:1;margin:0;letter-spacing:.01em}
+.brand h1 span{color:var(--red)}
+.meta{font-size:.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-weight:600;text-align:right}
+.meta b{display:block;color:var(--ink);font-size:.95rem;letter-spacing:.02em;text-transform:none}
+.progress{display:flex;gap:6px;justify-content:center}
+.progress svg{width:26px;height:36px;transition:transform .2s}
+.progress .cur{transform:translateY(-3px) scale(1.12)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:14px}
+.roundhead{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.roundhead h2{font-family:var(--display);font-weight:400;font-size:1.35rem;margin:0}
+.clock{display:flex;align-items:baseline;gap:6px;font-family:var(--mono);font-variant-numeric:tabular-nums}
+.clock .time{font-size:1.8rem;font-weight:700;line-height:1;min-width:4ch;text-align:right}
+.clock .time.idle{color:var(--muted)}
+.clock .unit{color:var(--muted);font-size:.9rem}
+.category{font-size:.72rem;text-transform:uppercase;letter-spacing:.12em;font-weight:700;color:var(--muted)}
+.category b{color:var(--ink)}
+.question{background:var(--tray);border-radius:14px;padding:18px 16px;font-size:1.2rem;font-weight:700;line-height:1.35;min-height:5.2em;display:flex;align-items:center;text-wrap:balance}
+.question.veiled{color:transparent;text-shadow:0 0 12px var(--muted);user-select:none}
+.options{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.opt{border:2px solid var(--line);background:var(--opt);color:var(--ink);border-radius:12px;padding:14px 12px;font:600 1rem var(--body);text-align:left;cursor:pointer;min-height:3.4em;touch-action:manipulation}
+.opt:disabled{cursor:default}
+@media (hover:hover){.opt:not(:disabled):hover{border-color:var(--ink)}}
+.opt.right{border-color:var(--good);background:var(--good);color:#fff}
+.opt.wrong{border-color:var(--tray);background:var(--tray);color:var(--muted);opacity:.45;text-decoration:line-through}
+.opt.veiled{color:transparent}
+.opt:focus-visible{outline:3px solid var(--red);outline-offset:2px}
+.big{width:100%;border:0;border-radius:16px;padding:18px;font:700 1.15rem var(--body);cursor:pointer;background:var(--btn);color:var(--btn-ink)}
+.big:focus-visible{outline:3px solid var(--red);outline-offset:3px}
+.result{min-height:5.5em;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
+.result .sub{color:var(--muted);font-size:.92rem;max-width:44ch}
+.pts{font-family:var(--mono);font-size:2rem;font-weight:700;line-height:1;color:var(--ink);font-variant-numeric:tabular-nums}
+.pts small{font-size:.95rem;color:var(--muted);font-weight:500}
+.pill{display:inline-block;font:700 .78rem var(--body);text-transform:uppercase;letter-spacing:.08em;padding:4px 10px;border-radius:999px;border:1.5px solid currentColor;white-space:nowrap}
+.pill.t1{color:var(--t1)}.pill.t2{color:var(--t2)}.pill.t3{color:var(--t3)}.pill.t4{color:var(--t4)}.pill.t5{color:var(--t5)}
+.end td .pill{font-size:.64rem;padding:2px 7px}
+details{font-size:.92rem;color:var(--muted)}
+details summary{cursor:pointer;font-weight:600;color:var(--ink)}
+details p{margin:.5em 0 0;max-width:62ch}
+.end{align-items:center;text-align:center}
+.end .tier{font-family:var(--display);font-size:1.5rem}
+.end .score{font-family:var(--display);font-size:4rem;line-height:1;color:var(--ink)}
+.end .score small{font-size:1.4rem;color:var(--muted)}
+.end table{border-collapse:collapse;font-family:var(--mono);font-size:.85rem;font-variant-numeric:tabular-nums;width:100%;max-width:380px}
+.end td,.end th{padding:5px 6px;border-bottom:1px solid var(--line);text-align:right}
+.end th{color:var(--muted);font-weight:500;font-family:var(--body);font-size:.75rem;text-transform:uppercase;letter-spacing:.08em}
+.end td:first-child,.end th:first-child{text-align:left}
+.share{font-family:var(--mono);white-space:pre;background:var(--tray);border-radius:10px;padding:12px 16px;font-size:.9rem;text-align:left;user-select:all}
+.note{margin:0;max-width:42ch;color:var(--muted)}
+.actions{display:flex;gap:10px;width:100%}
+.actions button{font:700 1rem var(--body);border-radius:12px;padding:14px 18px;cursor:pointer;flex:1}
+.actions .primary{background:var(--btn);color:var(--btn-ink);border:0}
+.actions .ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+.toast{font-size:.85rem;color:var(--good);min-height:1.2em}
+@media (max-width:380px){.options{grid-template-columns:1fr}}
+body.mode-sunday #progress{display:none}
+.backlink{display:block;color:var(--muted);text-decoration:none;font-weight:700;margin-bottom:2px}
+body.mode-sunday .backlink{color:var(--red);pointer-events:none}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+</head><body>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <svg width="30" height="40" viewBox="0 0 60 80" aria-hidden="true"><path d="M30 3C46 3 57 31 57 48C57 66 45 78 30 78C15 78 3 66 3 48C3 31 14 3 30 3Z" fill="var(--red)"/><ellipse cx="20" cy="30" rx="6" ry="11" fill="#fff" opacity=".35" transform="rotate(20 20 30)"/></svg>
+      <h1>The <span>Red</span> Egg</h1>
+    </div>
+    <div class="meta">Trivia<b id="dateLabel"></b></div>
+  </header>
+
+  <div class="progress" id="progress" aria-label="Question progress"></div>
+
+  <section class="card" id="game">
+    <div class="roundhead">
+      <h2 id="roundTitle">Question 1 of 5</h2>
+      <div class="clock"><span class="time idle" id="timer">0.0</span><span class="unit">sec</span></div>
+    </div>
+    <div class="category">This week: <b id="catName"></b></div>
+    <div class="question veiled" id="question">Question goes here</div>
+    <div class="options" id="options"></div>
+    <button class="big" id="bigBtn">Show question</button>
+    <div class="result" id="result" aria-live="polite"><span class="sub">The clock starts when the question appears.</span></div>
+  </section>
+
+  <section class="card end" id="end" hidden></section>
+
+  <details>
+    <summary>How to play</summary>
+    <p>Each week has one trivia category. You get 5 questions with 4 choices each. The clock starts when the question appears.</p>
+    <p>The faster you find the right answer, the more points you get, up to 20. A wrong answer doesn't end the question: it's crossed out and adds 4 seconds, and you keep going. If your time plus penalties reaches 20 seconds, the question scores 0. Your 5 questions add up to a score out of 100.</p>
+  </details>
+</div>
+
+<script>
+/* ---- daily rules shared by every page: same puzzle for everyone, one play per day, streaks ---- */
+const DAY_KEYS=["egg-sort","blind-stop","flash","trivia","bridge","pecking-order","sunday"];
+const DAY_NAMES=["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
+const pad2=n=>String(n).padStart(2,"0");
+const ymd=d=>`${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`;
+const NOW=new Date(),LOCALDAY=ymd(NOW),TODAY_IDX=(NOW.getDay()+6)%7;
+const CUR_MONDAY=(()=>{const d=new Date(NOW);d.setDate(d.getDate()-TODAY_IDX);return ymd(d)})();
+const WEEK_NO=Math.round((new Date(CUR_MONDAY+"T12:00:00")-new Date("2026-01-05T12:00:00"))/604800000);
+/* the date a day's game belongs to this week, so a catch-up gets the same puzzle everyone played that day */
+function gameDate(key){const i=DAY_KEYS.indexOf(key);const d=new Date(CUR_MONDAY+"T12:00:00");d.setDate(d.getDate()+Math.max(0,i));return ymd(d)}
+const SUN_KEYS=["egg-sort","blind-stop","flash","trivia","bridge","pecking-order"];
+function hashStr(s){let h=2166136261;for(const c of s){h^=c.charCodeAt(0);h=Math.imul(h,16777619)}return h>>>0}
+function rngFrom(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function seededOrder(list,salt){const r=rngFrom(hashStr(salt)),a=list.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+const RS={get(k,d){try{const v=localStorage.getItem("redegg2:"+k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem("redegg2:"+k,JSON.stringify(v))}catch(e){}}};
+/* a new egg every Monday */
+function currentWeek(){let w=RS.get("week",null);if(!w||!w.id||w.id<CUR_MONDAY){w={id:CUR_MONDAY,days:{},sunday:{}};RS.set("week",w)}w.days=w.days||{};w.sunday=w.sunday||{};return w}
+function markPlayed(){const s=RS.get("playDays",[]);if(!s.includes(LOCALDAY)){s.push(LOCALDAY);RS.set("playDays",s)}}
+function dayStreak(){const s=new Set(RS.get("playDays",[]));const d=new Date(NOW);if(!s.has(ymd(d)))d.setDate(d.getDate()-1);let n=0;while(s.has(ymd(d))){n++;d.setDate(d.getDate()-1)}return n}
+function bestDayStreak(){const s=[...new Set(RS.get("playDays",[]))].sort();let best=0,run=0,prev=null;for(const k of s){const d=new Date(k+"T12:00:00");run=prev&&Math.round((d-prev)/864e5)===1?run+1:1;best=Math.max(best,run);prev=d}return best}
+function weekStreak(){const ids=new Set(RS.get("pen",[]).map(p=>p.id));const d=new Date(CUR_MONDAY+"T12:00:00");if(!ids.has(ymd(d)))d.setDate(d.getDate()-7);let n=0;while(ids.has(ymd(d))){n++;d.setDate(d.getDate()-7)}return n}
+/* stop replays and off-day plays (testing can unlock every day) */
+function dailyGate(mode,key,name){
+  if(mode==="practice"||RS.get("unlockAll",false))return false;
+  const w=currentWeek();let msg=null;
+  if(mode==="day"){
+    if(key in w.days)msg=`You already played today's ${name}. You scored <b>${Math.round(w.days[key])}</b>. A new puzzle is waiting tomorrow.`;
+    else if(DAY_KEYS.indexOf(key)>TODAY_IDX)msg=`${name} is ${DAY_NAMES[DAY_KEYS.indexOf(key)]}'s game. It unlocks on ${DAY_NAMES[DAY_KEYS.indexOf(key)]}.`;
+    else if(SUN_KEYS.every(k=>k in w.sunday))msg=`This week's egg has already hatched, so ${name} can't be caught up. A new egg starts Monday.`;
+  }else if(mode==="sunday"){
+    if(TODAY_IDX!==6)msg=`The Red Egg is played on Sunday.`;
+    else if(key in w.sunday)msg=`You already played this round of the Red Egg.`;
+  }
+  if(!msg)return false;
+  const wrap=document.querySelector(".wrap");
+  [...wrap.children].forEach(el=>{if(el.tagName!=="HEADER")el.hidden=true});
+  wrap.insertAdjacentHTML("beforeend",`<section class="card" style="align-items:center;text-align:center;gap:16px"><p style="margin:0;font-size:1.05rem;max-width:36ch">${msg}</p><a href="index.html" style="display:block;width:100%;text-align:center;text-decoration:none;border-radius:16px;padding:16px;font:700 1.05rem var(--body);background:var(--btn);color:var(--btn-ink)">Back to the egg</a></section>`);
+  return true;
+}
+
+/* ---- The Red Egg week hooks ---- */
+const GAME={key:"trivia",name:"Trivia"};
+const SUNDAY_ORDER=[["egg-sort","Scrambled",3],["blind-stop","Blind Stop",3],["flash","Flash",3],["trivia","Trivia",5],["bridge","Link Up",4],["pecking-order","Pecking Order",0]];
+const SUNDAY_MULT=5/6; // six Sunday rounds share 100 points
+const MODE=location.hash==="#sunday"?"sunday":location.hash==="#day"?"day":"practice";
+const STORE={get(k,d){try{const v=localStorage.getItem("redegg2:"+k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem("redegg2:"+k,JSON.stringify(v))}catch(e){}}};
+function weekData(){return currentWeek()}
+function saveWeek(w){STORE.set("week",w)}
+const SIDX=SUNDAY_ORDER.findIndex(g=>g[0]===GAME.key);
+function lastPts(){return S.results[S.results.length-1].pts}
+function TITLE(d){return MODE==="sunday"?`Sunday · ${SIDX+1} of ${SUNDAY_ORDER.length}`:d}
+function shown(p){return MODE==="sunday"?(p*SUNDAY_MULT).toFixed(1):p.toFixed(1)}
+function nextLabel(d){if(MODE!=="sunday")return d;const n=SUNDAY_ORDER[SIDX+1];return n?`Next: ${n[1]}`:"Crack the egg"}
+function sundayNext(){if(MODE!=="sunday")return false;markPlayed();const w=weekData();w.sunday=w.sunday||{};w.sunday[GAME.key]=+(lastPts()*SUNDAY_MULT).toFixed(1);saveWeek(w);const n=SUNDAY_ORDER[SIDX+1];location.href=n?`${n[0]}.html#sunday`:"index.html#crack";return true}
+function sundayInit(setup){if(MODE!=="sunday")return;S.round=SUNDAY_ORDER[SIDX][2];setup()}
+function onDayDone(total){if(MODE!=="day")return;markPlayed();const w=weekData();w.days=w.days||{};w.days[GAME.key]=total;saveWeek(w);const h=STORE.get("history",[]);h.push({game:GAME.key,score:total,week:w.id||"",at:Date.now()});STORE.set("history",h);
+  setTimeout(()=>{const a=document.querySelector("#end .actions");if(!a)return;const b=document.createElement("button");b.className="primary";b.textContent="Back to the egg";b.onclick=()=>{location.href="index.html"};a.prepend(b);const ag=document.getElementById("againBtn");if(ag)ag.remove()},0)}
+if(MODE!=="practice"){
+  document.body.classList.add("mode-"+MODE);
+  const m=document.querySelector("header .meta");
+  if(m){const a=document.createElement("a");a.href="index.html";a.className="backlink";a.textContent=MODE==="sunday"?"Sunday":"← Home";m.prepend(a)}
+  if(MODE==="sunday")document.querySelectorAll("header a").forEach(x=>{x.style.pointerEvents="none";x.setAttribute("tabindex","-1")});
+}
+/* ---- end hooks ---- */
+const ROUNDS=5, LIMIT=20, MISS=4;
+const EGG="M30 3C46 3 57 31 57 48C57 66 45 78 30 78C15 78 3 66 3 48C3 31 14 3 30 3Z";
+// Each question: [question, correct answer, wrong, wrong, wrong]
+const CATS={
+  "World Geography":[["What is the capital of Australia?", "Canberra", "Sydney", "Melbourne", "Perth"], ["What is the capital of Canada?", "Ottawa", "Toronto", "Montreal", "Vancouver"], ["What is the capital of Turkey?", "Ankara", "Istanbul", "Izmir", "Antalya"], ["What is the capital of New Zealand?", "Wellington", "Auckland", "Christchurch", "Queenstown"], ["What is the smallest country in the world?", "Vatican City", "Monaco", "San Marino", "Liechtenstein"], ["Mount Kilimanjaro is in which country?", "Tanzania", "Kenya", "Uganda", "Ethiopia"], ["Which US state has the longest coastline?", "Alaska", "Florida", "California", "Hawaii"], ["Which ocean lies between Africa and Australia?", "Indian", "Pacific", "Atlantic", "Southern"], ["What is the largest hot desert in the world?", "Sahara", "Arabian", "Gobi", "Kalahari"], ["Which river flows through Baghdad?", "Tigris", "Euphrates", "Nile", "Jordan"], ["Which country has the most people?", "India", "China", "United States", "Indonesia"], ["What is the longest river in South America?", "Amazon", "Paraná", "Orinoco", "Magdalena"], ["Which country has the most time zones, counting its overseas territories?", "France", "Russia", "United States", "China"]],
+  "Breakfast":[["Which bird lays the largest eggs?", "Ostrich", "Emu", "Eagle", "Penguin"], ["Which sauce goes on eggs Benedict?", "Hollandaise", "Béarnaise", "Alfredo", "Béchamel"], ["What mostly decides the color of a chicken egg's shell?", "The hen's breed", "The hen's diet", "How old the egg is", "The rooster"], ["Which egg dish is usually folded in half?", "Omelette", "Frittata", "Quiche", "Shakshuka"], ["In shakshuka, the eggs are cooked in what?", "Tomato sauce", "Cream", "Broth", "Yogurt"], ["Which jeweler is famous for its jeweled Easter eggs made for the Russian czars?", "Fabergé", "Cartier", "Tiffany", "Bulgari"], ["Huevos rancheros comes from which country's cooking?", "Mexico", "Spain", "Argentina", "Cuba"], ["What is a young hen, under a year old, called?", "A pullet", "A capon", "A bantam", "A cockerel"], ["A Spanish tortilla is made mainly of eggs and what?", "Potatoes", "Corn", "Rice", "Beans"], ["Nutella was first made in which country?", "Italy", "France", "Belgium", "Switzerland"], ["Hass is a popular variety of which fruit?", "Avocado", "Mango", "Apple", "Banana"]],
+  "Space":[["Which planet is known as the Red Planet?", "Mars", "Jupiter", "Venus", "Mercury"], ["What is the largest planet in our solar system?", "Jupiter", "Saturn", "Neptune", "Uranus"], ["Who was the first person to walk on the Moon?", "Neil Armstrong", "Buzz Aldrin", "Yuri Gagarin", "John Glenn"], ["What is the closest star to Earth?", "The Sun", "Proxima Centauri", "Sirius", "Polaris"], ["Which planet has the most famous ring system?", "Saturn", "Jupiter", "Uranus", "Neptune"], ["What galaxy do we live in?", "The Milky Way", "Andromeda", "Triangulum", "Whirlpool"], ["How long does sunlight take to reach Earth, roughly?", "8 minutes", "8 seconds", "8 hours", "1 minute"], ["What is the hottest planet in our solar system?", "Venus", "Mercury", "Mars", "Jupiter"], ["Which was the first artificial satellite in space?", "Sputnik 1", "Explorer 1", "Vanguard 1", "Telstar"]],
+  "Animals":[["What is the largest animal ever known to have lived?", "Blue whale", "Argentinosaurus", "African elephant", "Megalodon"], ["What is the fastest land animal?", "Cheetah", "Pronghorn", "Lion", "Greyhound"], ["How many legs does a spider have?", "8", "6", "10", "12"], ["What is a group of crows called?", "A murder", "A flock", "A parliament", "A gaggle"], ["Which animal is known for changing its skin color to blend in?", "Chameleon", "Iguana", "Gecko", "Salamander"], ["What is the only bird that can fly backward?", "Hummingbird", "Sparrow", "Kingfisher", "Swift"], ["What do pandas mostly eat?", "Bamboo", "Eucalyptus", "Fish", "Berries"], ["A baby kangaroo is called what?", "A joey", "A kit", "A cub", "A pup"], ["What is the tallest animal in the world?", "Giraffe", "African elephant", "Ostrich", "Moose"]],
+  "Movies":[["Which movie features a toy cowboy named Woody?", "Toy Story", "Cars", "Shrek", "Up"], ["In The Wizard of Oz, what color are Dorothy's slippers?", "Ruby red", "Silver", "Gold", "Emerald green"], ["Which film won the first Academy Award for Best Animated Feature?", "Shrek", "Toy Story", "Finding Nemo", "Monsters, Inc."], ["What is the name of the lion cub in The Lion King?", "Simba", "Mufasa", "Nala", "Scar"], ["Which movie has the line \"I'll be back\"?", "The Terminator", "Rocky", "Die Hard", "Predator"], ["In Finding Nemo, what kind of fish is Nemo?", "Clownfish", "Angelfish", "Goldfish", "Pufferfish"], ["Who directed Jurassic Park?", "Steven Spielberg", "James Cameron", "George Lucas", "Ridley Scott"], ["What is the highest-grossing film of all time, not adjusted for inflation?", "Avatar", "Avengers: Endgame", "Titanic", "Star Wars: The Force Awakens"]],
+  "Music":[["How many strings does a standard guitar have?", "6", "4", "5", "8"], ["Which band sang \"Hey Jude\"?", "The Beatles", "The Rolling Stones", "Queen", "The Who"], ["Who is known as the King of Pop?", "Michael Jackson", "Elvis Presley", "Prince", "Justin Timberlake"], ["Who is known as the King of Rock and Roll?", "Elvis Presley", "Chuck Berry", "Little Richard", "Johnny Cash"], ["Which instrument has 88 keys?", "Piano", "Organ", "Accordion", "Harpsichord"], ["What is the lowest female singing voice?", "Contralto", "Soprano", "Mezzo-soprano", "Alto-soprano"], ["Which country did the band ABBA come from?", "Sweden", "Norway", "Denmark", "Finland"], ["Freddie Mercury was the lead singer of which band?", "Queen", "Led Zeppelin", "Aerosmith", "The Police"]],
+  "Food and Drink":[["Which country is the origin of sushi?", "Japan", "China", "Korea", "Thailand"], ["What is the main ingredient in guacamole?", "Avocado", "Tomato", "Lime", "Pea"], ["Which nut is used to make marzipan?", "Almond", "Cashew", "Walnut", "Hazelnut"], ["What type of pasta is shaped like a bow tie?", "Farfalle", "Penne", "Fusilli", "Rigatoni"], ["Which spice is the most expensive by weight?", "Saffron", "Vanilla", "Cardamom", "Cinnamon"], ["What is the main ingredient in hummus?", "Chickpeas", "Lentils", "Black beans", "Peas"], ["Which fruit is known as the king of fruits in Southeast Asia?", "Durian", "Mango", "Jackfruit", "Lychee"], ["Where did the croissant's ancestor, the kipferl, come from?", "Austria", "France", "Belgium", "Switzerland"]],
+  "US History":[["Who was the first President of the United States?", "George Washington", "John Adams", "Thomas Jefferson", "Benjamin Franklin"], ["In what year did the Declaration of Independence get signed?", "1776", "1789", "1774", "1781"], ["Which president is on the $5 bill?", "Abraham Lincoln", "George Washington", "Thomas Jefferson", "Andrew Jackson"], ["Which state was the last to join the United States?", "Hawaii", "Alaska", "Arizona", "New Mexico"], ["From which country did the US buy Alaska?", "Russia", "Canada", "Britain", "Spain"], ["Who wrote most of the Declaration of Independence?", "Thomas Jefferson", "John Adams", "Benjamin Franklin", "James Madison"], ["What was the first capital of the United States under the Constitution?", "New York City", "Philadelphia", "Washington, D.C.", "Boston"], ["How many original colonies were there?", "13", "10", "12", "15"]],
+  "Science":[["What gas do plants take in from the air?", "Carbon dioxide", "Oxygen", "Nitrogen", "Hydrogen"], ["What is the chemical symbol for gold?", "Au", "Ag", "Gd", "Go"], ["At what temperature does water boil at sea level, in Fahrenheit?", "212°F", "100°F", "180°F", "232°F"], ["What is the most abundant gas in Earth's air?", "Nitrogen", "Oxygen", "Carbon dioxide", "Argon"], ["What part of a cell holds its DNA?", "The nucleus", "The membrane", "The ribosome", "The cytoplasm"], ["What force keeps us on the ground?", "Gravity", "Magnetism", "Friction", "Inertia"], ["What is H2O better known as?", "Water", "Salt", "Hydrogen peroxide", "Ammonia"], ["How many elements are on the periodic table?", "118", "92", "108", "126"]],
+  "The Human Body":[["How many bones are in the adult human body?", "206", "186", "226", "300"], ["What is the largest organ of the human body?", "Skin", "Liver", "Brain", "Lungs"], ["Which blood type is known as the universal donor?", "O negative", "AB positive", "A positive", "B negative"], ["How many chambers does the human heart have?", "4", "2", "3", "6"], ["What is the smallest bone in the human body?", "The stirrup (stapes)", "The anvil (incus)", "The pinky toe bone", "The kneecap"], ["Which organ cleans the blood and makes urine?", "Kidneys", "Liver", "Pancreas", "Spleen"], ["How many teeth does a full adult set have?", "32", "28", "30", "36"], ["What is the longest bone in the human body?", "Femur", "Tibia", "Humerus", "Fibula"]],
+  "Inventions":[["Who is credited with inventing the telephone?", "Alexander Graham Bell", "Thomas Edison", "Nikola Tesla", "Samuel Morse"], ["Which brothers made the first powered airplane flight?", "The Wright brothers", "The Montgolfier brothers", "The Grimm brothers", "The Mayo brothers"], ["Who invented the World Wide Web?", "Tim Berners-Lee", "Bill Gates", "Steve Jobs", "Vint Cerf"], ["Which company released the first iPhone?", "Apple", "Samsung", "Nokia", "Motorola"], ["Johannes Gutenberg invented what?", "The printing press", "The telescope", "The steam engine", "The compass"], ["What did Alexander Fleming discover in 1928?", "Penicillin", "Insulin", "X-rays", "DNA"], ["Which inventor is famous for the light bulb?", "Thomas Edison", "Nikola Tesla", "Benjamin Franklin", "James Watt"], ["What was the first video game console sold to homes?", "Magnavox Odyssey", "Atari 2600", "Nintendo NES", "Intellivision"]],
+  "The Ocean":[["What is the largest ocean on Earth?", "Pacific", "Atlantic", "Indian", "Arctic"], ["What is the deepest point in the ocean?", "Challenger Deep", "Puerto Rico Trench", "Java Trench", "Tonga Trench"], ["Which ocean is the smallest?", "Arctic", "Indian", "Southern", "Atlantic"], ["What is the largest coral reef system in the world?", "Great Barrier Reef", "Belize Barrier Reef", "Red Sea Reef", "Florida Reef"], ["Roughly how much of Earth's surface is covered by ocean?", "About 71%", "About 50%", "About 60%", "About 85%"], ["Which sea creature has three hearts?", "Octopus", "Squid", "Jellyfish", "Starfish"], ["What is the largest fish in the sea?", "Whale shark", "Great white shark", "Basking shark", "Giant manta ray"], ["Which sea is so salty that people float easily in it?", "The Dead Sea", "The Red Sea", "The Black Sea", "The Caspian Sea"]],
+  "Video Games":[["What is the name of Nintendo's famous plumber?", "Mario", "Luigi", "Wario", "Link"], ["Which game is about building with blocks and surviving?", "Minecraft", "Roblox", "Fortnite", "Terraria"], ["What color is Sonic the Hedgehog?", "Blue", "Green", "Red", "Yellow"], ["In Pac-Man, what are the enemies called?", "Ghosts", "Goblins", "Monsters", "Zombies"], ["What is the princess's name in The Legend of Zelda?", "Zelda", "Peach", "Daisy", "Rosalina"], ["Which company makes the PlayStation?", "Sony", "Microsoft", "Nintendo", "Sega"], ["What falls from the top of the screen in Tetris?", "Blocks called tetrominoes", "Coins", "Bubbles", "Gems"], ["Which Pokémon is number 25 and the series mascot?", "Pikachu", "Charmander", "Eevee", "Jigglypuff"]],
+  "Words and Language":[["What is the most widely spoken language in the world, counting all speakers?", "English", "Mandarin Chinese", "Spanish", "Hindi"], ["Which letter appears most often in English writing?", "E", "A", "T", "S"], ["What do you call a word that reads the same backward, like \"racecar\"?", "A palindrome", "An anagram", "A homonym", "An acronym"], ["How many letters are in the English alphabet?", "26", "24", "25", "28"], ["What language has the most native speakers?", "Mandarin Chinese", "English", "Spanish", "Arabic"], ["What do you call a word made from the first letters of other words, like NASA?", "An acronym", "A palindrome", "A homophone", "A synonym"], ["Which language is spoken in Brazil?", "Portuguese", "Spanish", "Brazilian", "French"], ["What does the \"S\" in \"SOS\" stand for?", "Nothing", "Save", "Ship", "Signal"]],
+  "Holidays":[["Which holiday is celebrated on October 31?", "Halloween", "Thanksgiving", "Labor Day", "Veterans Day"], ["In the US, Thanksgiving falls on which day of the week?", "Thursday", "Friday", "Monday", "Sunday"], ["Which holiday is known for decorating eggs?", "Easter", "Christmas", "Halloween", "Passover"], ["What is traditionally hidden in a king cake?", "A tiny baby figurine", "A coin", "A ring", "An almond"], ["Cinco de Mayo is celebrated on what date?", "May 5", "May 1", "September 16", "May 15"], ["Which country started the tradition of the Christmas tree?", "Germany", "England", "Norway", "United States"], ["On which holiday do people traditionally kiss under the mistletoe?", "Christmas", "Valentine's Day", "New Year's Eve", "Easter"], ["Which holiday is known as the Festival of Lights in Judaism?", "Hanukkah", "Passover", "Purim", "Rosh Hashanah"]],
+  "Art and Artists":[["Who painted the Mona Lisa?", "Leonardo da Vinci", "Michelangelo", "Raphael", "Botticelli"], ["Which artist cut off part of his own ear?", "Vincent van Gogh", "Pablo Picasso", "Claude Monet", "Salvador Dalí"], ["In which museum does the Mona Lisa hang?", "The Louvre", "The Prado", "The Met", "The Uffizi"], ["Who painted the ceiling of the Sistine Chapel?", "Michelangelo", "Leonardo da Vinci", "Raphael", "Donatello"], ["Which artist is famous for paintings of soup cans?", "Andy Warhol", "Roy Lichtenstein", "Jackson Pollock", "Keith Haring"], ["Which artist painted melting clocks?", "Salvador Dalí", "René Magritte", "Pablo Picasso", "Joan Miró"], ["What are the three primary colors in paint?", "Red, yellow, blue", "Red, green, blue", "Orange, purple, green", "Black, white, red"], ["Which artist painted \"The Starry Night\"?", "Vincent van Gogh", "Claude Monet", "Edvard Munch", "Paul Cézanne"]],
+  "Money and Business":[["Whose face is on the US $100 bill?", "Benjamin Franklin", "George Washington", "Abraham Lincoln", "Alexander Hamilton"], ["Which company's logo is an apple with a bite taken out?", "Apple", "BlackBerry", "Acer", "Dell"], ["What is the currency of Japan?", "Yen", "Won", "Yuan", "Ringgit"], ["Which company started as an online bookstore?", "Amazon", "eBay", "Barnes & Noble", "Google"], ["How many cents are in a US quarter?", "25", "20", "50", "10"], ["Which country uses the euro?", "Germany", "United Kingdom", "Switzerland", "Sweden"], ["What does the \"Coca\" in Coca-Cola originally come from?", "Coca leaves", "Cocoa beans", "Coconuts", "Coffee beans"], ["Which fast-food chain is known for its golden arches?", "McDonald's", "Burger King", "Wendy's", "Arby's"]],
+  "Weather and Earth":[["What is the hottest layer of the Earth?", "The inner core", "The outer core", "The mantle", "The crust"], ["What do you call a scientist who studies weather?", "Meteorologist", "Geologist", "Astronomer", "Seismologist"], ["What scale measures the strength of hurricanes?", "Saffir-Simpson", "Richter", "Fujita", "Beaufort"], ["What is the tallest mountain on Earth above sea level?", "Mount Everest", "K2", "Kilimanjaro", "Denali"], ["What is the longest river in the United States?", "Missouri", "Mississippi", "Colorado", "Ohio"], ["What causes the seasons on Earth?", "The tilt of Earth's axis", "Distance from the Sun", "The Moon", "Ocean currents"], ["What is frozen rain called?", "Sleet", "Hail", "Snow", "Frost"], ["Which is the largest hot desert in the world?", "Sahara", "Arabian", "Kalahari", "Mojave"]],
+  "Famous Landmarks":[["In which city is the Eiffel Tower?", "Paris", "London", "Rome", "Brussels"], ["Which country is home to Machu Picchu?", "Peru", "Mexico", "Chile", "Bolivia"], ["The Taj Mahal is in which country?", "India", "Pakistan", "Iran", "Turkey"], ["Which city has the Colosseum?", "Rome", "Athens", "Istanbul", "Naples"], ["What is the tallest building in the world?", "Burj Khalifa", "Shanghai Tower", "One World Trade Center", "Taipei 101"], ["The Statue of Liberty was a gift from which country?", "France", "Britain", "Spain", "Italy"], ["In which city is the Golden Gate Bridge?", "San Francisco", "Los Angeles", "Seattle", "San Diego"], ["Which country is home to the ancient city of Petra?", "Jordan", "Egypt", "Israel", "Syria"]],
+  "TV Shows":[["In The Simpsons, what is Homer's favorite drink?", "Duff beer", "Buzz Cola", "Squishee", "Flaming Moe"], ["Which show is set in the fictional town of Hawkins, Indiana?", "Stranger Things", "Riverdale", "Twin Peaks", "Smallville"], ["What is the name of the coffee shop in Friends?", "Central Perk", "The Daily Grind", "Java Joe's", "Monk's Café"], ["In The Office, what company does Michael Scott work for?", "Dunder Mifflin", "Sabre", "Vance Refrigeration", "Staples"], ["Which cartoon character lives in a pineapple under the sea?", "SpongeBob SquarePants", "Patrick Star", "Squidward", "Mr. Krabs"], ["What is the name of the dragon queen's family in Game of Thrones?", "Targaryen", "Lannister", "Stark", "Baratheon"], ["In Breaking Bad, what subject did Walter White teach?", "Chemistry", "Biology", "Physics", "Math"], ["Which show features a family called the Pritchetts and the Dunphys?", "Modern Family", "Arrested Development", "The Middle", "Black-ish"]],
+  "Board Games and Puzzles":[["How many squares are on a chessboard?", "64", "81", "100", "49"], ["Which chess piece can only move diagonally?", "Bishop", "Rook", "Knight", "Queen"], ["In Monopoly, which property is the most expensive?", "Boardwalk", "Park Place", "Mayfair", "Marvin Gardens"], ["How many dots are on a standard die in total?", "21", "18", "24", "20"], ["In Scrabble, how many points is the letter Q worth?", "10", "8", "5", "12"], ["Which game asks you to solve \"who, where, and with what\"?", "Clue", "Guess Who?", "Risk", "Battleship"], ["How many pieces does each player start with in checkers?", "12", "10", "16", "8"], ["What is the only chess piece that can jump over others?", "Knight", "Bishop", "Rook", "King"]],
+  "The Super Bowl":[["Which team won the first Super Bowl?", "Green Bay Packers", "Kansas City Chiefs", "Dallas Cowboys", "New York Jets"], ["Which quarterback has won the most Super Bowls?", "Tom Brady", "Joe Montana", "Terry Bradshaw", "Patrick Mahomes"], ["Which team has made the most Super Bowl appearances?", "New England Patriots", "Dallas Cowboys", "Pittsburgh Steelers", "Denver Broncos"], ["Who won Super Bowl LIX in February 2025?", "Philadelphia Eagles", "Kansas City Chiefs", "Buffalo Bills", "Detroit Lions"], ["Who was the MVP when the Eagles beat the Patriots in Super Bowl LII?", "Nick Foles", "Carson Wentz", "Zach Ertz", "Jalen Hurts"], ["Which team finished a season undefeated and won the Super Bowl?", "1972 Miami Dolphins", "2007 New England Patriots", "1985 Chicago Bears", "1989 San Francisco 49ers"], ["Who made the famous \"Helmet Catch\" in Super Bowl XLII?", "David Tyree", "Plaxico Burress", "Eli Manning", "Victor Cruz"], ["Who headlined the Super Bowl halftime show in February 2023?", "Rihanna", "Beyoncé", "Usher", "The Weeknd"]],
+  "The NBA":[["Which team drafted Kobe Bryant before trading him to the Lakers?", "Charlotte Hornets", "Philadelphia 76ers", "New Jersey Nets", "Boston Celtics"], ["Who is the NBA's all-time leading scorer?", "LeBron James", "Kareem Abdul-Jabbar", "Karl Malone", "Michael Jordan"], ["Which team came back from 3–1 down to win the 2016 NBA Finals?", "Cleveland Cavaliers", "Golden State Warriors", "San Antonio Spurs", "Miami Heat"], ["Which franchise has won the most NBA championships?", "Boston Celtics", "Los Angeles Lakers", "Chicago Bulls", "Golden State Warriors"], ["Which player is nicknamed \"The Greek Freak\"?", "Giannis Antetokounmpo", "Nikola Jokić", "Luka Dončić", "Kristaps Porziņģis"], ["Which team won its first NBA title in 2023?", "Denver Nuggets", "Miami Heat", "Phoenix Suns", "Milwaukee Bucks"], ["Which Warriors star set the record for most career three-pointers?", "Stephen Curry", "Klay Thompson", "Kevin Durant", "Draymond Green"], ["Which team did Shaquille O'Neal win three straight titles with?", "Los Angeles Lakers", "Miami Heat", "Orlando Magic", "Boston Celtics"]],
+  "The World Cup":[["Who won the 2022 World Cup in Qatar?", "Argentina", "France", "Croatia", "Morocco"], ["Who won the 2018 World Cup in Russia?", "France", "Croatia", "Belgium", "England"], ["Who won the 2014 World Cup in Brazil?", "Germany", "Argentina", "Brazil", "Netherlands"], ["Which country hosted the first World Cup in 1930?", "Uruguay", "Brazil", "Italy", "France"], ["Which three countries are hosting the 2026 World Cup?", "United States, Canada and Mexico", "United States, Mexico and Brazil", "Canada, Mexico and Cuba", "United States, Canada and Jamaica"], ["Who holds the record for most men's World Cup goals?", "Miroslav Klose", "Lionel Messi", "Ronaldo (Brazil)", "Pelé"], ["Which country won the World Cup in 2010?", "Spain", "Netherlands", "Germany", "Italy"], ["Who won the Golden Ball as best player at the 2022 World Cup?", "Lionel Messi", "Kylian Mbappé", "Luka Modrić", "Julián Álvarez"]],
+  "The Olympics":[["Which city hosted the 2024 Summer Olympics?", "Paris", "Tokyo", "Los Angeles", "London"], ["Which city will host the 2028 Summer Olympics?", "Los Angeles", "Brisbane", "Paris", "Rome"], ["Who has won the most Olympic medals of all time?", "Michael Phelps", "Larisa Latynina", "Usain Bolt", "Simone Biles"], ["Which gymnast has the most Olympic and World medals in history?", "Simone Biles", "Nadia Comăneci", "Gabby Douglas", "Larisa Latynina"], ["Which city hosted the 2008 Summer Olympics?", "Beijing", "Athens", "Sydney", "London"], ["Usain Bolt competed for which country?", "Jamaica", "Trinidad and Tobago", "Barbados", "Bahamas"], ["Which city hosted the 2022 Winter Olympics?", "Beijing", "PyeongChang", "Sochi", "Milan"], ["What were the US men's basketball team at the 1992 Olympics nicknamed?", "The Dream Team", "The Redeem Team", "The Avengers", "The Showtime Squad"]],
+  "Tennis":[["Which man has won the most Grand Slam singles titles?", "Novak Djokovic", "Rafael Nadal", "Roger Federer", "Pete Sampras"], ["Which Grand Slam is played on clay?", "French Open", "Wimbledon", "US Open", "Australian Open"], ["Who has won the French Open a record 14 times?", "Rafael Nadal", "Novak Djokovic", "Roger Federer", "Björn Borg"], ["Who holds the men's record of 8 Wimbledon singles titles?", "Roger Federer", "Novak Djokovic", "Pete Sampras", "Björn Borg"], ["Which Spanish star won Wimbledon in both 2023 and 2024?", "Carlos Alcaraz", "Rafael Nadal", "Jannik Sinner", "David Ferrer"], ["In tennis, what is a 40–40 score called?", "Deuce", "Advantage", "Love", "Break point"], ["Which city hosts the US Open?", "New York", "Miami", "Los Angeles", "Indian Wells"], ["Which Grand Slam is played first each year?", "Australian Open", "French Open", "Wimbledon", "US Open"]],
+  "Golf":[["Winning which tournament earns a green jacket?", "The Masters", "The Open Championship", "The US Open", "The PGA Championship"], ["Who has won the most men's major championships?", "Jack Nicklaus", "Tiger Woods", "Ben Hogan", "Arnold Palmer"], ["Where is the Masters played every year?", "Augusta National", "Pebble Beach", "St Andrews", "TPC Sawgrass"], ["What do you call one stroke under par on a hole?", "Birdie", "Eagle", "Bogey", "Albatross"], ["In what year did Tiger Woods win the Masters for his 15th major?", "2019", "2016", "2021", "2013"], ["Which pro event pits the best men's golfers from the US against Europe?", "Ryder Cup", "Presidents Cup", "Walker Cup", "Davis Cup"], ["St Andrews, the \"home of golf,\" is in which country?", "Scotland", "England", "Ireland", "Wales"], ["What do you call two strokes under par on a hole?", "Eagle", "Birdie", "Albatross", "Condor"]],
+  "Baseball":[["Which team won the 2016 World Series to end a 108-year drought?", "Chicago Cubs", "Cleveland Indians", "Boston Red Sox", "San Francisco Giants"], ["Who holds the record for most career home runs?", "Barry Bonds", "Hank Aaron", "Babe Ruth", "Alex Rodriguez"], ["Which team has won the most World Series titles?", "New York Yankees", "St. Louis Cardinals", "Boston Red Sox", "Los Angeles Dodgers"], ["Which two-way star signed a record $700 million deal with the Dodgers?", "Shohei Ohtani", "Aaron Judge", "Mike Trout", "Juan Soto"], ["Babe Ruth began his major league career with which team?", "Boston Red Sox", "New York Yankees", "Baltimore Orioles", "Chicago Cubs"], ["Which team broke the \"Curse of the Bambino\" in 2004?", "Boston Red Sox", "Chicago Cubs", "Chicago White Sox", "Cleveland Indians"], ["Who won the 2024 World Series?", "Los Angeles Dodgers", "New York Yankees", "Texas Rangers", "Houston Astros"], ["Who hit an American League record 62 home runs in 2022?", "Aaron Judge", "Shohei Ohtani", "Pete Alonso", "Giancarlo Stanton"]],
+  "Hockey":[["What is the NHL's championship trophy called?", "The Stanley Cup", "The Lord Stanley Bowl", "The Hart Trophy", "The Gretzky Cup"], ["Which player is known as \"The Great One\"?", "Wayne Gretzky", "Mario Lemieux", "Sidney Crosby", "Bobby Orr"], ["Which team has won the most Stanley Cups?", "Montreal Canadiens", "Toronto Maple Leafs", "Detroit Red Wings", "Boston Bruins"], ["Who broke Wayne Gretzky's record for most NHL goals in 2025?", "Alex Ovechkin", "Sidney Crosby", "Connor McDavid", "Jaromír Jágr"], ["Which country won the \"Miracle on Ice\" game at the 1980 Olympics?", "United States", "Soviet Union", "Canada", "Finland"], ["Which team won the Stanley Cup in 2024?", "Florida Panthers", "Edmonton Oilers", "Dallas Stars", "New York Rangers"], ["What is the name of Las Vegas's NHL team?", "Golden Knights", "Silver Aces", "High Rollers", "Desert Kings"], ["What is it called when one player scores three goals in a game?", "A hat trick", "A triple play", "A turkey", "A full house"]],
+  "Club Soccer":[["Which club has won the most Champions League titles?", "Real Madrid", "AC Milan", "Bayern Munich", "Liverpool"], ["Which MLS club did Lionel Messi join in 2023?", "Inter Miami", "LA Galaxy", "New York City FC", "Atlanta United"], ["Which country is Cristiano Ronaldo from?", "Portugal", "Spain", "Brazil", "Italy"], ["Which English club is nicknamed \"the Red Devils\"?", "Manchester United", "Liverpool", "Arsenal", "Nottingham Forest"], ["Which club plays its home games at Anfield?", "Liverpool", "Everton", "Manchester City", "Chelsea"], ["Which club did Lionel Messi spend most of his career with?", "Barcelona", "Paris Saint-Germain", "Real Madrid", "Inter Miami"], ["Spain's top soccer league is known as what?", "La Liga", "Serie A", "Ligue 1", "Primeira Liga"], ["Which team went unbeaten through the 2003–04 Premier League season?", "Arsenal", "Chelsea", "Manchester United", "Liverpool"]],
+  "Racing":[["Which drivers share the record of 7 Formula 1 world titles?", "Lewis Hamilton and Michael Schumacher", "Ayrton Senna and Alain Prost", "Sebastian Vettel and Max Verstappen", "Fernando Alonso and Niki Lauda"], ["Who won four straight F1 world titles from 2021 to 2024?", "Max Verstappen", "Lewis Hamilton", "Charles Leclerc", "Lando Norris"], ["Which F1 team uses a prancing horse logo?", "Ferrari", "Red Bull", "McLaren", "Mercedes"], ["Which race is called \"the Greatest Spectacle in Racing\"?", "Indianapolis 500", "Daytona 500", "Monaco Grand Prix", "Le Mans"], ["Which NASCAR race is known as \"the Great American Race\"?", "Daytona 500", "Indianapolis 500", "Talladega 500", "Coca-Cola 600"], ["The Monaco Grand Prix is raced through the streets of which area?", "Monte Carlo", "Nice", "Cannes", "Marseille"], ["Which Netflix series made F1 a hit in the United States?", "Drive to Survive", "Pit Stop", "Formula Rising", "Full Throttle"], ["Which team did Lewis Hamilton join for the 2025 season?", "Ferrari", "McLaren", "Red Bull", "Aston Martin"]],
+  "Pop Music":[["What are Taylor Swift's fans called?", "Swifties", "Swifters", "Taylorettes", "The Swift Squad"], ["Which artist released the album \"Renaissance\" in 2022?", "Beyoncé", "Rihanna", "Lady Gaga", "Lizzo"], ["Who sang \"Blinding Lights\"?", "The Weeknd", "Drake", "Bruno Mars", "Post Malone"], ["Which singer is called the \"Queen of Pop\"?", "Madonna", "Britney Spears", "Lady Gaga", "Mariah Carey"], ["Which K-pop group sang \"Dynamite\"?", "BTS", "BLACKPINK", "EXO", "Stray Kids"], ["Who sang \"Bad Guy\"?", "Billie Eilish", "Olivia Rodrigo", "Lorde", "Dua Lipa"], ["What was Taylor Swift's record-breaking 2023–24 tour called?", "The Eras Tour", "The Reputation Tour", "The 1989 World Tour", "The Lover Tour"], ["Who sang \"Drivers License\"?", "Olivia Rodrigo", "Billie Eilish", "Sabrina Carpenter", "Ariana Grande"]],
+  "Hip-Hop":[["Which rapper's real name is Marshall Mathers?", "Eminem", "Lil Wayne", "50 Cent", "Logic"], ["Who released the album \"To Pimp a Butterfly\"?", "Kendrick Lamar", "J. Cole", "Kanye West", "Drake"], ["Which rapper's real name is Aubrey Graham?", "Drake", "Future", "Travis Scott", "Lil Baby"], ["Who headlined the Super Bowl halftime show in February 2025?", "Kendrick Lamar", "Drake", "Eminem", "Usher"], ["Which Kendrick Lamar diss track won Record of the Year at the 2025 Grammys?", "Not Like Us", "Euphoria", "Meet the Grahams", "HUMBLE."], ["Which group released \"Straight Outta Compton\"?", "N.W.A", "Run-DMC", "Public Enemy", "Wu-Tang Clan"], ["Which rapper is married to Beyoncé?", "Jay-Z", "Kanye West", "Nas", "Diddy"], ["Which rapper starred in the movie \"8 Mile\"?", "Eminem", "50 Cent", "Ice Cube", "Snoop Dogg"]],
+  "Blockbuster Movies":[["Which film won Best Picture at the 2024 Oscars?", "Oppenheimer", "Barbie", "Killers of the Flower Moon", "Poor Things"], ["Who directed \"Inception\"?", "Christopher Nolan", "Steven Spielberg", "Denis Villeneuve", "Ridley Scott"], ["Which actor played Captain Jack Sparrow?", "Johnny Depp", "Orlando Bloom", "Geoffrey Rush", "Javier Bardem"], ["Which movie features the Joker asking \"Why so serious?\"", "The Dark Knight", "Joker", "Batman Begins", "Suicide Squad"], ["Which movie came out the same day as \"Oppenheimer,\" starting \"Barbenheimer\"?", "Barbie", "Wonka", "Wish", "The Little Mermaid"], ["Which actor played Iron Man in the Marvel movies?", "Robert Downey Jr.", "Chris Evans", "Chris Hemsworth", "Mark Ruffalo"], ["What is the name of the hobbit played by Elijah Wood?", "Frodo", "Sam", "Bilbo", "Pippin"], ["Which movie follows a boy and a dragon named Toothless?", "How to Train Your Dragon", "Eragon", "Pete's Dragon", "Shrek"]],
+  "Superheroes":[["What is Spider-Man's real name?", "Peter Parker", "Miles Morales", "Bruce Wayne", "Clark Kent"], ["What metal is Captain America's shield made of?", "Vibranium", "Adamantium", "Titanium", "Uru"], ["Who is Thor's adopted brother?", "Loki", "Odin", "Heimdall", "Hela"], ["Which city does Batman protect?", "Gotham City", "Metropolis", "Star City", "Central City"], ["Which villain snaps his fingers in \"Avengers: Infinity War\"?", "Thanos", "Ultron", "Loki", "Red Skull"], ["What is the Hulk's real name?", "Bruce Banner", "Tony Stark", "Steve Rogers", "Reed Richards"], ["Which hero comes from the planet Krypton?", "Superman", "Thor", "Green Lantern", "Martian Manhunter"], ["Black Panther is the king of which country?", "Wakanda", "Genovia", "Latveria", "Sokovia"]],
+  "Disney and Pixar":[["In \"Up,\" how does Carl lift his house into the sky?", "Balloons", "A rocket", "A blimp", "Kites"], ["What is the name of the snowman in \"Frozen\"?", "Olaf", "Sven", "Kristoff", "Marshmallow"], ["Who is Simba's evil uncle in \"The Lion King\"?", "Scar", "Mufasa", "Zazu", "Rafiki"], ["Which Pixar film takes place inside a girl's mind?", "Inside Out", "Soul", "Turning Red", "Luca"], ["What is the name of Andy's space ranger toy?", "Buzz Lightyear", "Zurg", "Woody", "Rex"], ["In \"Moana,\" who is the shapeshifting demigod?", "Maui", "Tamatoa", "Te Kā", "Heihei"], ["Which princess has a pet tiger named Rajah?", "Jasmine", "Mulan", "Pocahontas", "Moana"], ["In \"Coco,\" what does Miguel dream of becoming?", "A musician", "A chef", "A painter", "A soccer player"]],
+  "The Internet":[["Who is the most-followed person on Instagram?", "Cristiano Ronaldo", "Selena Gomez", "Kylie Jenner", "Lionel Messi"], ["Which YouTuber's real name is Jimmy Donaldson?", "MrBeast", "PewDiePie", "Markiplier", "Dude Perfect"], ["Which company owns Instagram?", "Meta", "Google", "Microsoft", "Snap"], ["Which app has a ghost as its logo?", "Snapchat", "TikTok", "Discord", "Reddit"], ["What did Elon Musk rename Twitter?", "X", "Threads", "Bird", "Spaces"], ["\"Rickrolling\" tricks people into watching which song?", "Never Gonna Give You Up", "Take On Me", "Africa", "Don't Stop Believin'"], ["Which reality family includes Kim, Khloé and Kourtney?", "The Kardashians", "The Osbournes", "The Hiltons", "The Jenners"], ["Which streamer platform is known for its purple logo and live gaming?", "Twitch", "Kick", "YouTube Gaming", "Discord"]],
+  "Sitcoms":[["In \"Friends,\" what is the name of Ross's pet monkey?", "Marcel", "George", "Bubbles", "Coco"], ["What is Kramer's first name in \"Seinfeld\"?", "Cosmo", "Kenny", "Newman", "Elaine"], ["In \"Brooklyn Nine-Nine,\" who is Jake's captain?", "Raymond Holt", "Terry Jeffords", "Michael Hitchcock", "Charles Boyle"], ["In \"How I Met Your Mother,\" which character's catchphrase is \"Legendary\"?", "Barney", "Ted", "Marshall", "Robin"], ["In \"The Office,\" which character keeps a beet farm?", "Dwight Schrute", "Jim Halpert", "Andy Bernard", "Creed Bratton"], ["In \"Parks and Recreation,\" what is Ron Swanson's favorite food?", "Meat", "Waffles", "Salad", "Pizza"], ["In \"Friends,\" what is the name of the coffee shop?", "Central Perk", "Cheers", "The Peach Pit", "MacLaren's"], ["Which family lives at 742 Evergreen Terrace?", "The Simpsons", "The Griffins", "The Belchers", "The Smiths"]],
+  "Harry Potter":[["Which house is Harry sorted into?", "Gryffindor", "Slytherin", "Ravenclaw", "Hufflepuff"], ["What is the name of Harry's owl?", "Hedwig", "Errol", "Pigwidgeon", "Fawkes"], ["What position does Harry play in Quidditch?", "Seeker", "Keeper", "Chaser", "Beater"], ["From which platform does the Hogwarts Express leave?", "9¾", "7½", "10¼", "3"], ["Who is the Half-Blood Prince?", "Severus Snape", "Tom Riddle", "Harry Potter", "Sirius Black"], ["What is Lord Voldemort's real name?", "Tom Riddle", "Gellert Grindelwald", "Barty Crouch", "Regulus Black"], ["Which spell disarms an opponent?", "Expelliarmus", "Expecto Patronum", "Wingardium Leviosa", "Stupefy"], ["Who is the headmaster of Hogwarts for most of the series?", "Albus Dumbledore", "Minerva McGonagall", "Severus Snape", "Horace Slughorn"]],
+  "Star Wars":[["Who is Luke Skywalker's father?", "Darth Vader", "Obi-Wan Kenobi", "Emperor Palpatine", "Count Dooku"], ["What is the name of Han Solo's ship?", "Millennium Falcon", "Star Destroyer", "X-wing", "Slave I"], ["What color is Mace Windu's lightsaber?", "Purple", "Green", "Blue", "Red"], ["Which desert planet is Luke Skywalker from?", "Tatooine", "Jakku", "Hoth", "Naboo"], ["Who trains Luke on the swamp planet Dagobah?", "Yoda", "Obi-Wan Kenobi", "Qui-Gon Jinn", "Luke trains alone"], ["What is \"The Child\" in \"The Mandalorian\" actually named?", "Grogu", "Yoda Jr.", "Din", "Bo-Katan"], ["Who is Kylo Ren's mother?", "Leia", "Padmé", "Rey", "Mon Mothma"], ["What are the Empire's white-armored soldiers called?", "Stormtroopers", "Clone Troopers", "Battle Droids", "Snowtroopers"]],
+  "World Capitals":[["What is the capital of Brazil?", "Brasília", "Rio de Janeiro", "São Paulo", "Salvador"], ["What is the capital of South Korea?", "Seoul", "Busan", "Incheon", "Pyongyang"], ["What is the capital of Kenya?", "Nairobi", "Mombasa", "Kampala", "Addis Ababa"], ["What is the capital of Norway?", "Oslo", "Bergen", "Stockholm", "Copenhagen"], ["What is the capital of Argentina?", "Buenos Aires", "Córdoba", "Santiago", "Montevideo"], ["What is the capital of Egypt?", "Cairo", "Alexandria", "Giza", "Luxor"], ["What is the capital of Vietnam?", "Hanoi", "Ho Chi Minh City", "Da Nang", "Phnom Penh"], ["What is the capital of Switzerland?", "Bern", "Zurich", "Geneva", "Basel"]],
+  "US Geography":[["Which is the largest US state by area?", "Alaska", "Texas", "California", "Montana"], ["Which state is called the Sunshine State?", "Florida", "California", "Arizona", "Hawaii"], ["What is the capital of California?", "Sacramento", "Los Angeles", "San Francisco", "San Diego"], ["Which river carved the Grand Canyon?", "Colorado River", "Rio Grande", "Mississippi River", "Snake River"], ["Which city is nicknamed \"the Windy City\"?", "Chicago", "Boston", "Seattle", "Denver"], ["What is the capital of Texas?", "Austin", "Houston", "Dallas", "San Antonio"], ["Which state is Mount Rushmore in?", "South Dakota", "North Dakota", "Montana", "Wyoming"], ["Which state has the most people?", "California", "Texas", "Florida", "New York"]],
+  "Books":[["Who wrote \"1984\"?", "George Orwell", "Aldous Huxley", "Ray Bradbury", "H.G. Wells"], ["Who wrote \"Pride and Prejudice\"?", "Jane Austen", "Charlotte Brontë", "Emily Brontë", "Mary Shelley"], ["Who wrote \"The Great Gatsby\"?", "F. Scott Fitzgerald", "Ernest Hemingway", "John Steinbeck", "William Faulkner"], ["In \"Moby-Dick,\" what is Moby Dick?", "A white whale", "A shark", "A ship", "A sea captain"], ["Who wrote \"The Cat in the Hat\"?", "Dr. Seuss", "Shel Silverstein", "Roald Dahl", "Maurice Sendak"], ["Who wrote \"To Kill a Mockingbird\"?", "Harper Lee", "Toni Morrison", "Truman Capote", "John Steinbeck"], ["Who wrote \"The Chronicles of Narnia\"?", "C.S. Lewis", "J.R.R. Tolkien", "Philip Pullman", "Roald Dahl"], ["Who wrote \"Romeo and Juliet\"?", "William Shakespeare", "Christopher Marlowe", "Charles Dickens", "Geoffrey Chaucer"]],
+  "Myths and Legends":[["Who is the king of the Greek gods?", "Zeus", "Poseidon", "Apollo", "Hades"], ["Who is the Norse god of thunder?", "Thor", "Odin", "Loki", "Freyr"], ["Who is the Greek goddess of wisdom?", "Athena", "Aphrodite", "Hera", "Artemis"], ["Which Greek hero's only weak spot was his heel?", "Achilles", "Hercules", "Odysseus", "Perseus"], ["What is the Roman name for Ares, the Greek god of war?", "Mars", "Jupiter", "Mercury", "Neptune"], ["Who flew too close to the sun on wings of wax?", "Icarus", "Daedalus", "Pegasus", "Prometheus"], ["Which monster has snakes for hair?", "Medusa", "Hydra", "Cerberus", "Minotaur"], ["Who is the ancient Egyptian sun god?", "Ra", "Anubis", "Osiris", "Horus"]],
+  "World History":[["Who was the first emperor of Rome?", "Augustus", "Julius Caesar", "Nero", "Caligula"], ["Which empire built Machu Picchu?", "The Inca", "The Aztec", "The Maya", "The Olmec"], ["Who was Britain's prime minister for most of World War II?", "Winston Churchill", "Neville Chamberlain", "Clement Attlee", "Margaret Thatcher"], ["Who was the first woman to win a Nobel Prize?", "Marie Curie", "Rosalind Franklin", "Florence Nightingale", "Ada Lovelace"], ["Who led India's nonviolent movement for independence?", "Mahatma Gandhi", "Jawaharlal Nehru", "Indira Gandhi", "Muhammad Ali Jinnah"], ["Which ship carried the Pilgrims to America in 1620?", "The Mayflower", "The Santa María", "The Endeavour", "The Beagle"], ["Who was the first person to sail around the world, by expedition?", "Ferdinand Magellan's crew", "Christopher Columbus", "Vasco da Gama", "Francis Drake"], ["Which ancient wonder still stands today?", "The Great Pyramid of Giza", "The Colossus of Rhodes", "The Hanging Gardens of Babylon", "The Lighthouse of Alexandria"]],
+  "US Presidents":[["Who was the first president to live in the White House?", "John Adams", "George Washington", "Thomas Jefferson", "James Madison"], ["Which president is on the $1 bill?", "George Washington", "Abraham Lincoln", "Thomas Jefferson", "Alexander Hamilton"], ["Which president issued the Emancipation Proclamation?", "Abraham Lincoln", "Ulysses S. Grant", "Andrew Johnson", "James Buchanan"], ["Who is the only president elected more than twice?", "Franklin D. Roosevelt", "Theodore Roosevelt", "Ronald Reagan", "Dwight D. Eisenhower"], ["Which president was a Hollywood actor first?", "Ronald Reagan", "Gerald Ford", "Richard Nixon", "Jimmy Carter"], ["Which president resigned after the Watergate scandal?", "Richard Nixon", "Lyndon B. Johnson", "Gerald Ford", "Jimmy Carter"], ["Who was the first president to serve two non-consecutive terms?", "Grover Cleveland", "Donald Trump", "Benjamin Harrison", "Martin Van Buren"], ["Which president was assassinated in Dallas in 1963?", "John F. Kennedy", "Lyndon B. Johnson", "Robert Kennedy", "William McKinley"]],
+  "Chemistry and Physics":[["What is the chemical symbol for sodium?", "Na", "So", "Sd", "S"], ["What is the pH of pure water?", "7", "0", "10", "14"], ["What is the most common element in the universe?", "Hydrogen", "Helium", "Oxygen", "Carbon"], ["What does DNA stand for?", "Deoxyribonucleic acid", "Dinitrogen acid", "Double nucleic acid", "Dynamic nuclear arrangement"], ["Which scientist came up with E = mc²?", "Albert Einstein", "Isaac Newton", "Niels Bohr", "Stephen Hawking"], ["Diamonds are made of which element?", "Carbon", "Silicon", "Quartz", "Nitrogen"], ["Which planet is closest to the Sun?", "Mercury", "Venus", "Mars", "Earth"], ["What is the freezing point of water in Celsius?", "0°", "32°", "−10°", "100°"]],
+  "Food Around the World":[["Which country is paella from?", "Spain", "Mexico", "Italy", "Portugal"], ["Which country is kimchi from?", "South Korea", "Japan", "China", "Thailand"], ["Which country is pad thai from?", "Thailand", "Vietnam", "Malaysia", "China"], ["Which country invented poutine: fries, gravy and cheese curds?", "Canada", "France", "Belgium", "United States"], ["Miso is mainly made from which ingredient?", "Soybeans", "Rice", "Fish", "Seaweed"], ["Tacos al pastor come from which country?", "Mexico", "Spain", "Peru", "Cuba"], ["Which country is the birthplace of pizza?", "Italy", "Greece", "France", "United States"], ["Which country is famous for pierogi?", "Poland", "Germany", "Hungary", "Austria"]]
+};
+const TIERS=[[19,"Perfect Yolk","t1"],[15,"Sunny Side Up","t2"],[10,"Over Easy","t3"],[5,"Cracked","t4"],[0,"Rotten Egg","t5"]];
+function tierOf(pts){const p=pts*(ROUNDS/5);return TIERS.find(([m])=>p>=m-1e-9)}
+function pill(pts){const [,n,c]=tierOf(pts);return `<span class="pill ${c}">${n}</span>`}
+// share-card squares match the round ratings: Perfect Yolk, Sunny Side Up, Over Easy, Cracked, Rotten Egg
+function EMO(pts){return {t1:"🟨",t2:"🟩",t3:"🟦",t4:"⬜",t5:"🟫"}[tierOf(pts)[2]]}
+function ptsFor(t){return (100/ROUNDS)*Math.min(1,Math.exp(-Math.max(0,t-2)/8))}
+function mulberry(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function hash(s){let h=2166136261;for(const c of s){h^=c.charCodeAt(0);h=Math.imul(h,16777619)}return h>>>0}
+function shuffle(arr,r){const a=arr.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+
+const today=new Date();
+const dayKey=today.toISOString().slice(0,10);
+document.getElementById("dateLabel").textContent=today.toLocaleDateString(undefined,{weekday:"long",month:"short",day:"numeric"});
+const $=id=>document.getElementById(id);
+let S,tick=null;
+
+function newGame(seed){
+  const r=mulberry(seed);
+  const names=Object.keys(CATS);const cat=MODE==="practice"?names[Math.floor(r()*names.length)]:seededOrder(names,"trivia-cats")[WEEK_NO%names.length];
+  const qs=shuffle(CATS[cat],r).slice(0,6).map(([q,a,...w])=>({q,a,opts:shuffle([a,...w],r)}));
+  S={round:0,cat,qs,results:[]};
+  $("catName").textContent=cat;
+  $("end").hidden=true;$("progress").hidden=false;$("game").hidden=false;
+  setupRound();
+}
+function eggSVG(color,dim){return `<svg viewBox="0 0 60 80" aria-hidden="true"><path d="${EGG}" fill="${color}"/><ellipse cx="20" cy="30" rx="6" ry="11" fill="#fff" opacity="${dim?0:.32}" transform="rotate(20 20 30)"/></svg>`}
+function drawProgress(){
+  $("progress").innerHTML=Array.from({length:ROUNDS},(_,i)=>{
+    const done=i<S.results.length;
+    return `<span class="${i===S.round&&!done?"cur":""}">${eggSVG(done?"var(--ink)":i===S.round?"var(--muted)":"var(--line)",!done&&i!==S.round)}</span>`;
+  }).join("");
+}
+function elapsed(){return S.start==null?0:((S.stop??performance.now())-S.start)/1000+S.penalty}
+function drawClock(){const t=$("timer");t.textContent=Math.min(elapsed(),LIMIT).toFixed(1);t.classList.toggle("idle",S.start==null)}
+function setResult(html){$("result").innerHTML=html}
+function setupRound(){
+  const Q=S.qs[S.round];
+  S.phase="ready";S.start=null;S.stop=null;S.penalty=0;S.misses=0;
+  $("roundTitle").textContent=TITLE(`Question ${S.round+1} of ${ROUNDS}`);
+  $("question").textContent=Q.q;$("question").classList.add("veiled");
+  $("options").innerHTML=Q.opts.map((o,i)=>`<button class="opt veiled" data-i="${i}" disabled>${o}</button>`).join("");
+  const b=$("bigBtn");b.hidden=false;b.textContent="Show question";
+  setResult(`<span class="sub">The clock starts when the question appears.</span>`);
+  drawClock();drawProgress();
+}
+function showQuestion(){
+  S.phase="play";S.start=performance.now();
+  $("question").classList.remove("veiled");
+  document.querySelectorAll(".opt").forEach(o=>{o.classList.remove("veiled");o.disabled=false});
+  $("bigBtn").hidden=true;
+  setResult(`<span class="sub">Tap your answer.</span>`);
+  tick=setInterval(()=>{drawClock();if(elapsed()>=LIMIT)answer(-1)},100);
+}
+$("options").addEventListener("click",e=>{
+  const o=e.target.closest(".opt");if(!o||S.phase!=="play"||o.disabled)return;
+  const Q=S.qs[S.round];const i=+o.dataset.i;
+  if(Q.opts[i]===Q.a){answer(i);return}
+  S.misses++;S.penalty+=MISS;o.disabled=true;o.classList.add("wrong");drawClock();
+  if(elapsed()>=LIMIT){answer(-1);return}
+  setResult(`<span class="sub">Not that one. +${MISS} seconds. Keep going.</span>`);
+});
+function answer(i){
+  if(S.phase!=="play")return;
+  S.phase="done";S.stop=performance.now();clearInterval(tick);drawClock();
+  const Q=S.qs[S.round];const t=Math.min(elapsed(),LIMIT);
+  const right=i>=0&&Q.opts[i]===Q.a;
+  const pts=right?ptsFor(t):0;
+  S.results.push({t,pts,right,timeout:i<0,misses:S.misses});
+  document.querySelectorAll(".opt").forEach((o,k)=>{o.disabled=true;if(Q.opts[k]===Q.a)o.classList.add("right")});
+  const msg=i<0?`Time's up. It was ${Q.a}.`:`Correct in ${t.toFixed(1)}s${S.misses?` · ${S.misses} wrong (+${S.misses*MISS}s)`:""}`;
+  setResult(`<span class="pts">+${shown(pts)} <small>pts</small></span>${pill(pts)}<span class="sub">${msg}</span>`);
+  const b=$("bigBtn");b.hidden=false;b.textContent=nextLabel(S.round+1<ROUNDS?"Next question":"See your score");
+  drawProgress();b.focus();
+}
+$("bigBtn").addEventListener("click",()=>{
+  if(S.phase==="ready")showQuestion();
+  else if(S.phase==="done"){if(sundayNext())return;S.round++;if(S.round<ROUNDS)setupRound();else finish()}
+});
+
+function finish(){
+  const total=Math.round(S.results.reduce((a,r)=>a+r.pts,0));
+  onDayDone(total);
+  const right=S.results.filter(r=>r.right&&!r.misses).length;
+  const marks=S.results.map(r=>EMO(r.pts)).join("");
+  const share=`The Red Egg · Trivia\n${S.cat}\n${marks}\n${total}/100 · ${right}/${ROUNDS} first try`;
+  const rows=S.results.map((r,i)=>`<tr><td>${i+1}</td><td>${r.timeout?"Time":r.misses?r.misses+" wrong":"First try"}</td><td>${r.t.toFixed(1)}s</td><td>${r.pts.toFixed(1)}</td><td>${pill(r.pts)}</td></tr>`).join("");
+  const end=$("end");
+  end.innerHTML=`<div class="tier">Trivia</div>
+    <div class="score">${total}<small>/100</small></div>
+    <p class="note">${right} of ${ROUNDS} on the first try in ${S.cat}. Today's score goes toward your egg, which cracks on Sunday.</p>
+    <table><thead><tr><th>Q</th><th>Result</th><th>Time</th><th>Pts</th><th>Rating</th></tr></thead><tbody>${rows}</tbody></table>
+    <div class="share" id="shareText">${share}</div>
+    <div class="actions"><button class="primary" id="copyBtn">Copy result</button><button class="ghost" id="againBtn">Practice again</button></div>
+    <div class="toast" id="toast" aria-live="polite"></div>`;
+  $("game").hidden=true;end.hidden=false;$("progress").hidden=true;
+  $("copyBtn").onclick=()=>{
+    try{navigator.clipboard.writeText(share).then(()=>$("toast").textContent="Copied",selectShare)}catch(e){selectShare()}
+  };
+  $("againBtn").onclick=()=>newGame(Math.floor(Math.random()*1e9));
+}
+function selectShare(){const r=document.createRange();r.selectNodeContents($("shareText"));const s=getSelection();s.removeAllRanges();s.addRange(r);$("toast").textContent="Selected. Copy it to share."}
+
+// Testing: every play is random, including the category. The live site will pick one category per week and use the date as the seed.
+newGame(MODE==="practice"?Math.floor(Math.random()*1e9):(GAME.key==="trivia"?hashStr("trivia|"+CUR_MONDAY):hashStr(GAME.key+"|"+MODE+"|"+(MODE==="day"?gameDate(GAME.key):LOCALDAY))));
+sundayInit(setupRound);
+dailyGate(MODE,GAME.key,GAME.name);
+</script>
+
+</body></html>

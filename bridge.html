@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}[hidden]{display:none!important}</style>
+<script>document.documentElement.setAttribute("data-theme","dark")</script><meta name="color-scheme" content="dark"><meta name="theme-color" content="#14171C">
+<title>Red Egg: Link Up</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: same play column as Bridge; the chain grows downward, one word per link */
+:root{
+  --bg:#ECEFF2; --surface:#FFFFFF; --tray:#DCE1E6; --ink:#1A1D23; --muted:#5E6673;
+  --line:#C9D0D8; --red:#D11F35; --good:#2E9B57; --btn:#1A1D23; --btn-ink:#FFFFFF; --box:#FFFFFF; --hint:#B98500;
+  --t1:#B98500; --t2:#2E9B57; --t3:#2F6FDB; --t4:#7A6F62; --t5:#8A5A3C;
+  --display:"Bagel Fat One","Arial Rounded MT Bold",system-ui,sans-serif;
+  --body:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#14171C; --surface:#1E232A; --tray:#262C34; --ink:#EEF1F5; --muted:#9AA3B0;
+  --line:#353D47; --red:#F0384D; --good:#47C474; --btn:#EEF1F5; --btn-ink:#14171C; --box:#1A1E24; --hint:#FFC93C;
+  --t1:#FFC93C; --t2:#47C474; --t3:#6EA0FF; --t4:#B3A898; --t5:#C08A66; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#14171C; --surface:#1E232A; --tray:#262C34; --ink:#EEF1F5; --muted:#9AA3B0;
+  --line:#353D47; --red:#F0384D; --good:#47C474; --btn:#EEF1F5; --btn-ink:#14171C; --box:#1A1E24; --hint:#FFC93C;
+  --t1:#FFC93C; --t2:#47C474; --t3:#6EA0FF; --t4:#B3A898; --t5:#C08A66; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.45;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 40px}
+body.playing{padding-bottom:70vh}
+.wrap{max-width:560px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit}
+.brand h1{font-family:var(--display);font-weight:400;font-size:1.9rem;line-height:1;margin:0}
+.brand h1 span{color:var(--red)}
+.meta{font-size:.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-weight:600;text-align:right;flex-shrink:0}
+.meta b{display:block;color:var(--ink);font-size:.95rem;letter-spacing:.02em;text-transform:none}
+.meta a{display:block;color:var(--muted);text-decoration:none;font-weight:700;margin-bottom:2px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:14px}
+.roundhead{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.roundhead h2{font-family:var(--display);font-weight:400;font-size:1.35rem;margin:0}
+.clock{display:flex;align-items:baseline;gap:6px;font-family:var(--mono);font-variant-numeric:tabular-nums}
+.clock .time{font-size:1.8rem;font-weight:700;line-height:1;min-width:4ch;text-align:right}
+.clock .time.idle{color:var(--muted)}
+.clock .unit{color:var(--muted);font-size:.9rem}
+.chain{background:var(--tray);border-radius:14px;padding:14px 10px;display:flex;flex-direction:column;align-items:center;gap:6px}
+.chain.veiled .word,.chain.veiled .boxes{filter:blur(8px)}
+.word{font-family:var(--display);font-size:1.7rem;line-height:1.05;letter-spacing:.04em;display:flex;align-items:center;gap:8px}
+.word .pts{font:700 .75rem var(--mono);color:var(--muted)}
+.word.done{color:var(--ink)}
+.word.skipped{color:var(--muted)}
+.joint{width:2px;height:8px;background:var(--line)}
+.compound{font:600 .72rem var(--mono);color:var(--muted);letter-spacing:.06em}
+.boxes{display:flex;gap:6px;justify-content:center;position:relative;cursor:text;touch-action:manipulation}
+.boxes span{width:2.2rem;height:2.6rem;border-radius:9px;background:var(--box);border:2px solid var(--line);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-weight:700;font-size:1.25rem;text-transform:uppercase}
+.boxes span.next{border-color:var(--ink)}
+.boxes span.given{color:var(--hint);border-color:var(--hint)}
+.boxes.shake{animation:shake .35s}
+@keyframes shake{20%{transform:translateX(-7px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(3px)}}
+#guess{position:absolute;left:0;top:0;width:1px;height:1px;opacity:0;pointer-events:none;font-size:16px;border:0;padding:0}
+.btnrow{display:flex;gap:10px}
+.big{flex:1;width:100%;border:0;border-radius:16px;padding:18px;font:700 1.15rem var(--body);cursor:pointer;background:var(--btn);color:var(--btn-ink)}
+.small{border-radius:16px;padding:14px 16px;font:700 .95rem var(--body);cursor:pointer;background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+.small:disabled{opacity:.5;cursor:default}
+button:focus-visible{outline:3px solid var(--red);outline-offset:3px}
+.result{min-height:4.5em;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
+.result .sub{color:var(--muted);font-size:.92rem}
+.ptsbig{font-family:var(--mono);font-size:2rem;font-weight:700;line-height:1;font-variant-numeric:tabular-nums}
+.ptsbig small{font-size:.95rem;color:var(--muted);font-weight:500}
+.pill{display:inline-block;font:700 .78rem var(--body);text-transform:uppercase;letter-spacing:.08em;padding:4px 10px;border-radius:999px;border:1.5px solid currentColor;white-space:nowrap}
+.pill.t1{color:var(--t1)}.pill.t2{color:var(--t2)}.pill.t3{color:var(--t3)}.pill.t4{color:var(--t4)}.pill.t5{color:var(--t5)}
+.end td .pill{font-size:.64rem;padding:2px 7px}
+details{font-size:.92rem;color:var(--muted)}
+details summary{cursor:pointer;font-weight:600;color:var(--ink)}
+details p{margin:.5em 0 0;max-width:62ch}
+.end{align-items:center;text-align:center}
+.end .tier{font-family:var(--display);font-size:1.5rem}
+.end .score{font-family:var(--display);font-size:4rem;line-height:1}
+.end .score small{font-size:1.4rem;color:var(--muted)}
+.end .path{font-family:var(--display);font-size:1.05rem;letter-spacing:.03em;max-width:40ch}
+.end table{border-collapse:collapse;font-family:var(--mono);font-size:.82rem;font-variant-numeric:tabular-nums;width:100%;max-width:400px}
+.end td,.end th{padding:5px;border-bottom:1px solid var(--line);text-align:right}
+.end th{color:var(--muted);font-weight:500;font-family:var(--body);font-size:.72rem;text-transform:uppercase;letter-spacing:.08em}
+.end td:nth-child(-n+2),.end th:nth-child(-n+2){text-align:left}
+.share{font-family:var(--mono);white-space:pre;background:var(--tray);border-radius:10px;padding:12px 16px;font-size:.9rem;text-align:left;user-select:all}
+.actions{display:flex;gap:10px;width:100%}
+.actions button,.actions a{font:700 1rem var(--body);border-radius:12px;padding:14px 18px;cursor:pointer;flex:1;text-align:center;text-decoration:none}
+.actions .primary{background:var(--btn);color:var(--btn-ink);border:0}
+.actions .ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+.toast{font-size:.85rem;color:var(--good);min-height:1.2em}
+@media (max-width:420px){.boxes span{width:1.95rem;height:2.35rem;font-size:1.05rem}.word{font-size:1.45rem}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head><body>
+<div class="wrap">
+  <header>
+    <a class="brand" href="index.html"><svg width="30" height="40" viewBox="0 0 60 80" aria-hidden="true"><path d="M30 3C46 3 57 31 57 48C57 66 45 78 30 78C15 78 3 66 3 48C3 31 14 3 30 3Z" fill="var(--red)"/><ellipse cx="20" cy="30" rx="6" ry="11" fill="#fff" opacity=".35" transform="rotate(20 20 30)"/></svg><h1>The <span>Red</span> Egg</h1></a>
+    <div class="meta"><a href="index.html" id="backlink">← Home</a><span id="metaName">Link Up</span><b id="metaSub">Practice</b></div>
+  </header>
+  <section class="card" id="game">
+    <div class="roundhead"><h2 id="roundTitle">Link 1 of 5</h2><div class="clock"><span class="time idle" id="timer">0.0</span><span class="unit">sec</span></div></div>
+    <div class="chain veiled" id="chain"></div>
+    <div class="btnrow" id="playBtns" hidden>
+      <button class="small" id="hintBtn">Hint +5s</button>
+      <button class="big" id="submitBtn">Submit</button>
+      <button class="small" id="skipBtn">Skip</button>
+    </div>
+    <button class="big" id="startBtn">Start the chain</button>
+    <div class="result" id="result" aria-live="polite"><span class="sub">Each word joins the one before it to make a new word. The clock starts when you tap Start.</span></div>
+  </section>
+  <section class="card end" id="end" hidden></section>
+  <details>
+    <summary>How to play</summary>
+    <p>You get a starting word. Type the word that joins onto it to make a new word: SUN → LIGHT makes SUNLIGHT. Then that word is the start of the next link: LIGHT → HOUSE, HOUSE → BOAT, and so on, five links in all.</p>
+    <p>The first letter and the length of each word are shown. The clock runs the whole time, and each link is worth up to 20 points based on how fast you solve it, for a score out of 100. A hint fills in the next letter and adds 5 seconds, with a 5-second wait before the next hint. Skip gives 0 for that link and shows the word.</p>
+  </details>
+</div>
+<script>
+/* ---- daily rules shared by every page: same puzzle for everyone, one play per day, streaks ---- */
+const DAY_KEYS=["egg-sort","blind-stop","flash","trivia","bridge","pecking-order","sunday"];
+const DAY_NAMES=["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
+const pad2=n=>String(n).padStart(2,"0");
+const ymd=d=>`${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`;
+const NOW=new Date(),LOCALDAY=ymd(NOW),TODAY_IDX=(NOW.getDay()+6)%7;
+const CUR_MONDAY=(()=>{const d=new Date(NOW);d.setDate(d.getDate()-TODAY_IDX);return ymd(d)})();
+const WEEK_NO=Math.round((new Date(CUR_MONDAY+"T12:00:00")-new Date("2026-01-05T12:00:00"))/604800000);
+/* the date a day's game belongs to this week, so a catch-up gets the same puzzle everyone played that day */
+function gameDate(key){const i=DAY_KEYS.indexOf(key);const d=new Date(CUR_MONDAY+"T12:00:00");d.setDate(d.getDate()+Math.max(0,i));return ymd(d)}
+const SUN_KEYS=["egg-sort","blind-stop","flash","trivia","bridge","pecking-order"];
+function hashStr(s){let h=2166136261;for(const c of s){h^=c.charCodeAt(0);h=Math.imul(h,16777619)}return h>>>0}
+function rngFrom(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function seededOrder(list,salt){const r=rngFrom(hashStr(salt)),a=list.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+const RS={get(k,d){try{const v=localStorage.getItem("redegg2:"+k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem("redegg2:"+k,JSON.stringify(v))}catch(e){}}};
+/* a new egg every Monday */
+function currentWeek(){let w=RS.get("week",null);if(!w||!w.id||w.id<CUR_MONDAY){w={id:CUR_MONDAY,days:{},sunday:{}};RS.set("week",w)}w.days=w.days||{};w.sunday=w.sunday||{};return w}
+function markPlayed(){const s=RS.get("playDays",[]);if(!s.includes(LOCALDAY)){s.push(LOCALDAY);RS.set("playDays",s)}}
+function dayStreak(){const s=new Set(RS.get("playDays",[]));const d=new Date(NOW);if(!s.has(ymd(d)))d.setDate(d.getDate()-1);let n=0;while(s.has(ymd(d))){n++;d.setDate(d.getDate()-1)}return n}
+function bestDayStreak(){const s=[...new Set(RS.get("playDays",[]))].sort();let best=0,run=0,prev=null;for(const k of s){const d=new Date(k+"T12:00:00");run=prev&&Math.round((d-prev)/864e5)===1?run+1:1;best=Math.max(best,run);prev=d}return best}
+function weekStreak(){const ids=new Set(RS.get("pen",[]).map(p=>p.id));const d=new Date(CUR_MONDAY+"T12:00:00");if(!ids.has(ymd(d)))d.setDate(d.getDate()-7);let n=0;while(ids.has(ymd(d))){n++;d.setDate(d.getDate()-7)}return n}
+/* stop replays and off-day plays (testing can unlock every day) */
+function dailyGate(mode,key,name){
+  if(mode==="practice"||RS.get("unlockAll",false))return false;
+  const w=currentWeek();let msg=null;
+  if(mode==="day"){
+    if(key in w.days)msg=`You already played today's ${name}. You scored <b>${Math.round(w.days[key])}</b>. A new puzzle is waiting tomorrow.`;
+    else if(DAY_KEYS.indexOf(key)>TODAY_IDX)msg=`${name} is ${DAY_NAMES[DAY_KEYS.indexOf(key)]}'s game. It unlocks on ${DAY_NAMES[DAY_KEYS.indexOf(key)]}.`;
+    else if(SUN_KEYS.every(k=>k in w.sunday))msg=`This week's egg has already hatched, so ${name} can't be caught up. A new egg starts Monday.`;
+  }else if(mode==="sunday"){
+    if(TODAY_IDX!==6)msg=`The Red Egg is played on Sunday.`;
+    else if(key in w.sunday)msg=`You already played this round of the Red Egg.`;
+  }
+  if(!msg)return false;
+  const wrap=document.querySelector(".wrap");
+  [...wrap.children].forEach(el=>{if(el.tagName!=="HEADER")el.hidden=true});
+  wrap.insertAdjacentHTML("beforeend",`<section class="card" style="align-items:center;text-align:center;gap:16px"><p style="margin:0;font-size:1.05rem;max-width:36ch">${msg}</p><a href="index.html" style="display:block;width:100%;text-align:center;text-decoration:none;border-radius:16px;padding:16px;font:700 1.05rem var(--body);background:var(--btn);color:var(--btn-ink)">Back to the egg</a></section>`);
+  return true;
+}
+
+const GRAPH={"SUN":["BURN","DOWN","FISH","FLOWER","LIGHT","SET"],"LIGHT":["HOUSE","WEIGHT"],"FLASH":["BACK","LIGHT"],"MOON":["BEAM","LIGHT","SHINE","STONE"],"DAY":["BREAK","DREAM","LIGHT","TIME"],"CLUB":["HOUSE"],"HOUSE":["BOAT","FLY","HOLD","KEEPER","PLANT","WARMING","WIFE","WORK"],"GREEN":["HORN","HOUSE"],"PLAY":["BACK","BOOK","GROUND","HOUSE","MATE","OFF","PEN","WRIGHT"],"FOOT":["BALL","BRIDGE","FALL","HILL","HOLD","NOTE","PATH","PRINT","STEP","WORK"],"BALL":["PARK","POINT","ROOM"],"BASE":["BALL","LINE"],"SNOW":["BALL","BOARD","FALL","MAN","SHOE"],"BASKET":["BALL"],"BED":["BUG","ROCK","ROOM","SIDE","TIME"],"ROOM":["MATE"],"BATH":["ROBE","ROOM","TUB"],"CLASS":["ROOM"],"GOLD":["FISH"],"FISH":["BOWL","HOOK","NET","TAIL"],"CAT":["FISH","NAP","WALK"],"JELLY":["FISH"],"BIRTH":["DAY","MARK"],"WEEK":["DAY","END","NIGHT"],"OVER":["ALL","BOARD","COAT","HEAD","HEAT","LAND","LOAD","NIGHT","PASS","POWER","RUN","STEP","TIME","VIEW","WORK"],"NIGHT":["CAP","CLUB","FALL","GOWN","LIFE","MARE","TIME"],"TIME":["KEEPER","LESS","LINE","PIECE","TABLE"],"DEAD":["LINE","LOCK","PAN"],"LINE":["BACKER","MAN","UP"],"NET":["WORK"],"WORK":["BENCH","BOOK","DAY","FORCE","HORSE","LOAD","MAN","OUT","PLACE","SHEET","SHOP","STATION"],"FIRE":["ARM","BALL","FLY","HOUSE","MAN","PLACE","POWER","SIDE","WALL","WOOD","WORK"],"HOME":["LAND","TOWN","WORK"],"TEAM":["WORK"],"HAND":["BAG","BALL","BOOK","CUFF","GUN","MADE","OUT","RAIL","SHAKE","WRITING"],"BOOK":["CASE","END","KEEPER","MARK","SHELF","SHOP","STORE","WORM"],"NOTE":["BOOK","PAD","PAPER"],"COOK":["BOOK"],"YEAR":["BOOK"],"KEY":["BOARD","HOLE","NOTE","STONE","WORD"],"BOARD":["ROOM","WALK"],"SKATE":["BOARD"],"BACK":["BONE","FIRE","GROUND","HAND","LASH","PACK","SIDE","STAGE","STROKE","UP","WATER","YARD"],"YARD":["ARM","STICK"],"WILD":["CAT","FIRE","FLOWER","LIFE"],"CAMP":["FIRE","GROUND"],"RAIN":["DROP","FALL","WATER"],"WATER":["BED","COLOR","FALL","FRONT","LOGGED","MARK","MELON","PROOF","SIDE"],"UNDER":["BRUSH","CUT","DOG","FOOT","GROUND","LINE","PASS","SHIRT","SIDE","STATE","WATER"],"HONEY":["BEE","MOON"],"SUPER":["STAR"],"STAR":["BOARD","FISH","LIGHT"],"SEA":["BED","COAST","HORSE","PORT","SHELL","SIDE"],"SHELL":["FISH"],"EGG":["CUP","HEAD","SHELL"],"AIR":["FIELD","HEAD","LIFT","LINE","MAIL","PORT","SHIP"],"PORT":["HOLE"],"OUT":["BREAK","DOOR","FIELD","FIT","LAST","LAW","POST","RIGHT","RUN","SET","SIDE"],"SIDE":["BAR","BURNS","CAR","KICK","LINE","SHOW","STEP","TRACK","WALK"],"ROAD":["BLOCK","HOUSE","SHOW","SIDE","WAY"],"WALL":["FLOWER","PAPER"],"NEWS":["LETTER","PAPER"],"PAPER":["BACK","BOY","WEIGHT","WORK"],"TEA":["BAG","CUP","POT","SPOON"],"CUP":["BOARD","CAKE"],"BARE":["FOOT"],"COME":["BACK"],"COUNT":["DOWN"],"DOWN":["FALL","HILL","LOAD","PLAY","POUR","SIZE","STAIRS","STREAM","TIME","TOWN","WIND"],"BEE":["HIVE","LINE"],"PEA":["NUT"],"NUT":["CRACKER","SHELL"],"POP":["CORN","GUN"],"CORN":["BREAD","FIELD","FLAKES","MEAL","STARCH"],"BUTTER":["CUP","FLY","MILK","NUT"],"MILK":["MAID","MAN","SHAKE"],"FLOWER":["BED","POT"],"PINE":["APPLE"],"APPLE":["SAUCE"],"CHECK":["BOOK","OUT","POINT","UP"],"UP":["BEAT","DATE","HILL","KEEP","LIFT","RISING","ROAR","ROOT","SET","SIDE","STAGE","STAIRS","STREAM","SWING","TOWN"],"PICK":["POCKET","UP"],"DROP":["KICK"],"WATCH":["DOG","MAN","TOWER"],"DOG":["HOUSE","WOOD"],"BULL":["DOG"],"HORSE":["BACK","HAIR","PLAY","POWER","SHOE"],"END":["GAME"],"BIRD":["BATH","CAGE","HOUSE","SEED"],"TOWN":["HOUSE","SHIP"],"GIRL":["FRIEND"],"FRIEND":["SHIP"],"HIGH":["CHAIR","LAND","LIGHT","TAIL","WAY"],"SPOT":["LIGHT"],"STOP":["GAP","LIGHT","OVER","WATCH"],"CANDLE":["LIGHT"],"FLOOD":["GATE","LIGHT"],"POWER":["BOAT","HOUSE","LESS"],"FARM":["HAND","HOUSE","LAND"],"DOLL":["HOUSE"],"COURT":["HOUSE","YARD"],"EYE":["BALL"],"MEAT":["BALL"],"PIN":["BALL","POINT","WHEEL"],"VOLLEY":["BALL"],"SHOW":["BOAT","CASE","DOWN","OFF","ROOM"],"HEAD":["BAND","LAND","LIGHT","LINE","LOCK","MASTER","PHONE","QUARTERS","ROOM","SET","STAND","STONE","STRONG","WIND"],"LEG":["ROOM","WORK"],"CHAIR":["LIFT","MAN","PERSON"],"MAN":["HANDLE","HOLE","HOOD","HUNT","KIND","POWER"],"POLICE":["MAN"],"MAIL":["BOX","MAN"],"SALES":["MAN"],"DOOR":["BELL","MAN","MAT","STEP"],"MAD":["MAN"],"BLACK":["BIRD","BOARD","HEAD","MAIL","OUT"],"BLUE":["BELL","BIRD","FISH","GRASS","PRINT"],"HUMMING":["BIRD"],"SWORD":["FISH","PLAY"],"EVERY":["DAY"],"SOME":["DAY","TIME"],"PAY":["CHECK","DAY","OFF","WALL"],"GOOD":["NIGHT"],"LIFE":["BOAT","GUARD","LINE","SPAN","STYLE","TIME"],"SPRING":["BOARD","TIME"],"WINTER":["TIME"],"HALF":["BACK","TIME"],"MEAN":["TIME"],"PIPE":["LINE"],"BORDER":["LINE"],"HAIR":["BRUSH","CUT","LINE","PIN"],"SKY":["LINE"],"COAST":["LINE"],"GUIDE":["BOOK","LINE"],"FRAME":["WORK"],"GROUND":["BREAKING","HOG","SWELL","WORK"],"WOOD":["CHUCK","CUT","LAND","WORK"],"ART":["WORK"],"BODY":["GUARD","WORK"],"TEXT":["BOOK"],"SCRAP":["BOOK"],"STORY":["BOOK"],"POCKET":["BOOK","KNIFE"],"CARD":["BOARD","SHARP"],"SURF":["BOARD"],"SCORE":["BOARD","CARD"],"DASH":["BOARD"],"CLIP":["BOARD"],"SWITCH":["BOARD"],"BILL":["BOARD"],"GRAVE":["STONE","YARD"],"BARN":["YARD"],"SHIP":["MATE","SHAPE","WRECK","YARD"],"SCHOOL":["YARD"],"CEASE":["FIRE"],"GUN":["FIRE","MAN","POINT","POWDER","SMITH"],"CROSS":["BAR","FIRE","OVER","ROAD","WALK","WORD"],"FRESH":["WATER"],"SALT":["WATER"],"DISH":["WATER"],"WHIRL":["WIND"],"WIND":["BAG","BREAK","FALL","MILL","PIPE","SHIELD","UP"],"LAND":["FALL","FILL","LOCKED","LORD","MARK","SLIDE"],"MAIN":["FRAME","LAND","SPRING"],"WASTE":["BASKET","LAND","PAPER"],"WONDER":["LAND"],"GRASS":["HOPPER","LAND"],"MEMBER":["SHIP"],"HARD":["BACK","SHIP","WOOD"],"SPACE":["SHIP","WALK"],"WAR":["HEAD","HORSE","PATH","SHIP","TIME"],"BATTLE":["FIELD","GROUND","SHIP"],"PASS":["BOOK","PORT","WORD"],"TRAP":["DOOR"],"ALONG":["SIDE"],"COUNTRY":["SIDE"],"HILL":["SIDE","TOP"],"RING":["LEADER","SIDE","WORM"],"RIVER":["BED","SIDE"],"MOUNTAIN":["SIDE"],"STONE":["WALL","WORK"],"SAND":["BAG","BAR","BOX","CASTLE","MAN","PAPER","STONE","STORM"],"POT":["HOLE","LUCK"],"JACK":["BOOT","POT"],"CRACK":["DOWN","POT"],"COFFEE":["HOUSE","POT"],"DUST":["PAN"],"PAN":["CAKE","HANDLE"],"BOX":["CAR"],"POST":["BOX","CARD","MAN","MARK","MASTER"],"ICE":["BOX"],"LUNCH":["BOX"],"TOOL":["BAR","BOX"],"STREET":["CAR"],"CAR":["PET","PORT"],"SHORT":["BREAD","CUT","FALL","HAND","STOP","WAVE"],"FIRST":["HAND"],"OFF":["BEAT","HAND","SET","SHOOT","SHORE","SIDE","SPRING","STAGE"],"BEFORE":["HAND"],"FREE":["HAND","LANCE","STYLE","WAY"],"SECOND":["HAND"],"RED":["HEAD","WOOD"],"FORE":["FINGER","GROUND","HEAD"],"BLOCK":["HEAD"],"SWEET":["BREAD","HEART"],"HEART":["BEAT","BREAK"],"FEED":["BACK"],"DRAW":["BACK","BRIDGE"],"SET":["BACK"],"KICK":["BACK","OFF"],"BREAK":["DOWN","FAST","NECK","THROUGH","UP","WATER"],"JAIL":["BREAK"],"DRIFT":["WOOD"],"SHUT":["DOWN"],"LET":["DOWN"],"TOUCH":["DOWN"],"SLOW":["DOWN"],"MELT":["DOWN"],"RUN":["AWAY","DOWN","WAY"],"LAY":["OUT"],"PRINT":["OUT"],"LOOK":["OUT","UP"],"HANG":["OUT","OVER"],"TAKE":["OFF","OUT","OVER"],"TURN":["KEY","OFF","OVER","TABLE"],"PUSH":["OVER"],"LEFT":["OVER"],"VIEW":["POINT"],"POINT":["LESS"],"BANK":["NOTE"],"SHOP":["KEEPER","LIFT","TALK"],"STORE":["FRONT","HOUSE","ROOM"],"DRUG":["STORE"],"MARK":["DOWN","UP"],"TRADE":["MARK"],"FINGER":["NAIL","PRINT","TIP"],"SNAP":["SHOT"],"SHOT":["GUN"],"HOT":["BED","DOG","HEAD"],"BOB":["CAT"],"HOBBY":["HORSE"],"RACE":["HORSE"],"CHEST":["NUT"],"DOUGH":["NUT"],"HAZEL":["NUT"],"BREAD":["BASKET","WINNER"],"HEAT":["STROKE"],"WAVE":["LENGTH"],"BLOOD":["BATH"],"TABLE":["CLOTH","LAND","SPOON"],"ARM":["BAND","CHAIR"],"WHEEL":["BASE","CHAIR"],"STEP":["CHILD","FATHER","LADDER","MOTHER"],"BAND":["STAND","WAGON","WIDTH"],"WRIST":["BAND","WATCH"],"BROAD":["BAND","SIDE"],"EAR":["DRUM","MARK","RING","SHOT"],"BELL":["BOY","HOP"],"BAR":["BELL","TENDER"],"DUMB":["BELL"],"DRUM":["STICK"],"BAG":["PIPE"],"TAIL":["COAT","GATE","LIGHT","PIPE","SPIN","WIND"],"DRAIN":["PIPE"],"GATE":["POST","WAY"],"FIELD":["WORK"],"MILL":["STONE"],"CART":["WHEEL"],"RAIL":["ROAD"],"PATH":["WAY"],"SHOE":["HORN","LACE","STRING"],"FLY":["PAPER"],"DRAGON":["FLY"],"WORM":["HOLE","WOOD"],"EARTH":["WORM"],"GLOW":["WORM"],"AFTER":["LIFE"],"SCREEN":["PLAY"],"WORD":["PLAY"],"SLIDE":["SHOW"],"CROW":["BAR"],"HANDLE":["BAR"],"CARE":["FREE"],"HOLD":["OUT","OVER","UP"],"TOE":["HOLD","NAIL"],"BOTTLE":["NECK"],"NECK":["LACE","LINE","TIE"],"TURTLE":["NECK"],"TIP":["TOE"],"BITTER":["SWEET"],"QUICK":["SAND","SILVER"],"ANT":["HILL"],"MASTER":["MIND","PIECE"],"MIND":["SET"],"CUT":["BACK","OFF","OUT","THROAT"],"UPPER":["CUT"],"STAND":["OFF"],"LIFT":["OFF"],"BLAST":["OFF"],"MAKE":["UP"],"BLOW":["GUN","UP"],"BUILD":["UP"],"CLEAN":["UP"],"PILE":["UP"],"ROUND":["UP"],"SHAKE":["UP"],"START":["UP"],"WALK":["OUT","WAY"],"SLEEP":["WALK"],"NON":["STOP"],"PIT":["FALL"],"FALL":["OUT"],"WILL":["POWER"],"DATA":["BASE"],"SAFE":["GUARD"],"GUARD":["HOUSE","RAIL"],"FORK":["LIFT"],"PITCH":["FORK"],"SIGN":["BOARD","POST"],"GOAL":["POST"],"VOICE":["MAIL"],"LETTER":["BOX","HEAD"],"COTTON":["TAIL"],"PIG":["TAIL"],"PONY":["TAIL"],"INTER":["PLAY","STATE"],"STATE":["ROOM","WIDE"],"EVER":["GREEN"],"CAKE":["WALK"],"CHEESE":["CAKE"],"PLACE":["MAT"],"BURN":["OUT"],"TOOTH":["BRUSH","PICK"],"SCARE":["CROW"],"MOUSE":["TRAP"],"COW":["BOY"],"BOY":["FRIEND","HOOD"],"LIME":["LIGHT","STONE"],"MOTH":["BALL"],"SCREW":["BALL"],"CANNON":["BALL"],"ODD":["BALL"],"MUSH":["ROOM"],"DARK":["ROOM"],"ELBOW":["ROOM"],"GENTLE":["MAN"],"FISHER":["MAN"],"CAVE":["MAN"],"MOCKING":["BIRD"],"DOOMS":["DAY"],"FORT":["NIGHT"],"MID":["NIGHT"],"PEACE":["TIME"],"WAIST":["BAND","LINE"],"CLOTHES":["LINE","PIN"],"CLOCK":["WORK"],"PATCH":["WORK"],"CASE":["LOAD","WORK"],"NEEDLE":["WORK"],"PIECE":["WORK"],"LOG":["BOOK"],"MATCH":["BOOK","BOX"],"CHALK":["BOARD"],"VINE":["YARD"],"JUNK":["YARD"],"STOCK":["YARD"],"SURE":["FIRE"],"BON":["FIRE"],"TIDE":["WATER"],"POLE":["STAR"],"MOTHER":["LAND"],"BOMB":["SHELL"],"LEADER":["SHIP"],"FLAG":["SHIP"],"STEAM":["SHIP"],"WAY":["POINT","SIDE"],"DRY":["WALL"],"SAUCE":["PAN"],"SOAP":["BOX"],"CHATTER":["BOX"],"LONG":["HAIR","HAND"],"STAGE":["HAND"],"DECK":["HAND"],"FIGURE":["HEAD"],"HAMMER":["HEAD"],"ARROW":["HEAD"],"SPEAR":["HEAD"],"QUARTER":["BACK","MASTER"],"HUNCH":["BACK"],"THROW":["BACK"],"WISH":["BONE"],"BONE":["HEAD"],"MILE":["STONE"],"CORNER":["STONE"],"HAIL":["STONE"],"PLY":["WOOD"],"DESK":["TOP"],"TOP":["COAT","MOST","SIDE","SOIL"],"ROOF":["TOP"],"TREE":["TOP"],"LAP":["TOP"],"LOW":["DOWN"],"MORE":["OVER"],"KING":["PIN"],"TEN":["PIN"],"DON":["KEY"],"LOCK":["DOWN","OUT","SMITH"],"PAD":["LOCK"],"WED":["LOCK"],"SWEAT":["SHIRT","SHOP"],"PAWN":["SHOP"],"BUCK":["SHOT"],"SHEEP":["DOG"],"SAW":["HORSE","MILL"],"WING":["NUT"],"PEPPER":["CORN"],"GINGER":["BREAD"],"SICK":["BED"],"STAIR":["CASE"],"BRIEF":["CASE"],"SUIT":["CASE"],"HUM":["DRUM"],"HORN":["PIPE"],"STOVE":["PIPE"],"TOLL":["GATE"],"MINE":["FIELD"],"TREAD":["MILL"],"TOW":["PATH"],"BRIDGE":["HEAD","WORK"],"BRUSH":["WOOD"],"KNEE":["CAP"],"CAP":["SIZE"],"HUB":["CAP"],"SHIRT":["SLEEVE","TAIL"],"BOOT":["LEG"],"SILK":["WORM"],"TAPE":["WORM"],"FAIR":["GROUND"],"STRONG":["HOLD"],"RUBBER":["NECK"],"LADY":["FINGER"],"MOLE":["HILL"],"THUNDER":["CLOUD"],"CLOUD":["BURST"],"CAST":["OFF"],"WELL":["SPRING"],"VAN":["GUARD"],"MUD":["GUARD"],"SPOON":["BILL"],"LAMP":["POST"],"DOVE":["TAIL"],"SILVER":["SMITH"],"FLAT":["IRON"],"IRON":["WORK"],"GRAND":["FATHER"],"FATHER":["LAND"],"BRAIN":["WASH"],"WASH":["ROOM"]};
+const MODE=location.hash==="#sunday"?"sunday":location.hash==="#day"?"day":"practice";
+const LINKS=MODE==="sunday"?1:5,HINT_COOLDOWN=5,PEN=5;
+const STORE={get(k,d){try{const v=localStorage.getItem("redegg2:"+k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem("redegg2:"+k,JSON.stringify(v))}catch(e){}}};
+if(MODE==="sunday"){document.querySelectorAll("header a").forEach(x=>{x.style.pointerEvents="none";x.setAttribute("tabindex","-1")});document.getElementById("metaSub").textContent="Sunday · 5 of 6";const b=document.getElementById("backlink");b.textContent="Sunday";b.style.color="var(--red)";b.style.pointerEvents="none"}
+else if(MODE==="day")document.getElementById("metaSub").textContent="Friday";
+const RND=MODE==="practice"?Math.random:rngFrom(hashStr("bridge|"+MODE+"|"+(MODE==="day"?gameDate("bridge"):LOCALDAY)));
+const TIERS=[[19,"Perfect Yolk","t1"],[15,"Sunny Side Up","t2"],[10,"Over Easy","t3"],[5,"Cracked","t4"],[0,"Rotten Egg","t5"]];
+const tierOf=p=>TIERS.find(([m])=>p>=m-1e-9);
+const pill=p=>{const [,n,c]=tierOf(p);return `<span class="pill ${c}">${n}</span>`};
+const EMO=p=>({t1:"🟨",t2:"🟩",t3:"🟦",t4:"⬜",t5:"🟫"})[tierOf(p)[2]];
+const ptsFor=t=>20*Math.min(1,Math.exp(-Math.max(0,t-3)/15));
+const $=id=>document.getElementById(id);
+function makeChain(){
+  const words=Object.keys(GRAPH);
+  for(let tries=0;tries<5000;tries++){
+    const path=[words[Math.floor(RND()*words.length)]];
+    while(path.length<=LINKS){
+      const opts=(GRAPH[path[path.length-1]]||[]).filter(w=>!path.includes(w));
+      if(!opts.length)break;
+      path.push(opts[Math.floor(RND()*opts.length)]);
+    }
+    if(path.length===LINKS+1)return path;
+  }
+}
+let S,tick=null;
+function newGame(){
+  S={path:makeChain(),i:1,phase:"ready",results:[],t0:null,stop:null,linkStart:0,penalty:0,linkPen:0,hints:0,hintReadyAt:0};
+  $("end").hidden=true;$("game").hidden=false;$("startBtn").hidden=false;$("playBtns").hidden=true;
+  $("chain").classList.add("veiled");
+  setResult(`<span class="sub">Each word joins the one before it to make a new word. The clock starts when you tap Start.</span>`);
+  draw();drawClock();
+}
+function total(){return S.t0==null?0:((S.stop??performance.now())-S.t0)/1000+S.penalty}
+function linkTime(){return (performance.now()-S.linkStart)/1000+S.linkPen}
+function drawClock(){
+  const el=$("timer");el.textContent=total().toFixed(1);el.classList.toggle("idle",S.t0==null);
+  const b=$("hintBtn"),rem=(S.hintReadyAt-performance.now())/1000;
+  if(S.phase==="play"&&rem>0){b.disabled=true;b.textContent=`Hint in ${Math.ceil(rem)}s`}else{b.disabled=false;b.textContent="Hint +5s"}
+}
+function setResult(h){$("result").innerHTML=h}
+function draw(){
+  const c=$("chain"),p=S.path;let html=`<div class="word done">${p[0]}</div>`;
+  for(let k=1;k<=LINKS;k++){
+    if(k<S.i){const r=S.results[k-1];html+=`<div class="joint"></div><div class="compound">${p[k-1]}${p[k]}</div><div class="joint"></div><div class="word ${r.solved?"done":"skipped"}">${p[k]}<span class="pts">+${r.pts.toFixed(1)}</span></div>`}
+    else if(k===S.i&&S.phase!=="done"){html+=`<div class="joint"></div><div class="boxes" id="boxes"><input id="guess" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false" enterkeyhint="go" aria-label="Next word"></div>`;break}
+  }
+  c.innerHTML=html;
+  $("roundTitle").textContent=S.phase==="done"?"Chain complete":MODE==="sunday"?"Sunday · 5 of 6":`Link ${Math.min(S.i,LINKS)} of ${LINKS}`;
+  if(S.i<=LINKS&&S.phase!=="done")drawBoxes();
+  const g=$("guess");
+  if(g){g.oninput=onInput;g.onkeydown=e=>{if(e.key==="Enter"){e.preventDefault();submit()}};$("boxes").onclick=()=>{if(S.phase==="play")g.focus({preventScroll:true})};g.disabled=S.phase!=="play"}
+}
+function drawBoxes(){
+  const ans=S.path[S.i],g=$("guess"),v=(g?g.value:"").toUpperCase(),box=$("boxes");
+  box.querySelectorAll("span").forEach(s=>s.remove());
+  const given=1+S.hints;
+  for(let k=0;k<ans.length;k++){
+    const s=document.createElement("span");
+    s.textContent=k<given?ans[k]:(v[k]||"");
+    if(k<given)s.classList.add("given");
+    if(S.phase==="play"&&k===Math.max(given,Math.min(v.length,ans.length-1)))s.classList.add("next");
+    box.insertBefore(s,g);
+  }
+}
+function prefix(){return S.path[S.i].slice(0,1+S.hints)}
+function onInput(e){
+  const ans=S.path[S.i],pre=prefix();let v=e.target.value.toUpperCase().replace(/[^A-Z]/g,"");
+  if(!v.startsWith(pre))v=pre+v.replace(new RegExp("^"+pre.slice(0,Math.min(pre.length,v.length))),"");
+  e.target.value=v.slice(0,ans.length);drawBoxes();
+  if(e.target.value===ans)solve(true);
+}
+function startLink(){
+  S.linkStart=performance.now();S.linkPen=0;S.hints=0;S.hintReadyAt=0;
+  draw();const g=$("guess");g.value=prefix();drawBoxes();g.focus({preventScroll:true});
+  setTimeout(()=>{const top=$("game").getBoundingClientRect().top+window.scrollY-8;window.scrollTo({top,behavior:"smooth"})},300);
+}
+function submit(){
+  if(S.phase!=="play")return;const g=$("guess"),ans=S.path[S.i],v=g.value.toUpperCase();
+  if(v===ans){solve(true);return}
+  if(v.length<ans.length){setResult(`<span class="sub">The word has ${ans.length} letters.</span>`);return}
+  const prev=S.path[S.i-1];
+  const alt=(GRAPH[prev]||[]).includes(v);
+  const box=$("boxes");box.classList.remove("shake");void box.offsetWidth;box.classList.add("shake");
+  g.value=prefix();drawBoxes();
+  setResult(`<span class="sub">${alt?`${prev}${v} works, but it's not the one. Try again.`:"Not it. Keep going."}</span>`);
+}
+function solve(ok){
+  const t=linkTime(),pts=ok?ptsFor(t):0;
+  S.results.push({word:S.path[S.i],t,pts,solved:ok,hints:S.hints});
+  setResult(`<span class="ptsbig">+${(MODE==="sunday"?pts*5/6:pts).toFixed(1)} <small>pts</small></span>${pill(pts)}<span class="sub">${ok?`${S.path[S.i-1]}${S.path[S.i]}`:`Skipped. It was ${S.path[S.i]}.`}</span>`);
+  S.i++;
+  if(S.i>LINKS){finishChain();return}
+  startLink();
+}
+function finishChain(){
+  S.phase="done";S.stop=performance.now();clearInterval(tick);drawClock();draw();
+  document.body.classList.remove("playing");$("playBtns").hidden=true;
+  const g=$("guess");if(g)g.blur();
+  setTimeout(showEnd,1300);
+}
+function showEnd(){
+  const score=Math.round(S.results.reduce((a,r)=>a+r.pts,0)),T=total();
+  if(MODE==="sunday"){
+    markPlayed();const w=currentWeek();w.sunday.bridge=+(S.results[0].pts*5/6).toFixed(1);STORE.set("week",w);
+    $("end").innerHTML=`<div class="tier">Link Up</div><div class="score">${(S.results[0].pts*5/6).toFixed(1)}<small> pts</small></div><div class="path">${S.path.join(" → ")}</div><div class="actions"><a class="primary" href="pecking-order.html#sunday">Next: Pecking Order</a></div>`;
+    $("game").hidden=true;$("end").hidden=false;window.scrollTo({top:0,behavior:"smooth"});return;
+  }
+  if(MODE==="day"){
+    markPlayed();const w=currentWeek();w.days.bridge=score;STORE.set("week",w);
+    const h=STORE.get("history",[]);h.push({game:"bridge",score,week:w.id||"",at:Date.now()});STORE.set("history",h);
+  }
+  const marks=S.results.map(r=>EMO(r.pts)).join("");
+  const share=`The Red Egg · Link Up\n${S.path[0]} → … → ${S.path[LINKS]}\n${marks}\n${score}/100 · ${T.toFixed(1)}s`;
+  const rows=S.results.map((r,k)=>`<tr><td>${k+1}</td><td>${S.path[k]}${r.word}</td><td>${r.solved?r.t.toFixed(1)+"s":"skip"}</td><td>${r.pts.toFixed(1)}</td><td>${pill(r.pts)}</td></tr>`).join("");
+  $("end").innerHTML=`<div class="tier">Link Up</div><div class="score">${score}<small>/100</small></div>
+    <div class="path">${S.path.join(" → ")}</div>
+    <table><thead><tr><th>#</th><th>Word</th><th>Time</th><th>Pts</th><th>Rating</th></tr></thead><tbody>${rows}</tbody></table>
+    <div class="share" id="shareText">${share}</div>
+    <div class="actions">${MODE==="day"?`<a class="primary" href="index.html">Back to the egg</a>`:`<button class="primary" id="againBtn">Play another chain</button><a class="ghost" href="index.html">Home</a>`}</div>
+    <button class="small" id="copyBtn">Copy result</button><div class="toast" id="toast" aria-live="polite"></div>`;
+  $("game").hidden=true;$("end").hidden=false;window.scrollTo({top:0,behavior:"smooth"});
+  if($("againBtn"))$("againBtn").onclick=newGame;
+  $("copyBtn").onclick=()=>{try{navigator.clipboard.writeText(share).then(()=>$("toast").textContent="Copied",sel)}catch(e){sel()}};
+  function sel(){const r=document.createRange();r.selectNodeContents($("shareText"));const s=getSelection();s.removeAllRanges();s.addRange(r);$("toast").textContent="Selected. Copy it to share."}
+}
+$("startBtn").onclick=()=>{
+  S.phase="play";S.t0=performance.now();$("startBtn").hidden=true;$("playBtns").hidden=false;$("chain").classList.remove("veiled");
+  document.body.classList.add("playing");tick=setInterval(drawClock,100);
+  setResult(`<span class="sub">What joins onto ${S.path[0]}?</span>`);startLink();
+};
+$("submitBtn").onclick=submit;
+$("skipBtn").onclick=()=>{if(S.phase==="play")solve(false)};
+$("hintBtn").onclick=()=>{
+  if(S.phase!=="play"||performance.now()<S.hintReadyAt)return;
+  const ans=S.path[S.i];if(1+S.hints>=ans.length-1){setResult(`<span class="sub">That's the last hint.</span>`);return}
+  S.hints++;S.penalty+=PEN;S.linkPen+=PEN;S.hintReadyAt=performance.now()+HINT_COOLDOWN*1000;
+  const g=$("guess");g.value=prefix()+g.value.slice(prefix().length);drawBoxes();drawClock();g.focus({preventScroll:true});
+  setResult(`<span class="sub">+5 seconds.</span>`);
+};
+newGame();
+dailyGate(MODE,"bridge","Link Up");
+</script>
+</body></html>
