@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<script>document.documentElement.setAttribute("data-theme","dark")</script><meta name="color-scheme" content="dark"><meta name="theme-color" content="#14171C">
+<script>document.documentElement.setAttribute("data-theme","light")</script><meta name="color-scheme" content="light"><meta name="theme-color" content="#FFC9A0">
+<style>html,body,button,a,[role=button]{touch-action:manipulation}.egg,.slot,button{-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}</style>
 <title>Red Egg: Egg Flip</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -83,11 +84,104 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);
 .toast{font-size:.85rem;color:var(--good);min-height:1.2em}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
-</head><body>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Nunito:wght@600;700;800&display=swap"><style id="sunrise">/* ---------- Sunrise Farm theme for every page: colors + background art only ---------- */
+:root,:root[data-theme="dark"],:root[data-theme="light"]{
+  --bg:#FFEFC9; --surface:#FFF8EC; --card:#FFF8EC; --tray:#F6E6C8; --soft:#F6E6C8; --ink:#3B2A1E; --muted:#7A5636;
+  --line:#EBD2A6; --red:#D62F3C; --red-dark:#9E1F2A; --red-ink:#FFFFFF; --crack:#4A0E14; --good:#3E8E3A; --bad:#9A5B34; --wrong:#9A5B34;
+  --btn:#3B2A1E; --btn-ink:#FFF8EC; --box:#FFFDF7; --opt:#FFFDF7; --cup:#EAD3AA; --shell:#FBF4E6; --shell-edge:#D9C3A0;
+  --glow:#FFC23D; --gold:#D99A00; --miss:#B98100; --hint:#B98100; --yolk:#FFC23D; --chick:#FFD447; --hole:#2A1206;
+  --pick:#2F6FCB; --pick-bg:#D9E6FA;
+  --t1:#B98100; --t2:#3E8E3A; --t3:#2F6FCB; --t4:#8A7560; --t5:#8A5A3C;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#FFEFC9; --surface:#FFF8EC; --card:#FFF8EC; --tray:#F6E6C8; --soft:#F6E6C8; --ink:#3B2A1E; --muted:#7A5636;
+  --line:#EBD2A6; --red:#D62F3C; --red-dark:#9E1F2A; --red-ink:#FFFFFF; --crack:#4A0E14; --good:#3E8E3A; --bad:#9A5B34; --wrong:#9A5B34;
+  --btn:#3B2A1E; --btn-ink:#FFF8EC; --box:#FFFDF7; --opt:#FFFDF7; --cup:#EAD3AA; --shell:#FBF4E6; --shell-edge:#D9C3A0;
+  --glow:#FFC23D; --gold:#D99A00; --miss:#B98100; --hint:#B98100; --yolk:#FFC23D; --chick:#FFD447; --hole:#2A1206;
+  --pick:#2F6FCB; --pick-bg:#D9E6FA; --t1:#B98100; --t2:#3E8E3A; --t3:#2F6FCB; --t4:#8A7560; --t5:#8A5A3C; color-scheme:light}}
+html,body{background:var(--bg)}
+.farm{position:absolute;left:0;right:0;top:0;height:520px;z-index:0;pointer-events:none;overflow:hidden}
+.farm svg{position:absolute;left:50%;top:0;width:max(100%,390px);height:520px;transform:translateX(-50%)}
+body>*:not(.farm):not(.htcover){position:relative;z-index:1}
+/* tab bar: the dark floating pill */
+.tabs{left:12px!important;right:12px!important;bottom:14px!important;background:#3B2A1E!important;border:0!important;border-radius:22px;padding:8px!important}
+.tabs .in{gap:4px}
+.tabs a{color:#E8C9A0!important;border-radius:16px;padding:8px 2px!important}
+.tabs a[aria-current="page"]{background:#5A4130;color:#FFF8EC!important}
+.tabs a[aria-current="page"] svg .fillme{fill:#FF6A6F}
+
+/* ---------- Sunrise Farm: shared page pieces ---------- */
+html,body{overflow-x:hidden}
+/* one header on every page: logo left, page info right, never wrapping under the logo */
+header{flex-wrap:nowrap!important}
+header .meta{flex-shrink:0;max-width:132px}
+header .meta b{white-space:normal}
+/* footer and tab bar from the Sunrise design */
+footer.site{font-family:"Fredoka",var(--body);font-weight:600;color:#7A4E2A}
+footer.site b{font-weight:600}
+footer.site .beta{border:1.5px solid #C9A577;color:#7A4E2A;background:transparent;font-family:"Nunito",var(--body);font-weight:800}
+.tabs a{font-family:"Nunito",var(--body);font-weight:800}
+/* ---------- Home: egg in a nest on the farm, score in a cream panel ---------- */
+.eggcard{background:transparent!important;border-color:transparent!important;padding:0!important}
+.egg{z-index:0}
+.egg>svg:not(.nest){position:relative;z-index:1}
+.egg svg>ellipse[fill^="rgba"]{display:none}
+.egg .whole circle,.egg .body>g[clip-path] circle,.egg .top circle{display:none}
+.egg .nest{position:absolute;left:50%;transform:translateX(-50%);width:380px;height:141px;pointer-events:none;overflow:visible}
+.egg .nest.back{bottom:-65px;z-index:0}
+.egg .nest.front{bottom:-65px;z-index:2}
+.eggpanel{background:var(--surface);border-radius:24px;padding:20px 18px;box-shadow:0 4px 0 #EED3A2;margin-top:58px;box-sizing:border-box;position:relative;z-index:3}
+.eggpanel .points{font-family:"Nunito",var(--body);font-weight:800;color:#7A4E2A;font-size:15px}
+.eggpanel .points b{font-family:"Fredoka",var(--body);font-weight:700;color:#C8362F;font-size:26px}
+.eggpanel .status{font-family:"Nunito",var(--body);color:#7A4E2A;font-size:15px}
+.eggpanel .today{width:100%}
+.eggpanel .big{background:#E0303F!important;color:#fff!important;border-radius:18px;font-family:"Fredoka",var(--body);font-weight:700;font-size:19px;box-shadow:0 5px 0 #A81E2B}
+.eggpanel .todaynote{font-family:"Nunito",var(--body);color:#7A4E2A}
+header .brand{flex-shrink:0}
+header .meta b{font-size:.82rem}
+.eggpanel .tiername:empty{display:none}
+/* a bigger weekly total */
+.eggpanel .points{display:flex;flex-direction:column;align-items:center;line-height:1.1}
+.eggpanel .points b{font-size:52px;line-height:1}
+.eggpanel .points .ptsdelta{font-family:"Fredoka",var(--body);font-size:20px;color:#3E8E3A;top:-4px}
+.eggpanel .points .streak{margin-top:6px}
+/* the share picture sits over everything */
+body>.cardcover,body>.confetti{position:fixed!important;inset:0!important;z-index:400!important}
+/* very small phones: shrink the logo a little so the page info fits */
+@media (max-width:359px){header .brand h1{font-size:1.5rem!important}header .brand svg{width:22px;height:30px}header .brand{gap:6px}header .meta{font-size:.68rem}}
+</style>
+</head><body><div class="farm inner" aria-hidden="true"><svg viewBox="0 0 390 520" preserveAspectRatio="xMidYMin slice">
+    <defs>
+      <linearGradient id="sky4" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#FFC9A0"/>
+        <stop offset="0.55" stop-color="#FFDDB0"/>
+        <stop offset="1" stop-color="#FFEFC9"/>
+      </linearGradient>
+      <radialGradient id="eggShine4" cx="0.35" cy="0.3" r="0.75">
+        <stop offset="0" stop-color="#FF6A6F"/>
+        <stop offset="0.6" stop-color="#E0303F"/>
+        <stop offset="1" stop-color="#A81E2B"/>
+      </radialGradient>
+      <radialGradient id="gShade" cx=".36" cy=".3" r=".85"><stop offset="0" stop-color="#fff" stop-opacity=".5"></stop><stop offset=".35" stop-color="#fff" stop-opacity="0"></stop><stop offset=".78" stop-color="#000" stop-opacity="0"></stop><stop offset="1" stop-color="#000" stop-opacity=".2"></stop></radialGradient>
+    </defs>
+    <rect width="390" height="520" fill="url(#sky4)"/>
+    
+    
+    <path d="M0 268 C70 232 130 236 200 258 C260 276 320 246 390 236 L390 340 L0 340 Z" fill="#B9D88E"/>
+    <path d="M0 300 C90 272 170 284 250 300 C310 312 350 292 390 286 L390 380 L0 380 Z" fill="#94C46A"/>
+    <g stroke="#E9CDA0" stroke-width="6" stroke-linecap="round">
+      <path d="M0 352 L390 352"/><path d="M0 374 L390 374"/>
+      <path d="M22 340 L22 392"/><path d="M84 340 L84 392"/><path d="M306 340 L306 392"/><path d="M368 340 L368 392"/>
+    </g>
+    <path d="M0 384 C80 372 160 376 230 382 C300 388 350 380 390 376 L390 520 L0 520 Z" fill="#F3D38A"/>
+    <g stroke="#DDB45E" stroke-width="2.5" stroke-linecap="round">
+      <path d="M30 420 l10 -8"/><path d="M48 470 l-8 -9"/><path d="M350 418 l9 -7"/><path d="M340 470 l-9 -6"/><path d="M20 496 l10 -6"/><path d="M372 498 l-8 -8"/>
+    </g>
+
+    </svg></div>
 <div class="app">
-  <div class="bar">
-    <a class="back" href="index.html" aria-label="Home"><svg viewBox="0 0 60 80" aria-hidden="true"><path d="M30 3C46 3 57 31 57 48C57 66 45 78 30 78C15 78 3 66 3 48C3 31 14 3 30 3Z" fill="var(--red)"/></svg><b>Egg Flip</b></a>
-  </div>
+  <header style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:6px"><a href="index.html" style="display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink)"><svg width="30" height="40" viewBox="0 0 60 80" aria-hidden="true"><path d="M30 3C46 3 57 31 57 48C57 66 45 78 30 78C15 78 3 66 3 48C3 31 14 3 30 3Z" fill="var(--red)"/><ellipse cx="20" cy="30" rx="6" ry="11" fill="#fff" opacity=".35" transform="rotate(20 20 30)"/></svg><span style="font-family:'Bagel Fat One',var(--display),sans-serif;font-size:1.9rem;line-height:1">The <span style="color:var(--red)">Red</span> Egg</span></a><div style="font-size:.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-weight:600;text-align:right;flex-shrink:0"><a href="index.html" style="display:block;color:var(--muted);text-decoration:none">← Home</a>Egg Flip<b style="display:block;color:var(--ink);font-size:.95rem;letter-spacing:.02em;text-transform:none">Preview</b></div></header>
   <div class="hud">
     <div class="score"><b id="score">0</b><span>points</span></div>
     <div class="lives" id="lives" aria-label="Lives"></div>
@@ -196,4 +290,36 @@ function end(){
 }
 startScreen();
 </script>
+<style id="ux-style">
+*{touch-action:manipulation}
+body{-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none}
+input,textarea,[contenteditable],.share,#shareText{-webkit-user-select:text;user-select:text}
+.htcover{position:fixed;inset:0;z-index:200;background:rgba(10,12,15,.72);display:flex;align-items:center;justify-content:center;padding:16px;animation:htin .18s ease-out}
+.htcard{width:100%;max-width:420px;background:var(--surface,#1E232A);color:var(--ink,#EEF1F5);border:1px solid var(--line,#353D47);border-radius:20px;padding:22px 20px 18px;display:flex;flex-direction:column;gap:12px;box-shadow:0 20px 60px rgba(0,0,0,.45)}
+.htcard small{font:700 .72rem var(--body,system-ui);text-transform:uppercase;letter-spacing:.1em;color:var(--muted,#9AA3B0)}
+.htcard h2{margin:0;font:400 1.7rem var(--display,system-ui);line-height:1.1}
+.htcard ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:9px}
+.htcard li{position:relative;padding-left:22px;line-height:1.4;font-size:1rem}
+.htcard li:before{content:"";position:absolute;left:4px;top:.5em;width:8px;height:10px;border-radius:50% 50% 50% 50%/60% 60% 40% 40%;background:var(--red,#F0384D)}
+.htcard button{margin-top:6px;width:100%;border:0;border-radius:14px;padding:15px;font:700 1.05rem var(--body,system-ui);background:var(--btn,#EEF1F5);color:var(--btn-ink,#14171C);cursor:pointer}
+.htopen{display:block;margin:4px auto 0;background:none;border:0;color:var(--muted,#9AA3B0);font:600 .9rem var(--body,system-ui);text-decoration:underline;cursor:pointer;padding:8px}
+@keyframes htin{from{opacity:0}to{opacity:1}}
+</style>
+<script id="ux-how">(function(){
+var H={"egg-sort": ["Scrambled", "Put the eggs in the hidden order.", ["Tap two eggs to swap them.", "After each swap you see how many are in the right spot, but not which ones.", "Use your past swaps to work it out.", "Faster means more points. 5 rounds, 3 to 7 eggs."]], "blind-stop": ["Blind Stop", "Stop the clock right on the target.", ["Tap Start, then tap Stop when you think you\u2019ve hit the target time.", "The clock hides partway through, so you have to feel it.", "The closer you stop, the more points. 5 rounds."]], "flash": ["Flash", "Remember which eggs glow.", ["Tap Flash. Some eggs glow for half a second.", "Tap the eggs that glowed, then Submit.", "Right picks earn points. Wrong picks cost points.", "The carton gets bigger each round. 5 rounds."]], "trivia": ["Egghead", "Answer fast.", ["5 questions from this week\u2019s category.", "The faster you get it right, the more points.", "A wrong tap is crossed out and adds 4 seconds."]], "bridge": ["Link", "Build a chain of words.", ["Each word joins onto the last to make a new word: SUN \u2192 LIGHT \u2192 HOUSE \u2192 BOAT.", "You see the first letter and how long the word is.", "Hint adds a letter (+5s). Skip scores 0.", "5 links. Faster means more points."]], "bridge-sun": ["Link", "Find the word in the middle.", ["One word fits between the two: SUN \u2192 ? \u2192 HOUSE is LIGHT (SUNLIGHT, LIGHTHOUSE).", "You see the first letter and how long the word is.", "Faster means more points."]], "pecking-order": ["Pecking Order", "Put five things in order.", ["Drag to reorder, then Submit.", "Anything in the right spot locks in green.", "Fewer tries means more points. 5 tries per round."]], "egg-flip": ["Egg Flip", "Over or under?", ["Guess if the real answer is over or under the number shown.", "A wrong guess cracks one of your 3 eggs.", "Keep going until you run out of eggs or time."]], "clutch": ["Clutch", "Name as many as you can.", ["Tap Start to see the category.", "Type answers and press Enter after each one.", "Small typos are fine. 20 seconds a round."]]},base="egg-flip",sun=location.hash==="#sunday";
+var key=base==="bridge"&&sun?"bridge-sun":base,h=H[key];if(!h)return;
+function seen(){try{return localStorage.getItem("redegg2:how:"+key)==="1"}catch(e){return false}}
+function mark(){try{localStorage.setItem("redegg2:how:"+key,"1")}catch(e){}}
+function esc(s){return String(s).replace(/[&<>]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;"}[c]})}
+function show(){if(document.querySelector(".htcover"))return;
+  var d=document.createElement("div");d.className="htcover";d.setAttribute("role","dialog");d.setAttribute("aria-modal","true");
+  d.innerHTML='<div class="htcard"><small>How to play</small><h2>'+esc(h[0])+'</h2><p style="margin:0;font-weight:700">'+esc(h[1])+'</p><ul>'+h[2].map(function(x){return"<li>"+esc(x)+"</li>"}).join("")+'</ul><button type="button">Play</button></div>';
+  document.body.appendChild(d);var b=d.querySelector("button");b.onclick=function(){mark();d.remove()};setTimeout(function(){b.focus()},50)}
+function init(){
+  document.querySelectorAll("details").forEach(function(x){var s=x.querySelector("summary");if(s&&/how to play/i.test(s.textContent)){x.hidden=true;var b=document.createElement("button");b.type="button";b.className="htopen";b.textContent="How to play";b.onclick=show;x.parentNode.insertBefore(b,x.nextSibling)}});
+  var gated=[].some.call(document.querySelectorAll("a"),function(a){return a.textContent.trim()==="Back to the egg"});
+  if(!seen()&&!gated)show();
+}
+if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",function(){setTimeout(init,0)});else setTimeout(init,0);
+})();</script>
 </body></html>

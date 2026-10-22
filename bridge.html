@@ -1,8 +1,8 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}[hidden]{display:none!important}</style>
-<script>document.documentElement.setAttribute("data-theme","dark")</script><meta name="color-scheme" content="dark"><meta name="theme-color" content="#14171C">
-<title>Red Egg: Link Up</title>
+<script>document.documentElement.setAttribute("data-theme","light")</script><meta name="color-scheme" content="light"><meta name="theme-color" content="#FFC9A0">
+<title>Red Egg: Link</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
@@ -91,11 +91,106 @@ details p{margin:.5em 0 0;max-width:62ch}
 @media (max-width:420px){.boxes span{width:1.95rem;height:2.35rem;font-size:1.05rem}.word{font-size:1.45rem}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
-</head><body>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Nunito:wght@600;700;800&display=swap"><style id="sunrise">/* ---------- Sunrise Farm theme for every page: colors + background art only ---------- */
+:root,:root[data-theme="dark"],:root[data-theme="light"]{
+  --bg:#FFEFC9; --surface:#FFF8EC; --card:#FFF8EC; --tray:#F6E6C8; --soft:#F6E6C8; --ink:#3B2A1E; --muted:#7A5636;
+  --line:#EBD2A6; --red:#D62F3C; --red-dark:#9E1F2A; --red-ink:#FFFFFF; --crack:#4A0E14; --good:#3E8E3A; --bad:#9A5B34; --wrong:#9A5B34;
+  --btn:#3B2A1E; --btn-ink:#FFF8EC; --box:#FFFDF7; --opt:#FFFDF7; --cup:#EAD3AA; --shell:#FBF4E6; --shell-edge:#D9C3A0;
+  --glow:#FFC23D; --gold:#D99A00; --miss:#B98100; --hint:#B98100; --yolk:#FFC23D; --chick:#FFD447; --hole:#2A1206;
+  --pick:#2F6FCB; --pick-bg:#D9E6FA;
+  --t1:#B98100; --t2:#3E8E3A; --t3:#2F6FCB; --t4:#8A7560; --t5:#8A5A3C;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#FFEFC9; --surface:#FFF8EC; --card:#FFF8EC; --tray:#F6E6C8; --soft:#F6E6C8; --ink:#3B2A1E; --muted:#7A5636;
+  --line:#EBD2A6; --red:#D62F3C; --red-dark:#9E1F2A; --red-ink:#FFFFFF; --crack:#4A0E14; --good:#3E8E3A; --bad:#9A5B34; --wrong:#9A5B34;
+  --btn:#3B2A1E; --btn-ink:#FFF8EC; --box:#FFFDF7; --opt:#FFFDF7; --cup:#EAD3AA; --shell:#FBF4E6; --shell-edge:#D9C3A0;
+  --glow:#FFC23D; --gold:#D99A00; --miss:#B98100; --hint:#B98100; --yolk:#FFC23D; --chick:#FFD447; --hole:#2A1206;
+  --pick:#2F6FCB; --pick-bg:#D9E6FA; --t1:#B98100; --t2:#3E8E3A; --t3:#2F6FCB; --t4:#8A7560; --t5:#8A5A3C; color-scheme:light}}
+html,body{background:var(--bg)}
+.farm{position:absolute;left:0;right:0;top:0;height:520px;z-index:0;pointer-events:none;overflow:hidden}
+.farm svg{position:absolute;left:50%;top:0;width:max(100%,390px);height:520px;transform:translateX(-50%)}
+body>*:not(.farm):not(.htcover){position:relative;z-index:1}
+/* tab bar: the dark floating pill */
+.tabs{left:12px!important;right:12px!important;bottom:14px!important;background:#3B2A1E!important;border:0!important;border-radius:22px;padding:8px!important}
+.tabs .in{gap:4px}
+.tabs a{color:#E8C9A0!important;border-radius:16px;padding:8px 2px!important}
+.tabs a[aria-current="page"]{background:#5A4130;color:#FFF8EC!important}
+.tabs a[aria-current="page"] svg .fillme{fill:#FF6A6F}
+
+/* ---------- Sunrise Farm: shared page pieces ---------- */
+html,body{overflow-x:hidden}
+/* one header on every page: logo left, page info right, never wrapping under the logo */
+header{flex-wrap:nowrap!important}
+header .meta{flex-shrink:0;max-width:132px}
+header .meta b{white-space:normal}
+/* footer and tab bar from the Sunrise design */
+footer.site{font-family:"Fredoka",var(--body);font-weight:600;color:#7A4E2A}
+footer.site b{font-weight:600}
+footer.site .beta{border:1.5px solid #C9A577;color:#7A4E2A;background:transparent;font-family:"Nunito",var(--body);font-weight:800}
+.tabs a{font-family:"Nunito",var(--body);font-weight:800}
+/* ---------- Home: egg in a nest on the farm, score in a cream panel ---------- */
+.eggcard{background:transparent!important;border-color:transparent!important;padding:0!important}
+.egg{z-index:0}
+.egg>svg:not(.nest){position:relative;z-index:1}
+.egg svg>ellipse[fill^="rgba"]{display:none}
+.egg .whole circle,.egg .body>g[clip-path] circle,.egg .top circle{display:none}
+.egg .nest{position:absolute;left:50%;transform:translateX(-50%);width:380px;height:141px;pointer-events:none;overflow:visible}
+.egg .nest.back{bottom:-65px;z-index:0}
+.egg .nest.front{bottom:-65px;z-index:2}
+.eggpanel{background:var(--surface);border-radius:24px;padding:20px 18px;box-shadow:0 4px 0 #EED3A2;margin-top:58px;box-sizing:border-box;position:relative;z-index:3}
+.eggpanel .points{font-family:"Nunito",var(--body);font-weight:800;color:#7A4E2A;font-size:15px}
+.eggpanel .points b{font-family:"Fredoka",var(--body);font-weight:700;color:#C8362F;font-size:26px}
+.eggpanel .status{font-family:"Nunito",var(--body);color:#7A4E2A;font-size:15px}
+.eggpanel .today{width:100%}
+.eggpanel .big{background:#E0303F!important;color:#fff!important;border-radius:18px;font-family:"Fredoka",var(--body);font-weight:700;font-size:19px;box-shadow:0 5px 0 #A81E2B}
+.eggpanel .todaynote{font-family:"Nunito",var(--body);color:#7A4E2A}
+header .brand{flex-shrink:0}
+header .meta b{font-size:.82rem}
+.eggpanel .tiername:empty{display:none}
+/* a bigger weekly total */
+.eggpanel .points{display:flex;flex-direction:column;align-items:center;line-height:1.1}
+.eggpanel .points b{font-size:52px;line-height:1}
+.eggpanel .points .ptsdelta{font-family:"Fredoka",var(--body);font-size:20px;color:#3E8E3A;top:-4px}
+.eggpanel .points .streak{margin-top:6px}
+/* the share picture sits over everything */
+body>.cardcover,body>.confetti{position:fixed!important;inset:0!important;z-index:400!important}
+/* very small phones: shrink the logo a little so the page info fits */
+@media (max-width:359px){header .brand h1{font-size:1.5rem!important}header .brand svg{width:22px;height:30px}header .brand{gap:6px}header .meta{font-size:.68rem}}
+</style>
+</head><body><div class="farm inner" aria-hidden="true"><svg viewBox="0 0 390 520" preserveAspectRatio="xMidYMin slice">
+    <defs>
+      <linearGradient id="sky4" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#FFC9A0"/>
+        <stop offset="0.55" stop-color="#FFDDB0"/>
+        <stop offset="1" stop-color="#FFEFC9"/>
+      </linearGradient>
+      <radialGradient id="eggShine4" cx="0.35" cy="0.3" r="0.75">
+        <stop offset="0" stop-color="#FF6A6F"/>
+        <stop offset="0.6" stop-color="#E0303F"/>
+        <stop offset="1" stop-color="#A81E2B"/>
+      </radialGradient>
+      <radialGradient id="gShade" cx=".36" cy=".3" r=".85"><stop offset="0" stop-color="#fff" stop-opacity=".5"></stop><stop offset=".35" stop-color="#fff" stop-opacity="0"></stop><stop offset=".78" stop-color="#000" stop-opacity="0"></stop><stop offset="1" stop-color="#000" stop-opacity=".2"></stop></radialGradient>
+    </defs>
+    <rect width="390" height="520" fill="url(#sky4)"/>
+    
+    
+    <path d="M0 268 C70 232 130 236 200 258 C260 276 320 246 390 236 L390 340 L0 340 Z" fill="#B9D88E"/>
+    <path d="M0 300 C90 272 170 284 250 300 C310 312 350 292 390 286 L390 380 L0 380 Z" fill="#94C46A"/>
+    <g stroke="#E9CDA0" stroke-width="6" stroke-linecap="round">
+      <path d="M0 352 L390 352"/><path d="M0 374 L390 374"/>
+      <path d="M22 340 L22 392"/><path d="M84 340 L84 392"/><path d="M306 340 L306 392"/><path d="M368 340 L368 392"/>
+    </g>
+    <path d="M0 384 C80 372 160 376 230 382 C300 388 350 380 390 376 L390 520 L0 520 Z" fill="#F3D38A"/>
+    <g stroke="#DDB45E" stroke-width="2.5" stroke-linecap="round">
+      <path d="M30 420 l10 -8"/><path d="M48 470 l-8 -9"/><path d="M350 418 l9 -7"/><path d="M340 470 l-9 -6"/><path d="M20 496 l10 -6"/><path d="M372 498 l-8 -8"/>
+    </g>
+
+    </svg></div>
 <div class="wrap">
   <header>
     <a class="brand" href="index.html"><svg width="30" height="40" viewBox="0 0 60 80" aria-hidden="true"><path d="M30 3C46 3 57 31 57 48C57 66 45 78 30 78C15 78 3 66 3 48C3 31 14 3 30 3Z" fill="var(--red)"/><ellipse cx="20" cy="30" rx="6" ry="11" fill="#fff" opacity=".35" transform="rotate(20 20 30)"/></svg><h1>The <span>Red</span> Egg</h1></a>
-    <div class="meta"><a href="index.html" id="backlink">← Home</a><span id="metaName">Link Up</span><b id="metaSub">Practice</b></div>
+    <div class="meta"><a href="index.html" id="backlink">← Home</a><span id="metaName">Link</span><b id="metaSub">Practice</b></div>
   </header>
   <section class="card" id="game">
     <div class="roundhead"><h2 id="roundTitle">Link 1 of 5</h2><div class="clock"><span class="time idle" id="timer">0.0</span><span class="unit">sec</span></div></div>
@@ -121,13 +216,17 @@ const DAY_KEYS=["egg-sort","blind-stop","flash","trivia","bridge","pecking-order
 const DAY_NAMES=["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
 const pad2=n=>String(n).padStart(2,"0");
 const ymd=d=>`${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`;
-const NOW=new Date(),LOCALDAY=ymd(NOW),TODAY_IDX=(NOW.getDay()+6)%7;
+/* testing only: "Pretend it's Sunday" moves today to this week's Sunday */
+const FAKE_SUNDAY=(()=>{try{return false}catch(e){return false}})();
+const NOW=(()=>{const d=new Date();if(FAKE_SUNDAY)d.setDate(d.getDate()+(6-(d.getDay()+6)%7));return d})(),LOCALDAY=ymd(NOW),TODAY_IDX=(NOW.getDay()+6)%7;
 const CUR_MONDAY=(()=>{const d=new Date(NOW);d.setDate(d.getDate()-TODAY_IDX);return ymd(d)})();
 const WEEK_NO=Math.round((new Date(CUR_MONDAY+"T12:00:00")-new Date("2026-01-05T12:00:00"))/604800000);
 /* the date a day's game belongs to this week, so a catch-up gets the same puzzle everyone played that day */
 function gameDate(key){const i=DAY_KEYS.indexOf(key);const d=new Date(CUR_MONDAY+"T12:00:00");d.setDate(d.getDate()+Math.max(0,i));return ymd(d)}
 const SUN_KEYS=["egg-sort","blind-stop","flash","trivia","bridge","pecking-order"];
-function hashStr(s){let h=2166136261;for(const c of s){h^=c.charCodeAt(0);h=Math.imul(h,16777619)}return h>>>0}
+/* the Claude preview gets its own puzzles so practicing there never spoils the live week (the live build blanks this) */
+const SEED_SALT="";
+function hashStr(s){s=String(s)+SEED_SALT;let h=2166136261;for(const c of s){h^=c.charCodeAt(0);h=Math.imul(h,16777619)}return h>>>0}
 function rngFrom(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
 function seededOrder(list,salt){const r=rngFrom(hashStr(salt)),a=list.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
 const RS={get(k,d){try{const v=localStorage.getItem("redegg2:"+k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem("redegg2:"+k,JSON.stringify(v))}catch(e){}}};
@@ -137,6 +236,8 @@ function markPlayed(){const s=RS.get("playDays",[]);if(!s.includes(LOCALDAY)){s.
 function dayStreak(){const s=new Set(RS.get("playDays",[]));const d=new Date(NOW);if(!s.has(ymd(d)))d.setDate(d.getDate()-1);let n=0;while(s.has(ymd(d))){n++;d.setDate(d.getDate()-1)}return n}
 function bestDayStreak(){const s=[...new Set(RS.get("playDays",[]))].sort();let best=0,run=0,prev=null;for(const k of s){const d=new Date(k+"T12:00:00");run=prev&&Math.round((d-prev)/864e5)===1?run+1:1;best=Math.max(best,run);prev=d}return best}
 function weekStreak(){const ids=new Set(RS.get("pen",[]).map(p=>p.id));const d=new Date(CUR_MONDAY+"T12:00:00");if(!ids.has(ymd(d)))d.setDate(d.getDate()-7);let n=0;while(ids.has(ymd(d))){n++;d.setDate(d.getDate()-7)}return n}
+/* the week is ready for Sunday once Mon–Sat are all played (catch-ups count) */
+function weekReady(w){return Object.keys(w.sunday||{}).length>0||SUN_KEYS.every(k=>k in w.days)}
 /* stop replays and off-day plays (testing can unlock every day) */
 function dailyGate(mode,key,name){
   if(mode==="practice"||false)return false;
@@ -147,13 +248,63 @@ function dailyGate(mode,key,name){
     else if(SUN_KEYS.every(k=>k in w.sunday))msg=`This week's egg has already hatched, so ${name} can't be caught up. A new egg starts Monday.`;
   }else if(mode==="sunday"){
     if(TODAY_IDX!==6)msg=`The Red Egg is played on Sunday.`;
+    else if(!weekReady(w))msg=`Finish the week first. Play your missed days, then come back for the Red Egg.`;
     else if(key in w.sunday)msg=`You already played this round of the Red Egg.`;
+    else{const nx=SUN_KEYS.find(k=>!(k in w.sunday));if(nx&&nx!==key){location.replace(nx+".html#sunday");return true}}
   }
   if(!msg)return false;
   const wrap=document.querySelector(".wrap");
   [...wrap.children].forEach(el=>{if(el.tagName!=="HEADER")el.hidden=true});
   wrap.insertAdjacentHTML("beforeend",`<section class="card" style="align-items:center;text-align:center;gap:16px"><p style="margin:0;font-size:1.05rem;max-width:36ch">${msg}</p><a href="index.html" style="display:block;width:100%;text-align:center;text-decoration:none;border-radius:16px;padding:16px;font:700 1.05rem var(--body);background:var(--btn);color:var(--btn-ink)">Back to the egg</a></section>`);
   return true;
+}
+
+/* ---------- pause & resume a daily game ----------
+   Leaving mid-game (switching apps, locking the phone, reloading) pauses it. Coming back shows a
+   Resume screen with the board hidden; Resume picks up exactly where you were. Each game supplies
+   snap() (what to save), restore(d) (rebuild from a save), pause() and resume() (stop/start its clock). */
+const PAUSE={key:null,over:false,
+  k(){return "resume:"+this.key},
+  save(d){if(!this.over)RS.set(this.k(),d)},
+  load(){return RS.get(this.k(),null)},
+  clear(){try{localStorage.removeItem("redegg2:"+this.k())}catch(e){}},
+  done(){this.over=true;if(this.key)this.clear()},
+  cover(title,sub,go){
+    if(document.getElementById("pauseCover"))return;
+    if(!document.getElementById("pauseCss")){const st=document.createElement("style");st.id="pauseCss";st.textContent=
+      '#pauseCover{position:fixed;inset:0;z-index:300;background:var(--bg,#14171C);display:flex;align-items:center;justify-content:center;padding:16px}'+
+      '#pauseCover .pc{width:100%;max-width:420px;background:var(--surface,#1E232A);color:var(--ink,#EEF1F5);border:1px solid var(--line,#353D47);border-radius:20px;padding:26px 20px 20px;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center}'+
+      '#pauseCover small{font:700 .72rem var(--body,system-ui);text-transform:uppercase;letter-spacing:.1em;color:var(--muted,#9AA3B0)}'+
+      '#pauseCover h2{margin:0;font:400 1.8rem var(--display,system-ui)}'+
+      '#pauseCover p{margin:0;color:var(--muted,#9AA3B0);font-weight:600}'+
+      '#pauseCover button{margin-top:10px;width:100%;border:0;border-radius:14px;padding:16px;font:700 1.05rem var(--body,system-ui);background:var(--red,#F0384D);color:#fff;cursor:pointer}';
+      document.head.appendChild(st)}
+    const d=document.createElement("div");d.id="pauseCover";d.setAttribute("role","dialog");d.setAttribute("aria-modal","true");
+    d.innerHTML='<div class="pc"><small>Paused</small><h2></h2><p></p><button type="button">Resume</button></div>';
+    d.querySelector("h2").textContent=title;d.querySelector("p").textContent=sub||"";
+    document.body.appendChild(d);
+    const b=d.querySelector("button");b.onclick=()=>{d.remove();go()};setTimeout(()=>b.focus(),30);
+  }
+};
+function setupResume(key,mode,h){
+  if(mode==="practice")return;
+  PAUSE.key=key+":"+mode+":"+(mode==="day"?gameDate(key):LOCALDAY);
+  let paused=false;
+  const blocked=()=>[...document.querySelectorAll("a")].some(a=>a.textContent.trim()==="Back to the egg"&&!a.closest("#end"));
+  const show=()=>{const [t,s]=h.label();PAUSE.cover(t,s,()=>{paused=false;h.resume&&h.resume()})};
+  function leave(){
+    if(paused||PAUSE.over)return;
+    let d=null;try{d=h.snap()}catch(e){}
+    if(!d)return;
+    PAUSE.save(d);try{h.pause&&h.pause()}catch(e){}
+    paused=true;
+  }
+  document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden")leave();else if(paused&&!PAUSE.over)show()});
+  window.addEventListener("pagehide",leave);
+  window.addEventListener("pageshow",e=>{if(e.persisted&&paused&&!PAUSE.over)show()});
+  if(blocked()){PAUSE.clear();PAUSE.over=true;return}
+  const d=PAUSE.load();
+  if(d){try{h.restore(d);paused=true;show()}catch(e){PAUSE.clear()}}
 }
 
 const GRAPH={"SUN":["BURN","DOWN","FISH","FLOWER","LIGHT","SET"],"LIGHT":["HOUSE","WEIGHT"],"FLASH":["BACK","LIGHT"],"MOON":["BEAM","LIGHT","SHINE","STONE"],"DAY":["BREAK","DREAM","LIGHT","TIME"],"CLUB":["HOUSE"],"HOUSE":["BOAT","FLY","HOLD","KEEPER","PLANT","WARMING","WIFE","WORK"],"GREEN":["HORN","HOUSE"],"PLAY":["BACK","BOOK","GROUND","HOUSE","MATE","OFF","PEN","WRIGHT"],"FOOT":["BALL","BRIDGE","FALL","HILL","HOLD","NOTE","PATH","PRINT","STEP","WORK"],"BALL":["PARK","POINT","ROOM"],"BASE":["BALL","LINE"],"SNOW":["BALL","BOARD","FALL","MAN","SHOE"],"BASKET":["BALL"],"BED":["BUG","ROCK","ROOM","SIDE","TIME"],"ROOM":["MATE"],"BATH":["ROBE","ROOM","TUB"],"CLASS":["ROOM"],"GOLD":["FISH"],"FISH":["BOWL","HOOK","NET","TAIL"],"CAT":["FISH","NAP","WALK"],"JELLY":["FISH"],"BIRTH":["DAY","MARK"],"WEEK":["DAY","END","NIGHT"],"OVER":["ALL","BOARD","COAT","HEAD","HEAT","LAND","LOAD","NIGHT","PASS","POWER","RUN","STEP","TIME","VIEW","WORK"],"NIGHT":["CAP","CLUB","FALL","GOWN","LIFE","MARE","TIME"],"TIME":["KEEPER","LESS","LINE","PIECE","TABLE"],"DEAD":["LINE","LOCK","PAN"],"LINE":["BACKER","MAN","UP"],"NET":["WORK"],"WORK":["BENCH","BOOK","DAY","FORCE","HORSE","LOAD","MAN","OUT","PLACE","SHEET","SHOP","STATION"],"FIRE":["ARM","BALL","FLY","HOUSE","MAN","PLACE","POWER","SIDE","WALL","WOOD","WORK"],"HOME":["LAND","TOWN","WORK"],"TEAM":["WORK"],"HAND":["BAG","BALL","BOOK","CUFF","GUN","MADE","OUT","RAIL","SHAKE","WRITING"],"BOOK":["CASE","END","KEEPER","MARK","SHELF","SHOP","STORE","WORM"],"NOTE":["BOOK","PAD","PAPER"],"COOK":["BOOK"],"YEAR":["BOOK"],"KEY":["BOARD","HOLE","NOTE","STONE","WORD"],"BOARD":["ROOM","WALK"],"SKATE":["BOARD"],"BACK":["BONE","FIRE","GROUND","HAND","LASH","PACK","SIDE","STAGE","STROKE","UP","WATER","YARD"],"YARD":["ARM","STICK"],"WILD":["CAT","FIRE","FLOWER","LIFE"],"CAMP":["FIRE","GROUND"],"RAIN":["DROP","FALL","WATER"],"WATER":["BED","COLOR","FALL","FRONT","LOGGED","MARK","MELON","PROOF","SIDE"],"UNDER":["BRUSH","CUT","DOG","FOOT","GROUND","LINE","PASS","SHIRT","SIDE","STATE","WATER"],"HONEY":["BEE","MOON"],"SUPER":["STAR"],"STAR":["BOARD","FISH","LIGHT"],"SEA":["BED","COAST","HORSE","PORT","SHELL","SIDE"],"SHELL":["FISH"],"EGG":["CUP","HEAD","SHELL"],"AIR":["FIELD","HEAD","LIFT","LINE","MAIL","PORT","SHIP"],"PORT":["HOLE"],"OUT":["BREAK","DOOR","FIELD","FIT","LAST","LAW","POST","RIGHT","RUN","SET","SIDE"],"SIDE":["BAR","BURNS","CAR","KICK","LINE","SHOW","STEP","TRACK","WALK"],"ROAD":["BLOCK","HOUSE","SHOW","SIDE","WAY"],"WALL":["FLOWER","PAPER"],"NEWS":["LETTER","PAPER"],"PAPER":["BACK","BOY","WEIGHT","WORK"],"TEA":["BAG","CUP","POT","SPOON"],"CUP":["BOARD","CAKE"],"BARE":["FOOT"],"COME":["BACK"],"COUNT":["DOWN"],"DOWN":["FALL","HILL","LOAD","PLAY","POUR","SIZE","STAIRS","STREAM","TIME","TOWN","WIND"],"BEE":["HIVE","LINE"],"PEA":["NUT"],"NUT":["CRACKER","SHELL"],"POP":["CORN","GUN"],"CORN":["BREAD","FIELD","FLAKES","MEAL","STARCH"],"BUTTER":["CUP","FLY","MILK","NUT"],"MILK":["MAID","MAN","SHAKE"],"FLOWER":["BED","POT"],"PINE":["APPLE"],"APPLE":["SAUCE"],"CHECK":["BOOK","OUT","POINT","UP"],"UP":["BEAT","DATE","HILL","KEEP","LIFT","RISING","ROAR","ROOT","SET","SIDE","STAGE","STAIRS","STREAM","SWING","TOWN"],"PICK":["POCKET","UP"],"DROP":["KICK"],"WATCH":["DOG","MAN","TOWER"],"DOG":["HOUSE","WOOD"],"BULL":["DOG"],"HORSE":["BACK","HAIR","PLAY","POWER","SHOE"],"END":["GAME"],"BIRD":["BATH","CAGE","HOUSE","SEED"],"TOWN":["HOUSE","SHIP"],"GIRL":["FRIEND"],"FRIEND":["SHIP"],"HIGH":["CHAIR","LAND","LIGHT","TAIL","WAY"],"SPOT":["LIGHT"],"STOP":["GAP","LIGHT","OVER","WATCH"],"CANDLE":["LIGHT"],"FLOOD":["GATE","LIGHT"],"POWER":["BOAT","HOUSE","LESS"],"FARM":["HAND","HOUSE","LAND"],"DOLL":["HOUSE"],"COURT":["HOUSE","YARD"],"EYE":["BALL"],"MEAT":["BALL"],"PIN":["BALL","POINT","WHEEL"],"VOLLEY":["BALL"],"SHOW":["BOAT","CASE","DOWN","OFF","ROOM"],"HEAD":["BAND","LAND","LIGHT","LINE","LOCK","MASTER","PHONE","QUARTERS","ROOM","SET","STAND","STONE","STRONG","WIND"],"LEG":["ROOM","WORK"],"CHAIR":["LIFT","MAN","PERSON"],"MAN":["HANDLE","HOLE","HOOD","HUNT","KIND","POWER"],"POLICE":["MAN"],"MAIL":["BOX","MAN"],"SALES":["MAN"],"DOOR":["BELL","MAN","MAT","STEP"],"MAD":["MAN"],"BLACK":["BIRD","BOARD","HEAD","MAIL","OUT"],"BLUE":["BELL","BIRD","FISH","GRASS","PRINT"],"HUMMING":["BIRD"],"SWORD":["FISH","PLAY"],"EVERY":["DAY"],"SOME":["DAY","TIME"],"PAY":["CHECK","DAY","OFF","WALL"],"GOOD":["NIGHT"],"LIFE":["BOAT","GUARD","LINE","SPAN","STYLE","TIME"],"SPRING":["BOARD","TIME"],"WINTER":["TIME"],"HALF":["BACK","TIME"],"MEAN":["TIME"],"PIPE":["LINE"],"BORDER":["LINE"],"HAIR":["BRUSH","CUT","LINE","PIN"],"SKY":["LINE"],"COAST":["LINE"],"GUIDE":["BOOK","LINE"],"FRAME":["WORK"],"GROUND":["BREAKING","HOG","SWELL","WORK"],"WOOD":["CHUCK","CUT","LAND","WORK"],"ART":["WORK"],"BODY":["GUARD","WORK"],"TEXT":["BOOK"],"SCRAP":["BOOK"],"STORY":["BOOK"],"POCKET":["BOOK","KNIFE"],"CARD":["BOARD","SHARP"],"SURF":["BOARD"],"SCORE":["BOARD","CARD"],"DASH":["BOARD"],"CLIP":["BOARD"],"SWITCH":["BOARD"],"BILL":["BOARD"],"GRAVE":["STONE","YARD"],"BARN":["YARD"],"SHIP":["MATE","SHAPE","WRECK","YARD"],"SCHOOL":["YARD"],"CEASE":["FIRE"],"GUN":["FIRE","MAN","POINT","POWDER","SMITH"],"CROSS":["BAR","FIRE","OVER","ROAD","WALK","WORD"],"FRESH":["WATER"],"SALT":["WATER"],"DISH":["WATER"],"WHIRL":["WIND"],"WIND":["BAG","BREAK","FALL","MILL","PIPE","SHIELD","UP"],"LAND":["FALL","FILL","LOCKED","LORD","MARK","SLIDE"],"MAIN":["FRAME","LAND","SPRING"],"WASTE":["BASKET","LAND","PAPER"],"WONDER":["LAND"],"GRASS":["HOPPER","LAND"],"MEMBER":["SHIP"],"HARD":["BACK","SHIP","WOOD"],"SPACE":["SHIP","WALK"],"WAR":["HEAD","HORSE","PATH","SHIP","TIME"],"BATTLE":["FIELD","GROUND","SHIP"],"PASS":["BOOK","PORT","WORD"],"TRAP":["DOOR"],"ALONG":["SIDE"],"COUNTRY":["SIDE"],"HILL":["SIDE","TOP"],"RING":["LEADER","SIDE","WORM"],"RIVER":["BED","SIDE"],"MOUNTAIN":["SIDE"],"STONE":["WALL","WORK"],"SAND":["BAG","BAR","BOX","CASTLE","MAN","PAPER","STONE","STORM"],"POT":["HOLE","LUCK"],"JACK":["BOOT","POT"],"CRACK":["DOWN","POT"],"COFFEE":["HOUSE","POT"],"DUST":["PAN"],"PAN":["CAKE","HANDLE"],"BOX":["CAR"],"POST":["BOX","CARD","MAN","MARK","MASTER"],"ICE":["BOX"],"LUNCH":["BOX"],"TOOL":["BAR","BOX"],"STREET":["CAR"],"CAR":["PET","PORT"],"SHORT":["BREAD","CUT","FALL","HAND","STOP","WAVE"],"FIRST":["HAND"],"OFF":["BEAT","HAND","SET","SHOOT","SHORE","SIDE","SPRING","STAGE"],"BEFORE":["HAND"],"FREE":["HAND","LANCE","STYLE","WAY"],"SECOND":["HAND"],"RED":["HEAD","WOOD"],"FORE":["FINGER","GROUND","HEAD"],"BLOCK":["HEAD"],"SWEET":["BREAD","HEART"],"HEART":["BEAT","BREAK"],"FEED":["BACK"],"DRAW":["BACK","BRIDGE"],"SET":["BACK"],"KICK":["BACK","OFF"],"BREAK":["DOWN","FAST","NECK","THROUGH","UP","WATER"],"JAIL":["BREAK"],"DRIFT":["WOOD"],"SHUT":["DOWN"],"LET":["DOWN"],"TOUCH":["DOWN"],"SLOW":["DOWN"],"MELT":["DOWN"],"RUN":["AWAY","DOWN","WAY"],"LAY":["OUT"],"PRINT":["OUT"],"LOOK":["OUT","UP"],"HANG":["OUT","OVER"],"TAKE":["OFF","OUT","OVER"],"TURN":["KEY","OFF","OVER","TABLE"],"PUSH":["OVER"],"LEFT":["OVER"],"VIEW":["POINT"],"POINT":["LESS"],"BANK":["NOTE"],"SHOP":["KEEPER","LIFT","TALK"],"STORE":["FRONT","HOUSE","ROOM"],"DRUG":["STORE"],"MARK":["DOWN","UP"],"TRADE":["MARK"],"FINGER":["NAIL","PRINT","TIP"],"SNAP":["SHOT"],"SHOT":["GUN"],"HOT":["BED","DOG","HEAD"],"BOB":["CAT"],"HOBBY":["HORSE"],"RACE":["HORSE"],"CHEST":["NUT"],"DOUGH":["NUT"],"HAZEL":["NUT"],"BREAD":["BASKET","WINNER"],"HEAT":["STROKE"],"WAVE":["LENGTH"],"BLOOD":["BATH"],"TABLE":["CLOTH","LAND","SPOON"],"ARM":["BAND","CHAIR"],"WHEEL":["BASE","CHAIR"],"STEP":["CHILD","FATHER","LADDER","MOTHER"],"BAND":["STAND","WAGON","WIDTH"],"WRIST":["BAND","WATCH"],"BROAD":["BAND","SIDE"],"EAR":["DRUM","MARK","RING","SHOT"],"BELL":["BOY","HOP"],"BAR":["BELL","TENDER"],"DUMB":["BELL"],"DRUM":["STICK"],"BAG":["PIPE"],"TAIL":["COAT","GATE","LIGHT","PIPE","SPIN","WIND"],"DRAIN":["PIPE"],"GATE":["POST","WAY"],"FIELD":["WORK"],"MILL":["STONE"],"CART":["WHEEL"],"RAIL":["ROAD"],"PATH":["WAY"],"SHOE":["HORN","LACE","STRING"],"FLY":["PAPER"],"DRAGON":["FLY"],"WORM":["HOLE","WOOD"],"EARTH":["WORM"],"GLOW":["WORM"],"AFTER":["LIFE"],"SCREEN":["PLAY"],"WORD":["PLAY"],"SLIDE":["SHOW"],"CROW":["BAR"],"HANDLE":["BAR"],"CARE":["FREE"],"HOLD":["OUT","OVER","UP"],"TOE":["HOLD","NAIL"],"BOTTLE":["NECK"],"NECK":["LACE","LINE","TIE"],"TURTLE":["NECK"],"TIP":["TOE"],"BITTER":["SWEET"],"QUICK":["SAND","SILVER"],"ANT":["HILL"],"MASTER":["MIND","PIECE"],"MIND":["SET"],"CUT":["BACK","OFF","OUT","THROAT"],"UPPER":["CUT"],"STAND":["OFF"],"LIFT":["OFF"],"BLAST":["OFF"],"MAKE":["UP"],"BLOW":["GUN","UP"],"BUILD":["UP"],"CLEAN":["UP"],"PILE":["UP"],"ROUND":["UP"],"SHAKE":["UP"],"START":["UP"],"WALK":["OUT","WAY"],"SLEEP":["WALK"],"NON":["STOP"],"PIT":["FALL"],"FALL":["OUT"],"WILL":["POWER"],"DATA":["BASE"],"SAFE":["GUARD"],"GUARD":["HOUSE","RAIL"],"FORK":["LIFT"],"PITCH":["FORK"],"SIGN":["BOARD","POST"],"GOAL":["POST"],"VOICE":["MAIL"],"LETTER":["BOX","HEAD"],"COTTON":["TAIL"],"PIG":["TAIL"],"PONY":["TAIL"],"INTER":["PLAY","STATE"],"STATE":["ROOM","WIDE"],"EVER":["GREEN"],"CAKE":["WALK"],"CHEESE":["CAKE"],"PLACE":["MAT"],"BURN":["OUT"],"TOOTH":["BRUSH","PICK"],"SCARE":["CROW"],"MOUSE":["TRAP"],"COW":["BOY"],"BOY":["FRIEND","HOOD"],"LIME":["LIGHT","STONE"],"MOTH":["BALL"],"SCREW":["BALL"],"CANNON":["BALL"],"ODD":["BALL"],"MUSH":["ROOM"],"DARK":["ROOM"],"ELBOW":["ROOM"],"GENTLE":["MAN"],"FISHER":["MAN"],"CAVE":["MAN"],"MOCKING":["BIRD"],"DOOMS":["DAY"],"FORT":["NIGHT"],"MID":["NIGHT"],"PEACE":["TIME"],"WAIST":["BAND","LINE"],"CLOTHES":["LINE","PIN"],"CLOCK":["WORK"],"PATCH":["WORK"],"CASE":["LOAD","WORK"],"NEEDLE":["WORK"],"PIECE":["WORK"],"LOG":["BOOK"],"MATCH":["BOOK","BOX"],"CHALK":["BOARD"],"VINE":["YARD"],"JUNK":["YARD"],"STOCK":["YARD"],"SURE":["FIRE"],"BON":["FIRE"],"TIDE":["WATER"],"POLE":["STAR"],"MOTHER":["LAND"],"BOMB":["SHELL"],"LEADER":["SHIP"],"FLAG":["SHIP"],"STEAM":["SHIP"],"WAY":["POINT","SIDE"],"DRY":["WALL"],"SAUCE":["PAN"],"SOAP":["BOX"],"CHATTER":["BOX"],"LONG":["HAIR","HAND"],"STAGE":["HAND"],"DECK":["HAND"],"FIGURE":["HEAD"],"HAMMER":["HEAD"],"ARROW":["HEAD"],"SPEAR":["HEAD"],"QUARTER":["BACK","MASTER"],"HUNCH":["BACK"],"THROW":["BACK"],"WISH":["BONE"],"BONE":["HEAD"],"MILE":["STONE"],"CORNER":["STONE"],"HAIL":["STONE"],"PLY":["WOOD"],"DESK":["TOP"],"TOP":["COAT","MOST","SIDE","SOIL"],"ROOF":["TOP"],"TREE":["TOP"],"LAP":["TOP"],"LOW":["DOWN"],"MORE":["OVER"],"KING":["PIN"],"TEN":["PIN"],"DON":["KEY"],"LOCK":["DOWN","OUT","SMITH"],"PAD":["LOCK"],"WED":["LOCK"],"SWEAT":["SHIRT","SHOP"],"PAWN":["SHOP"],"BUCK":["SHOT"],"SHEEP":["DOG"],"SAW":["HORSE","MILL"],"WING":["NUT"],"PEPPER":["CORN"],"GINGER":["BREAD"],"SICK":["BED"],"STAIR":["CASE"],"BRIEF":["CASE"],"SUIT":["CASE"],"HUM":["DRUM"],"HORN":["PIPE"],"STOVE":["PIPE"],"TOLL":["GATE"],"MINE":["FIELD"],"TREAD":["MILL"],"TOW":["PATH"],"BRIDGE":["HEAD","WORK"],"BRUSH":["WOOD"],"KNEE":["CAP"],"CAP":["SIZE"],"HUB":["CAP"],"SHIRT":["SLEEVE","TAIL"],"BOOT":["LEG"],"SILK":["WORM"],"TAPE":["WORM"],"FAIR":["GROUND"],"STRONG":["HOLD"],"RUBBER":["NECK"],"LADY":["FINGER"],"MOLE":["HILL"],"THUNDER":["CLOUD"],"CLOUD":["BURST"],"CAST":["OFF"],"WELL":["SPRING"],"VAN":["GUARD"],"MUD":["GUARD"],"SPOON":["BILL"],"LAMP":["POST"],"DOVE":["TAIL"],"SILVER":["SMITH"],"FLAT":["IRON"],"IRON":["WORK"],"GRAND":["FATHER"],"FATHER":["LAND"],"BRAIN":["WASH"],"WASH":["ROOM"]};
@@ -169,7 +320,20 @@ const pill=p=>{const [,n,c]=tierOf(p);return `<span class="pill ${c}">${n}</span
 const EMO=p=>({t1:"🟨",t2:"🟩",t3:"🟦",t4:"⬜",t5:"🟫"})[tierOf(p)[2]];
 const ptsFor=t=>20*Math.min(1,Math.exp(-Math.max(0,t-3)/15));
 const $=id=>document.getElementById(id);
+const SUN=MODE==="sunday";
+/* Sunday: a word on both sides (SUN → ? → HOUSE), with exactly one word that fits */
+function makeBridge(){
+  const words=Object.keys(GRAPH);
+  for(let tries=0;tries<20000;tries++){
+    const a=words[Math.floor(RND()*words.length)],xs=GRAPH[a]||[];if(!xs.length)continue;
+    const x=xs[Math.floor(RND()*xs.length)],bs=(GRAPH[x]||[]).filter(w=>w!==a&&w!==x);if(!bs.length)continue;
+    const b=bs[Math.floor(RND()*bs.length)];
+    const fits=xs.filter(y=>(GRAPH[y]||[]).includes(b));
+    if(fits.length===1)return [a,x,b];
+  }
+}
 function makeChain(){
+  if(SUN)return makeBridge();
   const words=Object.keys(GRAPH);
   for(let tries=0;tries<5000;tries++){
     const path=[words[Math.floor(RND()*words.length)]];
@@ -186,7 +350,7 @@ function newGame(){
   S={path:makeChain(),i:1,phase:"ready",results:[],t0:null,stop:null,linkStart:0,penalty:0,linkPen:0,hints:0,hintReadyAt:0};
   $("end").hidden=true;$("game").hidden=false;$("startBtn").hidden=false;$("playBtns").hidden=true;
   $("chain").classList.add("veiled");
-  setResult(`<span class="sub">Each word joins the one before it to make a new word. The clock starts when you tap Start.</span>`);
+  setResult("");
   draw();drawClock();
 }
 function total(){return S.t0==null?0:((S.stop??performance.now())-S.t0)/1000+S.penalty}
@@ -203,6 +367,7 @@ function draw(){
     if(k<S.i){const r=S.results[k-1];html+=`<div class="joint"></div><div class="compound">${p[k-1]}${p[k]}</div><div class="joint"></div><div class="word ${r.solved?"done":"skipped"}">${p[k]}<span class="pts">+${r.pts.toFixed(1)}</span></div>`}
     else if(k===S.i&&S.phase!=="done"){html+=`<div class="joint"></div><div class="boxes" id="boxes"><input id="guess" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false" enterkeyhint="go" aria-label="Next word"></div>`;break}
   }
+  if(SUN){html+=S.i>1?`<div class="joint"></div><div class="compound">${p[1]}${p[2]}</div><div class="joint"></div><div class="word done">${p[2]}</div>`:`<div class="joint"></div><div class="word done">${p[2]}</div>`}
   c.innerHTML=html;
   $("roundTitle").textContent=S.phase==="done"?"Chain complete":MODE==="sunday"?"Sunday · 5 of 6":`Link ${Math.min(S.i,LINKS)} of ${LINKS}`;
   if(S.i<=LINKS&&S.phase!=="done")drawBoxes();
@@ -227,6 +392,7 @@ function onInput(e){
   if(!v.startsWith(pre))v=pre+v.replace(new RegExp("^"+pre.slice(0,Math.min(pre.length,v.length))),"");
   e.target.value=v.slice(0,ans.length);drawBoxes();
   if(e.target.value===ans)solve(true);
+  else if(e.target.value.length===ans.length)setTimeout(()=>{if(S.phase==="play"&&$("guess")&&$("guess").value.length===ans.length&&S.path[S.i]===ans)submit()},180);
 }
 function startLink(){
   S.linkStart=performance.now();S.linkPen=0;S.hints=0;S.hintReadyAt=0;
@@ -238,7 +404,7 @@ function submit(){
   if(v===ans){solve(true);return}
   if(v.length<ans.length){setResult(`<span class="sub">The word has ${ans.length} letters.</span>`);return}
   const prev=S.path[S.i-1];
-  const alt=(GRAPH[prev]||[]).includes(v);
+  const alt=!SUN&&(GRAPH[prev]||[]).includes(v);
   const box=$("boxes");box.classList.remove("shake");void box.offsetWidth;box.classList.add("shake");
   g.value=prefix();drawBoxes();
   setResult(`<span class="sub">${alt?`${prev}${v} works, but it's not the one. Try again.`:"Not it. Keep going."}</span>`);
@@ -246,7 +412,7 @@ function submit(){
 function solve(ok){
   const t=linkTime(),pts=ok?ptsFor(t):0;
   S.results.push({word:S.path[S.i],t,pts,solved:ok,hints:S.hints});
-  setResult(`<span class="ptsbig">+${(MODE==="sunday"?pts*5/6:pts).toFixed(1)} <small>pts</small></span>${pill(pts)}<span class="sub">${ok?`${S.path[S.i-1]}${S.path[S.i]}`:`Skipped. It was ${S.path[S.i]}.`}</span>`);
+  setResult(`<span class="ptsbig">+${(MODE==="sunday"?pts:pts).toFixed(1)} <small>pts</small></span>${pill(pts)}<span class="sub">${ok?`${S.path[S.i-1]}${S.path[S.i]}${SUN?" · "+S.path[1]+S.path[2]:""}`:`Skipped. It was ${S.path[S.i]}.`}</span>`);
   S.i++;
   if(S.i>LINKS){finishChain();return}
   startLink();
@@ -259,9 +425,10 @@ function finishChain(){
 }
 function showEnd(){
   const score=Math.round(S.results.reduce((a,r)=>a+r.pts,0)),T=total();
+  PAUSE.done();
   if(MODE==="sunday"){
-    markPlayed();const w=currentWeek();w.sunday.bridge=+(S.results[0].pts*5/6).toFixed(1);STORE.set("week",w);
-    $("end").innerHTML=`<div class="tier">Link Up</div><div class="score">${(S.results[0].pts*5/6).toFixed(1)}<small> pts</small></div><div class="path">${S.path.join(" → ")}</div><div class="actions"><a class="primary" href="pecking-order.html#sunday">Next: Pecking Order</a></div>`;
+    markPlayed();const w=currentWeek();w.sunday.bridge=+(S.results[0].pts).toFixed(1);STORE.set("week",w);
+    $("end").innerHTML=`<div class="tier">Link</div><div class="score">${(S.results[0].pts).toFixed(1)}<small> pts</small></div><div class="path">${S.path.join(" → ")}</div><div class="actions"><a class="primary" href="pecking-order.html#sunday">Next: Pecking Order</a></div>`;
     $("game").hidden=true;$("end").hidden=false;window.scrollTo({top:0,behavior:"smooth"});return;
   }
   if(MODE==="day"){
@@ -269,9 +436,9 @@ function showEnd(){
     const h=STORE.get("history",[]);h.push({game:"bridge",score,week:w.id||"",at:Date.now()});STORE.set("history",h);
   }
   const marks=S.results.map(r=>EMO(r.pts)).join("");
-  const share=`The Red Egg · Link Up\n${S.path[0]} → … → ${S.path[LINKS]}\n${marks}\n${score}/100 · ${T.toFixed(1)}s`;
+  const share=`The Red Egg · Link\n${S.path[0]} → … → ${S.path[LINKS]}\n${marks}\n${score}/100 · ${T.toFixed(1)}s`;
   const rows=S.results.map((r,k)=>`<tr><td>${k+1}</td><td>${S.path[k]}${r.word}</td><td>${r.solved?r.t.toFixed(1)+"s":"skip"}</td><td>${r.pts.toFixed(1)}</td><td>${pill(r.pts)}</td></tr>`).join("");
-  $("end").innerHTML=`<div class="tier">Link Up</div><div class="score">${score}<small>/100</small></div>
+  $("end").innerHTML=`<div class="tier">Link</div><div class="score">${score}<small>/100</small></div>
     <div class="path">${S.path.join(" → ")}</div>
     <table><thead><tr><th>#</th><th>Word</th><th>Time</th><th>Pts</th><th>Rating</th></tr></thead><tbody>${rows}</tbody></table>
     <div class="share" id="shareText">${share}</div>
@@ -285,7 +452,7 @@ function showEnd(){
 $("startBtn").onclick=()=>{
   S.phase="play";S.t0=performance.now();$("startBtn").hidden=true;$("playBtns").hidden=false;$("chain").classList.remove("veiled");
   document.body.classList.add("playing");tick=setInterval(drawClock,100);
-  setResult(`<span class="sub">What joins onto ${S.path[0]}?</span>`);startLink();
+  setResult(`<span class="sub">${SUN?`What fits between ${S.path[0]} and ${S.path[2]}?`:`What joins onto ${S.path[0]}?`}</span>`);startLink();
 };
 $("submitBtn").onclick=submit;
 $("skipBtn").onclick=()=>{if(S.phase==="play")solve(false)};
@@ -297,6 +464,57 @@ $("hintBtn").onclick=()=>{
   setResult(`<span class="sub">+5 seconds.</span>`);
 };
 newGame();
-dailyGate(MODE,"bridge","Link Up");
+dailyGate(MODE,"bridge","Link");
+setupResume("bridge",MODE,{
+  label(){return["Link",SUN?"Sunday · 5 of 6":`Link ${Math.min(S.i,LINKS)} of ${LINKS}`]},
+  snap(){if(!S||S.phase!=="play"||!$("end").hidden)return null;
+    const now=performance.now(),g=$("guess");
+    return{i:S.i,results:S.results,penalty:S.penalty,linkPen:S.linkPen,hints:S.hints,guess:g?g.value:"",
+      rawT:S.prawT!=null?S.prawT:(now-S.t0)/1000,rawL:S.prawL!=null?S.prawL:(now-S.linkStart)/1000}},
+  pause(){if(S.phase==="play"&&S.prawT==null){const now=performance.now();S.prawT=(now-S.t0)/1000;S.prawL=(now-S.linkStart)/1000;clearInterval(tick)}},
+  resume(){if(S.prawT!=null){const now=performance.now();S.t0=now-S.prawT*1000;S.linkStart=now-S.prawL*1000;S.prawT=S.prawL=null;clearInterval(tick);tick=setInterval(drawClock,100);drawClock();const g=$("guess");if(g)g.focus({preventScroll:true})}},
+  restore(d){
+    S.phase="play";$("startBtn").hidden=true;$("playBtns").hidden=false;$("chain").classList.remove("veiled");document.body.classList.add("playing");
+    S.i=d.i;S.results=d.results;S.penalty=d.penalty;S.t0=performance.now();
+    startLink();
+    S.hints=d.hints;S.linkPen=d.linkPen;S.hintReadyAt=0;
+    const g=$("guess");if(g){g.value=d.guess||prefix();drawBoxes()}
+    S.prawT=d.rawT;S.prawL=d.rawL;drawClock();
+    setResult(`<span class="sub">${SUN?`What fits between ${S.path[0]} and ${S.path[2]}?`:`What joins onto ${S.path[S.i-1]}?`}</span>`);
+  }
+});
+
 </script>
+<style id="ux-style">
+*{touch-action:manipulation}
+body{-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none}
+input,textarea,[contenteditable],.share,#shareText{-webkit-user-select:text;user-select:text}
+.htcover{position:fixed;inset:0;z-index:200;background:rgba(10,12,15,.72);display:flex;align-items:center;justify-content:center;padding:16px;animation:htin .18s ease-out}
+.htcard{width:100%;max-width:420px;background:var(--surface,#1E232A);color:var(--ink,#EEF1F5);border:1px solid var(--line,#353D47);border-radius:20px;padding:22px 20px 18px;display:flex;flex-direction:column;gap:12px;box-shadow:0 20px 60px rgba(0,0,0,.45)}
+.htcard small{font:700 .72rem var(--body,system-ui);text-transform:uppercase;letter-spacing:.1em;color:var(--muted,#9AA3B0)}
+.htcard h2{margin:0;font:400 1.7rem var(--display,system-ui);line-height:1.1}
+.htcard ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:9px}
+.htcard li{position:relative;padding-left:22px;line-height:1.4;font-size:1rem}
+.htcard li:before{content:"";position:absolute;left:4px;top:.5em;width:8px;height:10px;border-radius:50% 50% 50% 50%/60% 60% 40% 40%;background:var(--red,#F0384D)}
+.htcard button{margin-top:6px;width:100%;border:0;border-radius:14px;padding:15px;font:700 1.05rem var(--body,system-ui);background:var(--btn,#EEF1F5);color:var(--btn-ink,#14171C);cursor:pointer}
+.htopen{display:block;margin:4px auto 0;background:none;border:0;color:var(--muted,#9AA3B0);font:600 .9rem var(--body,system-ui);text-decoration:underline;cursor:pointer;padding:8px}
+@keyframes htin{from{opacity:0}to{opacity:1}}
+</style>
+<script id="ux-how">(function(){
+var H={"egg-sort": ["Scrambled", "Put the eggs in the hidden order.", ["Tap two eggs to swap them.", "After each swap you see how many are in the right spot, but not which ones.", "Use your past swaps to work it out.", "Faster means more points. 5 rounds, 3 to 7 eggs."]], "blind-stop": ["Blind Stop", "Stop the clock right on the target.", ["Tap Start, then tap Stop when you think you\u2019ve hit the target time.", "The clock hides partway through, so you have to feel it.", "The closer you stop, the more points. 5 rounds."]], "flash": ["Flash", "Remember which eggs glow.", ["Tap Flash. Some eggs glow for half a second.", "Tap the eggs that glowed, then Submit.", "Right picks earn points. Wrong picks cost points.", "The carton gets bigger each round. 5 rounds."]], "trivia": ["Egghead", "Answer fast.", ["5 questions from this week\u2019s category.", "The faster you get it right, the more points.", "A wrong tap is crossed out and adds 4 seconds."]], "bridge": ["Link", "Build a chain of words.", ["Each word joins onto the last to make a new word: SUN \u2192 LIGHT \u2192 HOUSE \u2192 BOAT.", "You see the first letter and how long the word is.", "Hint adds a letter (+5s). Skip scores 0.", "5 links. Faster means more points."]], "bridge-sun": ["Link", "Find the word in the middle.", ["One word fits between the two: SUN \u2192 ? \u2192 HOUSE is LIGHT (SUNLIGHT, LIGHTHOUSE).", "You see the first letter and how long the word is.", "Faster means more points."]], "pecking-order": ["Pecking Order", "Put five things in order.", ["Drag to reorder, then Submit.", "Anything in the right spot locks in green.", "Fewer tries means more points. 5 tries per round."]], "egg-flip": ["Egg Flip", "Over or under?", ["Guess if the real answer is over or under the number shown.", "A wrong guess cracks one of your 3 eggs.", "Keep going until you run out of eggs or time."]], "clutch": ["Clutch", "Name as many as you can.", ["Tap Start to see the category.", "Type answers and press Enter after each one.", "Small typos are fine. 20 seconds a round."]]},base="bridge",sun=location.hash==="#sunday";
+var key=base==="bridge"&&sun?"bridge-sun":base,h=H[key];if(!h)return;
+function seen(){try{return localStorage.getItem("redegg2:how:"+key)==="1"}catch(e){return false}}
+function mark(){try{localStorage.setItem("redegg2:how:"+key,"1")}catch(e){}}
+function esc(s){return String(s).replace(/[&<>]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;"}[c]})}
+function show(){if(document.querySelector(".htcover"))return;
+  var d=document.createElement("div");d.className="htcover";d.setAttribute("role","dialog");d.setAttribute("aria-modal","true");
+  d.innerHTML='<div class="htcard"><small>How to play</small><h2>'+esc(h[0])+'</h2><p style="margin:0;font-weight:700">'+esc(h[1])+'</p><ul>'+h[2].map(function(x){return"<li>"+esc(x)+"</li>"}).join("")+'</ul><button type="button">Play</button></div>';
+  document.body.appendChild(d);var b=d.querySelector("button");b.onclick=function(){mark();d.remove()};setTimeout(function(){b.focus()},50)}
+function init(){
+  document.querySelectorAll("details").forEach(function(x){var s=x.querySelector("summary");if(s&&/how to play/i.test(s.textContent)){x.hidden=true;var b=document.createElement("button");b.type="button";b.className="htopen";b.textContent="How to play";b.onclick=show;x.parentNode.insertBefore(b,x.nextSibling)}});
+  var gated=[].some.call(document.querySelectorAll("a"),function(a){return a.textContent.trim()==="Back to the egg"});
+  if(!seen()&&!gated)show();
+}
+if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",function(){setTimeout(init,0)});else setTimeout(init,0);
+})();</script>
 </body></html>

@@ -1,7 +1,8 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}[hidden]{display:none!important}</style>
-<script>document.documentElement.setAttribute("data-theme","dark")</script><meta name="color-scheme" content="dark"><meta name="theme-color" content="#14171C">
+<script>document.documentElement.setAttribute("data-theme","light")</script><meta name="color-scheme" content="light"><meta name="theme-color" content="#FFC9A0">
+<style>html,body,button,a,[role=button]{touch-action:manipulation}.egg,.slot,button{-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}</style>
 <title>Red Egg: Pecking Order</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -99,7 +100,102 @@ details p{margin:.5em 0 0;max-width:62ch}
 
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
-</head><body>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Nunito:wght@600;700;800&display=swap"><style id="sunrise">/* ---------- Sunrise Farm theme for every page: colors + background art only ---------- */
+:root,:root[data-theme="dark"],:root[data-theme="light"]{
+  --bg:#FFEFC9; --surface:#FFF8EC; --card:#FFF8EC; --tray:#F6E6C8; --soft:#F6E6C8; --ink:#3B2A1E; --muted:#7A5636;
+  --line:#EBD2A6; --red:#D62F3C; --red-dark:#9E1F2A; --red-ink:#FFFFFF; --crack:#4A0E14; --good:#3E8E3A; --bad:#9A5B34; --wrong:#9A5B34;
+  --btn:#3B2A1E; --btn-ink:#FFF8EC; --box:#FFFDF7; --opt:#FFFDF7; --cup:#EAD3AA; --shell:#FBF4E6; --shell-edge:#D9C3A0;
+  --glow:#FFC23D; --gold:#D99A00; --miss:#B98100; --hint:#B98100; --yolk:#FFC23D; --chick:#FFD447; --hole:#2A1206;
+  --pick:#2F6FCB; --pick-bg:#D9E6FA;
+  --t1:#B98100; --t2:#3E8E3A; --t3:#2F6FCB; --t4:#8A7560; --t5:#8A5A3C;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#FFEFC9; --surface:#FFF8EC; --card:#FFF8EC; --tray:#F6E6C8; --soft:#F6E6C8; --ink:#3B2A1E; --muted:#7A5636;
+  --line:#EBD2A6; --red:#D62F3C; --red-dark:#9E1F2A; --red-ink:#FFFFFF; --crack:#4A0E14; --good:#3E8E3A; --bad:#9A5B34; --wrong:#9A5B34;
+  --btn:#3B2A1E; --btn-ink:#FFF8EC; --box:#FFFDF7; --opt:#FFFDF7; --cup:#EAD3AA; --shell:#FBF4E6; --shell-edge:#D9C3A0;
+  --glow:#FFC23D; --gold:#D99A00; --miss:#B98100; --hint:#B98100; --yolk:#FFC23D; --chick:#FFD447; --hole:#2A1206;
+  --pick:#2F6FCB; --pick-bg:#D9E6FA; --t1:#B98100; --t2:#3E8E3A; --t3:#2F6FCB; --t4:#8A7560; --t5:#8A5A3C; color-scheme:light}}
+html,body{background:var(--bg)}
+.farm{position:absolute;left:0;right:0;top:0;height:520px;z-index:0;pointer-events:none;overflow:hidden}
+.farm svg{position:absolute;left:50%;top:0;width:max(100%,390px);height:520px;transform:translateX(-50%)}
+body>*:not(.farm):not(.htcover){position:relative;z-index:1}
+/* tab bar: the dark floating pill */
+.tabs{left:12px!important;right:12px!important;bottom:14px!important;background:#3B2A1E!important;border:0!important;border-radius:22px;padding:8px!important}
+.tabs .in{gap:4px}
+.tabs a{color:#E8C9A0!important;border-radius:16px;padding:8px 2px!important}
+.tabs a[aria-current="page"]{background:#5A4130;color:#FFF8EC!important}
+.tabs a[aria-current="page"] svg .fillme{fill:#FF6A6F}
+
+/* ---------- Sunrise Farm: shared page pieces ---------- */
+html,body{overflow-x:hidden}
+/* one header on every page: logo left, page info right, never wrapping under the logo */
+header{flex-wrap:nowrap!important}
+header .meta{flex-shrink:0;max-width:132px}
+header .meta b{white-space:normal}
+/* footer and tab bar from the Sunrise design */
+footer.site{font-family:"Fredoka",var(--body);font-weight:600;color:#7A4E2A}
+footer.site b{font-weight:600}
+footer.site .beta{border:1.5px solid #C9A577;color:#7A4E2A;background:transparent;font-family:"Nunito",var(--body);font-weight:800}
+.tabs a{font-family:"Nunito",var(--body);font-weight:800}
+/* ---------- Home: egg in a nest on the farm, score in a cream panel ---------- */
+.eggcard{background:transparent!important;border-color:transparent!important;padding:0!important}
+.egg{z-index:0}
+.egg>svg:not(.nest){position:relative;z-index:1}
+.egg svg>ellipse[fill^="rgba"]{display:none}
+.egg .whole circle,.egg .body>g[clip-path] circle,.egg .top circle{display:none}
+.egg .nest{position:absolute;left:50%;transform:translateX(-50%);width:380px;height:141px;pointer-events:none;overflow:visible}
+.egg .nest.back{bottom:-65px;z-index:0}
+.egg .nest.front{bottom:-65px;z-index:2}
+.eggpanel{background:var(--surface);border-radius:24px;padding:20px 18px;box-shadow:0 4px 0 #EED3A2;margin-top:58px;box-sizing:border-box;position:relative;z-index:3}
+.eggpanel .points{font-family:"Nunito",var(--body);font-weight:800;color:#7A4E2A;font-size:15px}
+.eggpanel .points b{font-family:"Fredoka",var(--body);font-weight:700;color:#C8362F;font-size:26px}
+.eggpanel .status{font-family:"Nunito",var(--body);color:#7A4E2A;font-size:15px}
+.eggpanel .today{width:100%}
+.eggpanel .big{background:#E0303F!important;color:#fff!important;border-radius:18px;font-family:"Fredoka",var(--body);font-weight:700;font-size:19px;box-shadow:0 5px 0 #A81E2B}
+.eggpanel .todaynote{font-family:"Nunito",var(--body);color:#7A4E2A}
+header .brand{flex-shrink:0}
+header .meta b{font-size:.82rem}
+.eggpanel .tiername:empty{display:none}
+/* a bigger weekly total */
+.eggpanel .points{display:flex;flex-direction:column;align-items:center;line-height:1.1}
+.eggpanel .points b{font-size:52px;line-height:1}
+.eggpanel .points .ptsdelta{font-family:"Fredoka",var(--body);font-size:20px;color:#3E8E3A;top:-4px}
+.eggpanel .points .streak{margin-top:6px}
+/* the share picture sits over everything */
+body>.cardcover,body>.confetti{position:fixed!important;inset:0!important;z-index:400!important}
+/* very small phones: shrink the logo a little so the page info fits */
+@media (max-width:359px){header .brand h1{font-size:1.5rem!important}header .brand svg{width:22px;height:30px}header .brand{gap:6px}header .meta{font-size:.68rem}}
+</style>
+</head><body><div class="farm inner" aria-hidden="true"><svg viewBox="0 0 390 520" preserveAspectRatio="xMidYMin slice">
+    <defs>
+      <linearGradient id="sky4" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#FFC9A0"/>
+        <stop offset="0.55" stop-color="#FFDDB0"/>
+        <stop offset="1" stop-color="#FFEFC9"/>
+      </linearGradient>
+      <radialGradient id="eggShine4" cx="0.35" cy="0.3" r="0.75">
+        <stop offset="0" stop-color="#FF6A6F"/>
+        <stop offset="0.6" stop-color="#E0303F"/>
+        <stop offset="1" stop-color="#A81E2B"/>
+      </radialGradient>
+      <radialGradient id="gShade" cx=".36" cy=".3" r=".85"><stop offset="0" stop-color="#fff" stop-opacity=".5"></stop><stop offset=".35" stop-color="#fff" stop-opacity="0"></stop><stop offset=".78" stop-color="#000" stop-opacity="0"></stop><stop offset="1" stop-color="#000" stop-opacity=".2"></stop></radialGradient>
+    </defs>
+    <rect width="390" height="520" fill="url(#sky4)"/>
+    
+    
+    <path d="M0 268 C70 232 130 236 200 258 C260 276 320 246 390 236 L390 340 L0 340 Z" fill="#B9D88E"/>
+    <path d="M0 300 C90 272 170 284 250 300 C310 312 350 292 390 286 L390 380 L0 380 Z" fill="#94C46A"/>
+    <g stroke="#E9CDA0" stroke-width="6" stroke-linecap="round">
+      <path d="M0 352 L390 352"/><path d="M0 374 L390 374"/>
+      <path d="M22 340 L22 392"/><path d="M84 340 L84 392"/><path d="M306 340 L306 392"/><path d="M368 340 L368 392"/>
+    </g>
+    <path d="M0 384 C80 372 160 376 230 382 C300 388 350 380 390 376 L390 520 L0 520 Z" fill="#F3D38A"/>
+    <g stroke="#DDB45E" stroke-width="2.5" stroke-linecap="round">
+      <path d="M30 420 l10 -8"/><path d="M48 470 l-8 -9"/><path d="M350 418 l9 -7"/><path d="M340 470 l-9 -6"/><path d="M20 496 l10 -6"/><path d="M372 498 l-8 -8"/>
+    </g>
+
+    </svg></div>
 <div class="wrap">
   <header>
     <a class="brand" href="index.html"><svg width="30" height="40" viewBox="0 0 60 80" aria-hidden="true"><path d="M30 3C46 3 57 31 57 48C57 66 45 78 30 78C15 78 3 66 3 48C3 31 14 3 30 3Z" fill="var(--red)"/><ellipse cx="20" cy="30" rx="6" ry="11" fill="#fff" opacity=".35" transform="rotate(20 20 30)"/></svg><h1>The <span>Red</span> Egg</h1></a>
@@ -123,13 +219,17 @@ const DAY_KEYS=["egg-sort","blind-stop","flash","trivia","bridge","pecking-order
 const DAY_NAMES=["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
 const pad2=n=>String(n).padStart(2,"0");
 const ymd=d=>`${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`;
-const NOW=new Date(),LOCALDAY=ymd(NOW),TODAY_IDX=(NOW.getDay()+6)%7;
+/* testing only: "Pretend it's Sunday" moves today to this week's Sunday */
+const FAKE_SUNDAY=(()=>{try{return false}catch(e){return false}})();
+const NOW=(()=>{const d=new Date();if(FAKE_SUNDAY)d.setDate(d.getDate()+(6-(d.getDay()+6)%7));return d})(),LOCALDAY=ymd(NOW),TODAY_IDX=(NOW.getDay()+6)%7;
 const CUR_MONDAY=(()=>{const d=new Date(NOW);d.setDate(d.getDate()-TODAY_IDX);return ymd(d)})();
 const WEEK_NO=Math.round((new Date(CUR_MONDAY+"T12:00:00")-new Date("2026-01-05T12:00:00"))/604800000);
 /* the date a day's game belongs to this week, so a catch-up gets the same puzzle everyone played that day */
 function gameDate(key){const i=DAY_KEYS.indexOf(key);const d=new Date(CUR_MONDAY+"T12:00:00");d.setDate(d.getDate()+Math.max(0,i));return ymd(d)}
 const SUN_KEYS=["egg-sort","blind-stop","flash","trivia","bridge","pecking-order"];
-function hashStr(s){let h=2166136261;for(const c of s){h^=c.charCodeAt(0);h=Math.imul(h,16777619)}return h>>>0}
+/* the Claude preview gets its own puzzles so practicing there never spoils the live week (the live build blanks this) */
+const SEED_SALT="";
+function hashStr(s){s=String(s)+SEED_SALT;let h=2166136261;for(const c of s){h^=c.charCodeAt(0);h=Math.imul(h,16777619)}return h>>>0}
 function rngFrom(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
 function seededOrder(list,salt){const r=rngFrom(hashStr(salt)),a=list.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
 const RS={get(k,d){try{const v=localStorage.getItem("redegg2:"+k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem("redegg2:"+k,JSON.stringify(v))}catch(e){}}};
@@ -139,6 +239,8 @@ function markPlayed(){const s=RS.get("playDays",[]);if(!s.includes(LOCALDAY)){s.
 function dayStreak(){const s=new Set(RS.get("playDays",[]));const d=new Date(NOW);if(!s.has(ymd(d)))d.setDate(d.getDate()-1);let n=0;while(s.has(ymd(d))){n++;d.setDate(d.getDate()-1)}return n}
 function bestDayStreak(){const s=[...new Set(RS.get("playDays",[]))].sort();let best=0,run=0,prev=null;for(const k of s){const d=new Date(k+"T12:00:00");run=prev&&Math.round((d-prev)/864e5)===1?run+1:1;best=Math.max(best,run);prev=d}return best}
 function weekStreak(){const ids=new Set(RS.get("pen",[]).map(p=>p.id));const d=new Date(CUR_MONDAY+"T12:00:00");if(!ids.has(ymd(d)))d.setDate(d.getDate()-7);let n=0;while(ids.has(ymd(d))){n++;d.setDate(d.getDate()-7)}return n}
+/* the week is ready for Sunday once Mon–Sat are all played (catch-ups count) */
+function weekReady(w){return Object.keys(w.sunday||{}).length>0||SUN_KEYS.every(k=>k in w.days)}
 /* stop replays and off-day plays (testing can unlock every day) */
 function dailyGate(mode,key,name){
   if(mode==="practice"||false)return false;
@@ -149,7 +251,9 @@ function dailyGate(mode,key,name){
     else if(SUN_KEYS.every(k=>k in w.sunday))msg=`This week's egg has already hatched, so ${name} can't be caught up. A new egg starts Monday.`;
   }else if(mode==="sunday"){
     if(TODAY_IDX!==6)msg=`The Red Egg is played on Sunday.`;
+    else if(!weekReady(w))msg=`Finish the week first. Play your missed days, then come back for the Red Egg.`;
     else if(key in w.sunday)msg=`You already played this round of the Red Egg.`;
+    else{const nx=SUN_KEYS.find(k=>!(k in w.sunday));if(nx&&nx!==key){location.replace(nx+".html#sunday");return true}}
   }
   if(!msg)return false;
   const wrap=document.querySelector(".wrap");
@@ -158,8 +262,56 @@ function dailyGate(mode,key,name){
   return true;
 }
 
+/* ---------- pause & resume a daily game ----------
+   Leaving mid-game (switching apps, locking the phone, reloading) pauses it. Coming back shows a
+   Resume screen with the board hidden; Resume picks up exactly where you were. Each game supplies
+   snap() (what to save), restore(d) (rebuild from a save), pause() and resume() (stop/start its clock). */
+const PAUSE={key:null,over:false,
+  k(){return "resume:"+this.key},
+  save(d){if(!this.over)RS.set(this.k(),d)},
+  load(){return RS.get(this.k(),null)},
+  clear(){try{localStorage.removeItem("redegg2:"+this.k())}catch(e){}},
+  done(){this.over=true;if(this.key)this.clear()},
+  cover(title,sub,go){
+    if(document.getElementById("pauseCover"))return;
+    if(!document.getElementById("pauseCss")){const st=document.createElement("style");st.id="pauseCss";st.textContent=
+      '#pauseCover{position:fixed;inset:0;z-index:300;background:var(--bg,#14171C);display:flex;align-items:center;justify-content:center;padding:16px}'+
+      '#pauseCover .pc{width:100%;max-width:420px;background:var(--surface,#1E232A);color:var(--ink,#EEF1F5);border:1px solid var(--line,#353D47);border-radius:20px;padding:26px 20px 20px;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center}'+
+      '#pauseCover small{font:700 .72rem var(--body,system-ui);text-transform:uppercase;letter-spacing:.1em;color:var(--muted,#9AA3B0)}'+
+      '#pauseCover h2{margin:0;font:400 1.8rem var(--display,system-ui)}'+
+      '#pauseCover p{margin:0;color:var(--muted,#9AA3B0);font-weight:600}'+
+      '#pauseCover button{margin-top:10px;width:100%;border:0;border-radius:14px;padding:16px;font:700 1.05rem var(--body,system-ui);background:var(--red,#F0384D);color:#fff;cursor:pointer}';
+      document.head.appendChild(st)}
+    const d=document.createElement("div");d.id="pauseCover";d.setAttribute("role","dialog");d.setAttribute("aria-modal","true");
+    d.innerHTML='<div class="pc"><small>Paused</small><h2></h2><p></p><button type="button">Resume</button></div>';
+    d.querySelector("h2").textContent=title;d.querySelector("p").textContent=sub||"";
+    document.body.appendChild(d);
+    const b=d.querySelector("button");b.onclick=()=>{d.remove();go()};setTimeout(()=>b.focus(),30);
+  }
+};
+function setupResume(key,mode,h){
+  if(mode==="practice")return;
+  PAUSE.key=key+":"+mode+":"+(mode==="day"?gameDate(key):LOCALDAY);
+  let paused=false;
+  const blocked=()=>[...document.querySelectorAll("a")].some(a=>a.textContent.trim()==="Back to the egg"&&!a.closest("#end"));
+  const show=()=>{const [t,s]=h.label();PAUSE.cover(t,s,()=>{paused=false;h.resume&&h.resume()})};
+  function leave(){
+    if(paused||PAUSE.over)return;
+    let d=null;try{d=h.snap()}catch(e){}
+    if(!d)return;
+    PAUSE.save(d);try{h.pause&&h.pause()}catch(e){}
+    paused=true;
+  }
+  document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden")leave();else if(paused&&!PAUSE.over)show()});
+  window.addEventListener("pagehide",leave);
+  window.addEventListener("pageshow",e=>{if(e.persisted&&paused&&!PAUSE.over)show()});
+  if(blocked()){PAUSE.clear();PAUSE.over=true;return}
+  const d=PAUSE.load();
+  if(d){try{h.restore(d);paused=true;show()}catch(e){PAUSE.clear()}}
+}
+
 const MODE=location.hash==="#sunday"?"sunday":location.hash==="#day"?"day":"practice";
-const GAMEKEY="pecking-order",SUN_POS="6 of 6",SUN_MULT=5/6;
+const GAMEKEY="pecking-order",SUN_POS="6 of 6",SUN_MULT=1;
 const ROUNDS=MODE==="sunday"?1:5;
 const RND=MODE==="practice"?Math.random:rngFrom(hashStr("pecking|"+MODE+"|"+(MODE==="day"?gameDate("pecking-order"):LOCALDAY)));
 if(MODE==="sunday"){document.querySelectorAll("header a").forEach(x=>{x.style.pointerEvents="none";x.setAttribute("tabindex","-1")});document.getElementById("metaSub").textContent="Sunday · "+SUN_POS;const b=document.getElementById("backlink");b.textContent="Sunday";b.style.color="var(--red)";b.style.pointerEvents="none";document.getElementById("progress").hidden=true}
@@ -186,12 +338,12 @@ function roundDone(pts,msg,extra){
   const b=$("nextBtn");b.hidden=false;b.textContent=MODE==="sunday"?"Crack the egg":G.round+1<ROUNDS?"Next round":"See your score";drawProgress();b.focus();
 }
 $("nextBtn").onclick=()=>{
-  if(MODE==="sunday"){markPlayed();const w=currentWeek();w.sunday[GAMEKEY]=+(G.results[0].pts*SUN_MULT).toFixed(1);RS.set("week",w);location.href="index.html#crack";return}
+  if(MODE==="sunday"){PAUSE.done();markPlayed();const w=currentWeek();w.sunday[GAMEKEY]=+(G.results[0].pts*SUN_MULT).toFixed(1);RS.set("week",w);location.href="index.html#crack";return}
   $("nextBtn").hidden=true;G.round++;if(G.round<ROUNDS)begin();else finish()};
 function begin(){$("roundTitle").textContent=MODE==="sunday"?"Sunday · "+SUN_POS:`Round ${G.round+1} of ${ROUNDS}`;setResult("");drawProgress();startRound(G.round)}
 function finish(){
   const total=Math.round(G.results.reduce((a,r)=>a+r.pts,0));
-  if(MODE==="day"){markPlayed();const w=currentWeek();w.days[GAMEKEY]=total;RS.set("week",w);const h=RS.get("history",[]);h.push({game:GAMEKEY,score:total,week:w.id,at:Date.now()});RS.set("history",h)}
+  if(MODE==="day"){PAUSE.done();markPlayed();const w=currentWeek();w.days[GAMEKEY]=total;RS.set("week",w);const h=RS.get("history",[]);h.push({game:GAMEKEY,score:total,week:w.id,at:Date.now()});RS.set("history",h)}
   const share=`The Red Egg · Pecking Order\n${G.results.map(r=>EMO(r.pts)).join("")}\n${total}/100`;
   const rows=G.results.map((r,i)=>`<tr><td>${i+1}</td><td>${r.label||""}</td><td>${r.detail||""}</td><td>${r.pts.toFixed(1)}</td><td>${pill(r.pts)}</td></tr>`).join("");
   $("end").innerHTML=`<div class="tier">Pecking Order</div><div class="score">${total}<small>/100</small></div>
@@ -415,5 +567,52 @@ function submit(){
 }
 
 init&&init();begin();
+setupResume("pecking-order",MODE,{
+  label(){return["Pecking Order",MODE==="sunday"?"Sunday · "+SUN_POS:`Round ${G.round+1} of ${ROUNDS}`]},
+  snap(){if(G.round>=ROUNDS||!$("end").hidden||!R)return null;
+    if(!G.round&&!G.results.length&&!R.tries)return null;
+    return{round:G.round,results:G.results,cur:R.cur,locked:[...R.locked],tries:R.tries,done:R.done,res:$("result").innerHTML,btn:$("nextBtn").textContent}},
+  restore(d){
+    for(let r=1;r<=d.round;r++){G.round=r;begin()}
+    G.round=d.round;G.results=d.results;
+    Object.assign(R,{cur:d.cur,locked:new Set(d.locked),tries:d.tries,done:d.done});
+    draw();drawProgress();
+    if(d.done){$("subBtn").hidden=true;setResult(d.res);const b=$("nextBtn");b.hidden=false;b.textContent=d.btn}
+    else if(d.tries)hint(`${R.locked.size} of 5 in the right spot. ${MAXTRIES-R.tries} ${MAXTRIES-R.tries===1?"try":"tries"} left.`);
+  }
+});
+
 </script>
+<style id="ux-style">
+*{touch-action:manipulation}
+body{-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none}
+input,textarea,[contenteditable],.share,#shareText{-webkit-user-select:text;user-select:text}
+.htcover{position:fixed;inset:0;z-index:200;background:rgba(10,12,15,.72);display:flex;align-items:center;justify-content:center;padding:16px;animation:htin .18s ease-out}
+.htcard{width:100%;max-width:420px;background:var(--surface,#1E232A);color:var(--ink,#EEF1F5);border:1px solid var(--line,#353D47);border-radius:20px;padding:22px 20px 18px;display:flex;flex-direction:column;gap:12px;box-shadow:0 20px 60px rgba(0,0,0,.45)}
+.htcard small{font:700 .72rem var(--body,system-ui);text-transform:uppercase;letter-spacing:.1em;color:var(--muted,#9AA3B0)}
+.htcard h2{margin:0;font:400 1.7rem var(--display,system-ui);line-height:1.1}
+.htcard ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:9px}
+.htcard li{position:relative;padding-left:22px;line-height:1.4;font-size:1rem}
+.htcard li:before{content:"";position:absolute;left:4px;top:.5em;width:8px;height:10px;border-radius:50% 50% 50% 50%/60% 60% 40% 40%;background:var(--red,#F0384D)}
+.htcard button{margin-top:6px;width:100%;border:0;border-radius:14px;padding:15px;font:700 1.05rem var(--body,system-ui);background:var(--btn,#EEF1F5);color:var(--btn-ink,#14171C);cursor:pointer}
+.htopen{display:block;margin:4px auto 0;background:none;border:0;color:var(--muted,#9AA3B0);font:600 .9rem var(--body,system-ui);text-decoration:underline;cursor:pointer;padding:8px}
+@keyframes htin{from{opacity:0}to{opacity:1}}
+</style>
+<script id="ux-how">(function(){
+var H={"egg-sort": ["Scrambled", "Put the eggs in the hidden order.", ["Tap two eggs to swap them.", "After each swap you see how many are in the right spot, but not which ones.", "Use your past swaps to work it out.", "Faster means more points. 5 rounds, 3 to 7 eggs."]], "blind-stop": ["Blind Stop", "Stop the clock right on the target.", ["Tap Start, then tap Stop when you think you\u2019ve hit the target time.", "The clock hides partway through, so you have to feel it.", "The closer you stop, the more points. 5 rounds."]], "flash": ["Flash", "Remember which eggs glow.", ["Tap Flash. Some eggs glow for half a second.", "Tap the eggs that glowed, then Submit.", "Right picks earn points. Wrong picks cost points.", "The carton gets bigger each round. 5 rounds."]], "trivia": ["Egghead", "Answer fast.", ["5 questions from this week\u2019s category.", "The faster you get it right, the more points.", "A wrong tap is crossed out and adds 4 seconds."]], "bridge": ["Link", "Build a chain of words.", ["Each word joins onto the last to make a new word: SUN \u2192 LIGHT \u2192 HOUSE \u2192 BOAT.", "You see the first letter and how long the word is.", "Hint adds a letter (+5s). Skip scores 0.", "5 links. Faster means more points."]], "bridge-sun": ["Link", "Find the word in the middle.", ["One word fits between the two: SUN \u2192 ? \u2192 HOUSE is LIGHT (SUNLIGHT, LIGHTHOUSE).", "You see the first letter and how long the word is.", "Faster means more points."]], "pecking-order": ["Pecking Order", "Put five things in order.", ["Drag to reorder, then Submit.", "Anything in the right spot locks in green.", "Fewer tries means more points. 5 tries per round."]], "egg-flip": ["Egg Flip", "Over or under?", ["Guess if the real answer is over or under the number shown.", "A wrong guess cracks one of your 3 eggs.", "Keep going until you run out of eggs or time."]], "clutch": ["Clutch", "Name as many as you can.", ["Tap Start to see the category.", "Type answers and press Enter after each one.", "Small typos are fine. 20 seconds a round."]]},base="pecking-order",sun=location.hash==="#sunday";
+var key=base==="bridge"&&sun?"bridge-sun":base,h=H[key];if(!h)return;
+function seen(){try{return localStorage.getItem("redegg2:how:"+key)==="1"}catch(e){return false}}
+function mark(){try{localStorage.setItem("redegg2:how:"+key,"1")}catch(e){}}
+function esc(s){return String(s).replace(/[&<>]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;"}[c]})}
+function show(){if(document.querySelector(".htcover"))return;
+  var d=document.createElement("div");d.className="htcover";d.setAttribute("role","dialog");d.setAttribute("aria-modal","true");
+  d.innerHTML='<div class="htcard"><small>How to play</small><h2>'+esc(h[0])+'</h2><p style="margin:0;font-weight:700">'+esc(h[1])+'</p><ul>'+h[2].map(function(x){return"<li>"+esc(x)+"</li>"}).join("")+'</ul><button type="button">Play</button></div>';
+  document.body.appendChild(d);var b=d.querySelector("button");b.onclick=function(){mark();d.remove()};setTimeout(function(){b.focus()},50)}
+function init(){
+  document.querySelectorAll("details").forEach(function(x){var s=x.querySelector("summary");if(s&&/how to play/i.test(s.textContent)){x.hidden=true;var b=document.createElement("button");b.type="button";b.className="htopen";b.textContent="How to play";b.onclick=show;x.parentNode.insertBefore(b,x.nextSibling)}});
+  var gated=[].some.call(document.querySelectorAll("a"),function(a){return a.textContent.trim()==="Back to the egg"});
+  if(!seen()&&!gated)show();
+}
+if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",function(){setTimeout(init,0)});else setTimeout(init,0);
+})();</script>
 </body></html>
