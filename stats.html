@@ -978,6 +978,12 @@ const EGGP2="M30 3C46 3 57 31 57 48C57 66 45 78 30 78C15 78 3 66 3 48C3 31 14 3 
   }catch(e){}
 })();
 
+/* tapping Beta five times fast shouldn't zoom the page on a phone */
+(function(){const go=()=>{const b=document.getElementById("betaBadge");if(!b||b.dataset.tap)return;b.dataset.tap="1";
+  b.style.touchAction="none";b.style.webkitUserSelect="none";
+  b.addEventListener("touchend",e=>{e.preventDefault();b.click()},{passive:false})};
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",go);else go();})();
+
 /* ---------- leaderboard: shared scores ----------
    Inside Claude the scores live in the artifact's shared store; on the live site they go to /api/players. */
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
