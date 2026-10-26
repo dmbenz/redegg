@@ -31,6 +31,19 @@ export default async (req) => {
   }
 
   if (req.method === "GET") {
+    // beta: "I've played before" picks your username from the list and this device joins that player
+    const want = url.searchParams.get("name");
+    if (want != null) {
+      const names = getStore({ name: "names", consistency: "strong" });
+      const key = encodeURIComponent(String(want).replace(/\s+/g, " ").trim().slice(0, 16).toLowerCase());
+      const id = key ? await names.get(key) : null;
+      const p = id ? await players.get(id, { type: "json" }) : null;
+      if (!p) return json({ error: "not_found" }, 404);
+      const secret = randomBytes(24).toString("hex").slice(0, 32);
+      p.keys = [...(p.keys || []), hash(secret)].slice(-8);
+      await players.setJSON(id, p);
+      return json({ id, secret, name: p.name, save: p.save || null });
+    }
     const win = "fails-" + Math.floor(Date.now() / LINK_MS);
     const fails = Number((await links.get(win)) || 0);
     if (fails >= MAX_FAILS) return json({ error: "slow_down" }, 429);

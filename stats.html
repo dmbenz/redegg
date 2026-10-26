@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<html lang="en"><head><meta charset="utf-8"><link rel="icon" href="/favicon.ico" sizes="48x48"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="manifest" href="/site.webmanifest"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 <script>document.documentElement.setAttribute("data-theme","light")</script><meta name="color-scheme" content="light"><meta name="theme-color" content="#FFC9A0">
 <style>html,body,button,a,[role=button]{touch-action:manipulation}.egg,.slot,button{-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}</style>
@@ -227,7 +227,7 @@ a.big{display:block;text-align:center;text-decoration:none}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--r-legendary:#FFC93C;--r-epic:#C08BFF;--r-rare:#6EA0FF;--r-uncommon:#47C474;--r-common:#9AA3B0;--r-rough:#C08A66;--r-secret:#FF8FC4;--r-mythic:#B9A2FF}}
 :root[data-theme="dark"]{--r-legendary:#FFC93C;--r-epic:#C08BFF;--r-rare:#6EA0FF;--r-uncommon:#47C474;--r-common:#9AA3B0;--r-rough:#C08A66;--r-secret:#FF8FC4;--r-mythic:#B9A2FF}
 .rar{display:inline-block;font:700 .62rem var(--body);text-transform:uppercase;letter-spacing:.1em;padding:2px 8px;border-radius:999px;border:1.5px solid currentColor;vertical-align:middle;white-space:nowrap}
-.r-mythic{border-color:transparent;background:linear-gradient(90deg,#8FE3FF,#C9B8FF,#FF9BD2);color:#2A1B4F}
+.r-mythic{border-color:transparent;background:linear-gradient(90deg,#8FE3FF,#C9B8FF,#FF9BD2) border-box;background-origin:border-box;color:#2A1B4F}
 .r-legendary{color:var(--r-legendary)}.r-epic{color:var(--r-epic)}.r-rare{color:var(--r-rare)}.r-uncommon{color:var(--r-uncommon)}
 .r-common{color:var(--r-common)}.r-rough{color:var(--r-rough)}.r-cursed{color:#fff;background:#2B2F35;border-color:#2B2F35}.r-secret{color:var(--r-secret)}
 .slot{gap:4px}
@@ -365,6 +365,82 @@ a.big{display:block;text-align:center;text-decoration:none}
 @keyframes cardspin{to{transform:rotate(360deg)}}
 @media (max-width:359px){.lbhead,.lbrow{grid-template-columns:16px 1fr 36px 34px 42px;gap:4px}.lbrow{padding:8px}.lbhead{padding:0 8px;font-size:.6rem;letter-spacing:.03em}.lbday,.lbtot,.lbgp{font-size:.9rem}.lbchick svg{width:24px;height:24px}.lbname{gap:5px}.lbname em{font-size:.6rem;letter-spacing:.04em}}
 
+/* collection: every row the same height, found counts in the card header */
+.coll{grid-auto-rows:1fr}
+.slot .rarph{visibility:hidden}
+.collhead{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:12px}
+.collhead h2{margin:0}
+.collhead .found{color:var(--muted);font-weight:700;font-size:.85rem;white-space:nowrap}
+/* pop-up card */
+.sheetcover{position:fixed;inset:0;z-index:270;background:rgba(10,12,15,.6);display:flex;align-items:center;justify-content:center;padding:16px}
+.sheet{position:relative;width:100%;max-width:420px;max-height:86vh;overflow:auto;background:var(--surface);color:var(--ink);border-radius:22px;padding:22px 18px 18px;box-shadow:0 18px 50px rgba(0,0,0,.35)}
+.sheetx{position:absolute;top:10px;right:10px;width:38px;height:38px;border-radius:50%;border:0;background:var(--tray);color:var(--ink);font:400 1.6rem/1 var(--body);cursor:pointer;display:flex;align-items:center;justify-content:center}
+.sheethead{display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;margin-bottom:14px}
+.sheethead h3{margin:0;font-family:var(--display);font-weight:400;font-size:1.5rem}
+.sheetpic svg{width:110px;height:110px;display:block}
+.sheetsub{display:flex;gap:8px;align-items:center;color:var(--muted);font-weight:700;font-size:.9rem}
+.sheetbody h4{margin:14px 0 6px;font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.sheetbody h4:first-child{margin-top:0}
+.sheetlist{list-style:none;margin:0;padding:0;background:var(--tray);border-radius:14px;padding:4px 14px}
+.sheetlist li{display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);font-size:.92rem}
+.sheetlist li:last-child{border-bottom:0}
+.sheetlist li b{font-family:var(--mono)}
+.sheetlist li.tot{font-weight:800}
+.sheetlist li .mut{color:var(--muted)}
+.sheet .coll{grid-template-columns:repeat(3,1fr)}
+.sheet .slot{cursor:default}
+body.sheeton{overflow:hidden}
+.sheethead h3 small.you{font:700 .65rem var(--body);color:var(--red);text-transform:uppercase;letter-spacing:.08em;vertical-align:middle;margin-left:4px}
+.adminbox{margin-top:16px;border-top:1px dashed var(--line);padding-top:4px}
+.adminrow{display:flex;gap:8px;margin-bottom:8px}
+.adminrow select{flex:1;min-width:0;font:inherit;padding:10px;border-radius:12px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink)}
+.adminbtn{font:700 .95rem var(--body);padding:10px 14px;border-radius:12px;border:0;background:var(--ink);color:var(--surface);cursor:pointer}
+.adminbtn:disabled{opacity:.4}
+.adminbtn.danger{width:100%;background:#C8362F;color:#fff}
+.adminmsg{margin:8px 0 0;color:var(--muted);font-size:.85rem;text-align:center;min-height:1em}
+.pinform{display:flex;flex-direction:column;gap:10px;align-items:stretch}
+.pinform input{font:700 1.6rem var(--mono);text-align:center;letter-spacing:.5em;padding:12px;border-radius:14px;border:1.5px solid var(--line);background:var(--tray);color:var(--ink)}
+.choose{display:flex;flex-direction:column;gap:10px}
+.choose .big.alt{background:var(--tray)!important;color:var(--ink)!important;box-shadow:none}
+.iabbar{position:sticky;top:0;z-index:280;display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;margin:0 auto 10px;max-width:560px;padding:10px 12px;border-radius:0 0 16px 16px;box-sizing:border-box;background:#3B2A1E;color:#FFF4E2;font:700 .9rem var(--body)}
+.iabt{flex:1;min-width:0}
+.iabgo{background:#E0303F;color:#fff;text-decoration:none;border-radius:12px;padding:8px 14px;font-weight:800}
+.iabx{border:0;background:transparent;color:#FFF4E2;font-size:1.4rem;line-height:1;cursor:pointer;padding:0 4px}
+.iabhint{flex-basis:100%;font-weight:600;font-size:.82rem;opacity:.9}
+.sheethead h3{font-family:var(--display);font-weight:400;font-size:1.6rem;text-transform:none;letter-spacing:0;color:var(--ink);margin:0}
+.sheet{max-height:calc(100vh - 150px);max-height:calc(100dvh - 150px);margin-bottom:80px}
+.namesugg{display:flex;flex-direction:column;gap:6px;margin-top:-4px}
+.namesugg button{font:700 1rem var(--body);text-align:left;padding:12px 14px;border-radius:12px;border:1.5px solid var(--line);background:var(--tray);color:var(--ink);cursor:pointer}
+.namesugg .nosugg{margin:0;color:var(--muted);font-size:.9rem;text-align:center}
+.nameSave:disabled,#nameSave:disabled{opacity:.45}
+.namesugg button{display:flex;justify-content:space-between;align-items:center;background:var(--surface);border-color:var(--red)}
+.namesugg button::after{content:"›";font-size:1.3rem;color:var(--red);line-height:1}
+.cardbox img{max-height:calc(100vh - 230px);max-height:calc(100dvh - 230px);width:auto!important;max-width:100%;margin:0 auto}
+.dullpic{display:inline-flex;filter:grayscale(1) brightness(1.08);opacity:.42}
+.slot.dull .nm{color:var(--muted)}
+.lbchick .dullpic svg,.slot .dullpic svg{display:block}
+.gwrap{display:flex;flex-direction:column;align-items:center;gap:10px}
+.gor{display:flex;align-items:center;gap:10px;width:100%;color:var(--muted);font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em}
+.gor::before,.gor::after{content:"";flex:1;height:1px;background:var(--line)}
+#gBtn{min-height:44px;display:flex;justify-content:center;width:100%}
+.adminrow input{flex:1;min-width:0;font:inherit;padding:10px;border-radius:12px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink)}
+/* the account card */
+.authhead{position:relative;display:flex;flex-direction:column;gap:4px}
+.authhead h2{margin:0}
+.authback{align-self:flex-start;background:none;border:0;padding:0 0 2px;color:var(--muted);font:700 .9rem var(--body);cursor:pointer}
+.authsub{margin:0;color:var(--muted);font-size:.92rem;line-height:1.35}
+.authfield{display:flex;flex-direction:column;gap:6px}
+.authfield>span{font:800 .72rem var(--body);text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.authfield[hidden]{display:none}
+.namein.codein{text-align:center;font:700 1.6rem var(--mono);letter-spacing:.4em}
+.authfoot{display:flex;flex-direction:column;align-items:center;gap:8px}
+.authfoot button{background:none;border:0;color:var(--muted);font:600 .92rem var(--body);cursor:pointer;padding:2px}
+.authfoot button b{color:var(--ink);text-decoration:underline}
+.authfoot button[hidden]{display:none}
+#nameCard{gap:14px}
+.authform{display:flex;flex-direction:column;gap:14px;margin:0}
+.vh{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);border:0;opacity:0}
+
 </style>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Nunito:wght@600;700;800&display=swap"><style id="sunrise">/* ---------- Sunrise Farm theme for every page: colors + background art only ---------- */
 :root,:root[data-theme="dark"],:root[data-theme="light"]{
@@ -429,9 +505,14 @@ header .meta b{font-size:.82rem}
 .eggpanel .points .ptsdelta{font-family:"Fredoka",var(--body);font-size:20px;color:#3E8E3A;top:-4px}
 .eggpanel .points .streak{margin-top:6px}
 /* the share picture sits over everything */
-body>.cardcover,body>.confetti{position:fixed!important;inset:0!important;z-index:400!important}
+body>.cardcover,body>.confetti,body>.sheetcover{position:fixed!important;inset:0!important;z-index:400!important}
 /* very small phones: shrink the logo a little so the page info fits */
 @media (max-width:359px){header .brand h1{font-size:1.5rem!important}header .brand svg{width:22px;height:30px}header .brand{gap:6px}header .meta{font-size:.68rem}}
+
+/* computers only: keep the farm at phone size in the middle and let it run out past both edges */
+.farm .wide{display:none}
+@media (min-width:700px){.farm{height:940px}.farm svg{width:390px;overflow:visible}.farm .wide{display:inline}}
+body>.iabbar{position:sticky!important;z-index:280!important}
 </style>
 </head><body><div class="farm inner" aria-hidden="true"><svg viewBox="0 0 390 520" preserveAspectRatio="xMidYMin slice">
     <defs>
@@ -447,21 +528,21 @@ body>.cardcover,body>.confetti{position:fixed!important;inset:0!important;z-inde
       </radialGradient>
       <radialGradient id="gShade" cx=".36" cy=".3" r=".85"><stop offset="0" stop-color="#fff" stop-opacity=".5"></stop><stop offset=".35" stop-color="#fff" stop-opacity="0"></stop><stop offset=".78" stop-color="#000" stop-opacity="0"></stop><stop offset="1" stop-color="#000" stop-opacity=".2"></stop></radialGradient>
     </defs>
-    <rect width="390" height="520" fill="url(#sky4)"/>
+    <rect x="-1600" width="3590" height="520" fill="url(#sky4)" class="wide"/><rect width="390" height="520" fill="url(#sky4)"/>
     
     
-    <path d="M0 268 C70 232 130 236 200 258 C260 276 320 246 390 236 L390 340 L0 340 Z" fill="#B9D88E"/>
-    <path d="M0 300 C90 272 170 284 250 300 C310 312 350 292 390 286 L390 380 L0 380 Z" fill="#94C46A"/>
-    <g stroke="#E9CDA0" stroke-width="6" stroke-linecap="round">
+    <g class="wide"><path d="M-1600 250 C-1300 222 -1000 242 -700 262 C-400 282 -200 252 0 268 L0 340 L-1600 340Z" fill="#B9D88E"/><path d="M390 236 C600 220 820 262 1060 250 C1300 238 1600 228 1990 240 L1990 340 L390 340Z" fill="#B9D88E"/></g><path d="M0 268 C70 232 130 236 200 258 C260 276 320 246 390 236 L390 340 L0 340 Z" fill="#B9D88E"/>
+    <g class="wide"><path d="M-1600 296 C-1200 280 -800 312 -400 298 C-200 292 -80 296 0 300 L0 380 L-1600 380Z" fill="#94C46A"/><path d="M390 286 C620 276 900 304 1200 292 C1500 282 1720 290 1990 288 L1990 380 L390 380Z" fill="#94C46A"/></g><path d="M0 300 C90 272 170 284 250 300 C310 312 350 292 390 286 L390 380 L0 380 Z" fill="#94C46A"/>
+    <g stroke="#E9CDA0" stroke-width="6" stroke-linecap="round"><g class="wide"><path d="M-1600 352 L0 352"/><path d="M-1600 374 L0 374"/><path d="M390 352 L1990 352"/><path d="M390 374 L1990 374"/><path d="M-1586 340 L-1586 392"/><path d="M-1524 340 L-1524 392"/><path d="M-1462 340 L-1462 392"/><path d="M-1400 340 L-1400 392"/><path d="M-1338 340 L-1338 392"/><path d="M-1276 340 L-1276 392"/><path d="M-1214 340 L-1214 392"/><path d="M-1152 340 L-1152 392"/><path d="M-1090 340 L-1090 392"/><path d="M-1028 340 L-1028 392"/><path d="M-966 340 L-966 392"/><path d="M-904 340 L-904 392"/><path d="M-842 340 L-842 392"/><path d="M-780 340 L-780 392"/><path d="M-718 340 L-718 392"/><path d="M-656 340 L-656 392"/><path d="M-594 340 L-594 392"/><path d="M-532 340 L-532 392"/><path d="M-470 340 L-470 392"/><path d="M-408 340 L-408 392"/><path d="M-346 340 L-346 392"/><path d="M-284 340 L-284 392"/><path d="M-222 340 L-222 392"/><path d="M-160 340 L-160 392"/><path d="M-98 340 L-98 392"/><path d="M-36 340 L-36 392"/><path d="M430 340 L430 392"/><path d="M492 340 L492 392"/><path d="M554 340 L554 392"/><path d="M616 340 L616 392"/><path d="M678 340 L678 392"/><path d="M740 340 L740 392"/><path d="M802 340 L802 392"/><path d="M864 340 L864 392"/><path d="M926 340 L926 392"/><path d="M988 340 L988 392"/><path d="M1050 340 L1050 392"/><path d="M1112 340 L1112 392"/><path d="M1174 340 L1174 392"/><path d="M1236 340 L1236 392"/><path d="M1298 340 L1298 392"/><path d="M1360 340 L1360 392"/><path d="M1422 340 L1422 392"/><path d="M1484 340 L1484 392"/><path d="M1546 340 L1546 392"/><path d="M1608 340 L1608 392"/><path d="M1670 340 L1670 392"/><path d="M1732 340 L1732 392"/><path d="M1794 340 L1794 392"/><path d="M1856 340 L1856 392"/><path d="M1918 340 L1918 392"/><path d="M1980 340 L1980 392"/></g>
       <path d="M0 352 L390 352"/><path d="M0 374 L390 374"/>
       <path d="M22 340 L22 392"/><path d="M84 340 L84 392"/><path d="M306 340 L306 392"/><path d="M368 340 L368 392"/>
     </g>
-    <path d="M0 384 C80 372 160 376 230 382 C300 388 350 380 390 376 L390 520 L0 520 Z" fill="#F3D38A"/>
+    <g class="wide"><path d="M-1600 382 C-1000 376 -400 388 0 384 L0 520 L-1600 520Z" fill="#F3D38A"/><path d="M390 376 C800 368 1400 384 1990 378 L1990 520 L390 520Z" fill="#F3D38A"/></g><path d="M0 384 C80 372 160 376 230 382 C300 388 350 380 390 376 L390 520 L0 520 Z" fill="#F3D38A"/>
     <g stroke="#DDB45E" stroke-width="2.5" stroke-linecap="round">
       <path d="M30 420 l10 -8"/><path d="M48 470 l-8 -9"/><path d="M350 418 l9 -7"/><path d="M340 470 l-9 -6"/><path d="M20 496 l10 -6"/><path d="M372 498 l-8 -8"/>
     </g>
 
-    </svg></div>
+    <g class="wide"><defs><linearGradient id="sandFade" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F3D38A"/><stop offset=".7" stop-color="#F3D38A"/><stop offset="1" stop-color="#F3D38A" stop-opacity="0"/></linearGradient></defs><rect x="-1600" y="518" width="3590" height="420" fill="url(#sandFade)"/></g></svg></div>
 <div class="wrap">
   <header>
     <a class="brand" href="index.html"><svg width="30" height="40" viewBox="0 0 60 80" aria-hidden="true"><path d="M30 3C46 3 57 31 57 48C57 66 45 78 30 78C15 78 3 66 3 48C3 31 14 3 30 3Z" fill="var(--red)"/><ellipse cx="20" cy="30" rx="6" ry="11" fill="#fff" opacity=".35" transform="rotate(20 20 30)"/></svg><h1>The <span>Red</span> Egg</h1></a>
@@ -471,13 +552,18 @@ body>.cardcover,body>.confetti{position:fixed!important;inset:0!important;z-inde
   <div class="pagehead"><h2>Leaderboard</h2></div>
   <div class="seg" id="seg" role="tablist"><button data-v="friends" role="tab">Everyone</button><button data-v="you" role="tab">You</button></div>
   <div id="vFriends" hidden>
-    <section class="card" id="nameCard" hidden>
-      <h2 id="nameH">Pick a username</h2>
-      <input class="namein" id="nameIn" maxlength="16" autocomplete="username" autocapitalize="off" spellcheck="false" placeholder="Username">
+    <section class="card" id="nameCard" hidden><form class="authform" id="nameForm" action="#" method="post" autocomplete="on">
+      <input class="vh" id="userHint" name="username" autocomplete="username" tabindex="-1" aria-hidden="true">
+      <div class="authhead"><button type="button" class="authback" id="authBack" hidden>‹ Back</button><h2 id="nameH">Welcome to The Red Egg</h2><p class="authsub" id="nameSub" hidden></p></div>
+      <div class="choose" id="chooseBox" hidden><button type="button" class="big" id="chooseNew">Create account</button><button type="button" class="big alt" id="choosePrev">Log in</button></div>
+      <label class="authfield" id="nameField"><span id="nameLab">Username</span><input class="namein" id="nameIn" name="username" maxlength="16" autocomplete="username" autocapitalize="off" spellcheck="false"></label>
       <p class="nameavail" id="nameAvail" hidden></p>
+      <label class="authfield" id="passField" hidden><span id="passLab">Password</span><input class="namein" id="passIn" name="password" type="password" maxlength="72" autocomplete="current-password"></label>
       <p class="nameerr" id="nameErr" hidden></p>
-      <button class="big" id="nameSave">Join</button>
-      <div class="namelinks"><button id="swapMode"></button><button id="cancelName" hidden>Cancel</button></div>
+      <button type="submit" class="big" id="nameSave">Join</button>
+      <div class="gwrap" id="gWrap" hidden><div class="gor"><span>or</span></div><div id="gBtn"></div></div>
+      <div class="authfoot"><button type="button" id="codeMode" hidden></button><button type="button" id="swapMode"></button></div>
+      <div class="namelinks"><button type="button" id="cancelName" hidden>Cancel</button></div></form>
     </section>
     <section class="card" id="board" hidden>
       <div class="daynav"><button id="prevDay" aria-label="Previous day">‹</button><div><b id="dayTitle"></b><small id="daySub"></small></div><button id="nextDay" aria-label="Next day">›</button></div>
@@ -485,14 +571,13 @@ body>.cardcover,body>.confetti{position:fixed!important;inset:0!important;z-inde
       <ol class="lb" id="lbList"></ol>
     </section>
     <p class="empty" id="lbStatus" hidden></p>
-    <section class="card" id="fPenCard" hidden><h2><span id="fPenTitle"></span> <small id="fPenCount"></small></h2><div class="coll" id="fPen"></div></section>
     <section class="card linkcard" id="linkCard" hidden>
       <h2>Link a device</h2>
       <div class="linkcode" id="linkCode"></div>
       <p class="linkleft" id="linkLeft"></p>
       <button class="big" id="linkDone">Done</button>
     </section>
-    <p class="rename" id="renameRow" hidden><button id="linkBtn">Link a device</button><button id="renameBtn">Change username</button></p>
+    <p class="rename" id="renameRow" hidden><button id="passBtn">Password</button><button id="renameBtn">Change username</button><button id="linkBtn">Link a device</button></p>
   </div>
   <div id="vYou" hidden>
   <section class="card"><div class="tiles" id="tiles"></div></section>
@@ -503,18 +588,20 @@ body>.cardcover,body>.confetti{position:fixed!important;inset:0!important;z-inde
 </div>
 <script>
 /* ---- daily rules shared by every page: same puzzle for everyone, one play per day, streaks ---- */
-const DAY_KEYS=["egg-sort","blind-stop","flash","trivia","bridge","pecking-order","sunday"];
+const DAY_KEYS=["blind-stop","clutch","flash","trivia","bridge","pecking-order","sunday"];
 const DAY_NAMES=["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
 const pad2=n=>String(n).padStart(2,"0");
 const ymd=d=>`${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`;
 /* testing only: "Pretend it's Sunday" moves today to this week's Sunday */
 const FAKE_SUNDAY=(()=>{try{return false}catch(e){return false}})();
-const NOW=(()=>{const d=new Date();if(FAKE_SUNDAY)d.setDate(d.getDate()+(6-(d.getDay()+6)%7));return d})(),LOCALDAY=ymd(NOW),TODAY_IDX=(NOW.getDay()+6)%7;
+/* testing only: "Next week" jumps the calendar ahead a week at a time */
+const WEEK_SHIFT=(()=>{try{return Math.max(0,0)}catch(e){return 0}})();
+const NOW=(()=>{const d=new Date();d.setDate(d.getDate()+7*WEEK_SHIFT);if(FAKE_SUNDAY)d.setDate(d.getDate()+(6-(d.getDay()+6)%7));return d})(),LOCALDAY=ymd(NOW),TODAY_IDX=(NOW.getDay()+6)%7;
 const CUR_MONDAY=(()=>{const d=new Date(NOW);d.setDate(d.getDate()-TODAY_IDX);return ymd(d)})();
 const WEEK_NO=Math.round((new Date(CUR_MONDAY+"T12:00:00")-new Date("2026-01-05T12:00:00"))/604800000);
 /* the date a day's game belongs to this week, so a catch-up gets the same puzzle everyone played that day */
 function gameDate(key){const i=DAY_KEYS.indexOf(key);const d=new Date(CUR_MONDAY+"T12:00:00");d.setDate(d.getDate()+Math.max(0,i));return ymd(d)}
-const SUN_KEYS=["egg-sort","blind-stop","flash","trivia","bridge","pecking-order"];
+const SUN_KEYS=["blind-stop","clutch","flash","trivia","bridge","pecking-order"];
 /* the Claude preview gets its own puzzles so practicing there never spoils the live week (the live build blanks this) */
 const SEED_SALT="";
 function hashStr(s){s=String(s)+SEED_SALT;let h=2166136261;for(const c of s){h^=c.charCodeAt(0);h=Math.imul(h,16777619)}return h>>>0}
@@ -551,14 +638,14 @@ function dailyGate(mode,key,name){
 }
 
 const DAYS=[
-  {d:"Mon",key:"egg-sort",name:"Scrambled"},
-  {d:"Tue",key:"blind-stop",name:"Blind Stop"},
+  {d:"Mon",key:"blind-stop",name:"Blind Stop"},
+  {d:"Tue",key:"clutch",name:"Clutch"},
   {d:"Wed",key:"flash",name:"Flash"},
   {d:"Thu",key:"trivia",name:"Egghead"},
   {d:"Fri",key:"bridge",name:"Link"},
   {d:"Sat",key:"pecking-order",name:"Pecking Order"}
 ];
-const SUNDAY_KEYS=["egg-sort","blind-stop","flash","trivia","bridge","pecking-order"];
+const SUNDAY_KEYS=["blind-stop","clutch","flash","trivia","bridge","pecking-order"];
 const TIERS=[
   {min:720,rar:"mythic",key:"diamond",name:"Diamond Chick",fill:"url(#gDiamond)",crown:"gem",sparkle:true,pick:720},
   {min:710,rar:"legendary",key:"galaxy",name:"Galaxy Chick",fill:"url(#gGalaxy)",sparkle:true,pick:714},
@@ -798,25 +885,44 @@ function miniSVG(t,locked){
 }
 
 
+/* ---------- pop-up card (collection chick, leaderboard player) ---------- */
+function openSheet(head,body){
+  closeSheet();
+  const d=document.createElement("div");d.className="sheetcover";d.id="sheet";d.setAttribute("role","dialog");d.setAttribute("aria-modal","true");
+  d.innerHTML=`<div class="sheet"><button class="sheetx" aria-label="Close">×</button><div class="sheethead">${head}</div><div class="sheetbody">${body}</div></div>`;
+  d.onclick=e=>{if(e.target===d||e.target.closest(".sheetx"))closeSheet()};
+  document.body.appendChild(d);document.body.classList.add("sheeton");
+  setTimeout(()=>{const x=d.querySelector(".sheetx");if(x)x.focus({preventScroll:true})},30);
+}
+function closeSheet(){const d=document.getElementById("sheet");if(d)d.remove();document.body.classList.remove("sheeton")}
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeSheet()});
+
+/* ---------- chicks you haven't hatched: shown grey, except the secret ones and the top 3, which stay ??? ---------- */
+const TOP_SECRET=new Set(["diamond","galaxy","platinum"]);
+const stayHidden=t=>t.exact!=null||TOP_SECRET.has(t.key);
+function dullSVG(t){return `<span class="dullpic">${miniSVG(t,false)}</span>`}
+function chickPic(t,owned){return owned?miniSVG(t,false):stayHidden(t)?miniSVG(t,true):dullSVG(t)}
+function chickLabel(t,owned){return owned||!stayHidden(t)?t.name.replace(/ Chick$/,""):"???"}
+
 /* ---------- collection ---------- */
-let penSel=null;
 function slotHTML(t,list){
   const locked=!list.length;
-  return `<button class="slot${locked?" locked":" b-"+t.rar}${penSel===t.key&&!locked?" sel":""}${t.exact!=null?" special":""}" data-k="${t.key}" ${locked?'aria-disabled="true"':""} aria-label="${locked?"Not hatched yet":t.name}">${list.length?`<span class="ct">×${list.length}</span>`:""}${miniSVG(t,locked)}<span class="nm">${locked?"???":t.name.replace(/ Chick$/,"")}</span>${locked?"":rarTag(t)}</button>`;
+  const dull=locked&&!stayHidden(t);
+  return `<button class="slot${locked?" locked":" b-"+t.rar}${dull?" dull":""}${t.exact!=null?" special":""}" data-k="${t.key}" ${locked?'aria-disabled="true"':""} aria-label="${locked?(dull?t.name+", not hatched yet":"Not hatched yet"):t.name}">${list.length?`<span class="ct">×${list.length}</span>`:""}${chickPic(t,!locked)}<span class="nm">${chickLabel(t,!locked)}</span>${locked?'<span class="rar rarph" aria-hidden="true">&nbsp;</span>':rarTag(t)}</button>`;
 }
+function penBy(){const by={};STORE.get("pen",[]).forEach(p=>{const k=penKey(p);(by[k]=by[k]||[]).push(p)});return by}
 function renderCollection(){
-  const pen=STORE.get("pen",[]);
-  const by={};pen.forEach(p=>{const k=penKey(p);(by[k]=by[k]||[]).push(p)});
+  const by=penBy();
   $("coll").innerHTML=MAIN_CHICKS.map(t=>slotHTML(t,by[t.key]||[])).join("");
   if($("coll2"))$("coll2").innerHTML=SECRET_CHICKS.map(t=>slotHTML(t,by[t.key]||[])).join("");
-  const show=(id,keys)=>{const d=$(id);if(!d)return;
-    if(penSel&&keys.includes(penSel)&&by[penSel]){const t=ALL_CHICKS.find(x=>x.key===penSel);d.hidden=false;
-      d.innerHTML=`<h4>${t.name} ×${by[penSel].length} ${rarTag(t)}</h4><ul>${by[penSel].slice().reverse().map(p=>`<li><span>Week of ${label(new Date(p.id+"T12:00:00"))}</span><b>${p.total}</b></li>`).join("")}</ul>`}
-    else d.hidden=true};
-  show("detail",MAIN_CHICKS.map(t=>t.key));show("detail2",SECRET_CHICKS.map(t=>t.key));
+}
+function chickSheet(k){
+  const by=penBy(),list=by[k];if(!list)return;const t=ALL_CHICKS.find(x=>x.key===k);
+  openSheet(`<div class="sheetpic">${miniSVG(t,false)}</div><h3>${t.name}</h3><div class="sheetsub">${rarTag(t)}<span>×${list.length}</span></div>`,
+    `<h4>Weeks earned</h4><ul class="sheetlist">${list.slice().reverse().map(p=>`<li><span>Week of ${label(new Date(p.id+"T12:00:00"))}</span><b>${p.total}</b></li>`).join("")}</ul>`);
 }
 function wireCollection(){
-  const h=e=>{const b=e.target.closest(".slot");if(!b||b.classList.contains("locked"))return;penSel=penSel===b.dataset.k?null:b.dataset.k;renderCollection()};
+  const h=e=>{const b=e.target.closest(".slot");if(!b||b.classList.contains("locked"))return;chickSheet(b.dataset.k)};
   $("coll").onclick=h;if($("coll2"))$("coll2").onclick=h;
 }
 
@@ -829,6 +935,25 @@ const fracFor=p=>Math.max(0,Math.min(1,p/BREAK_AT));
 const preFrac=p=>.8*Math.min(1,p/450);
 const sunFrac=(week,sun)=>{const a=preFrac(week);return a+(.96-a)*Math.min(1,sun/120)};
 const EGGP2="M30 3C46 3 57 31 57 48C57 66 45 78 30 78C15 78 3 66 3 48C3 31 14 3 30 3Z";
+
+/* ---------- opened inside Snapchat, Instagram, TikTok…: ask to open in the phone's real browser ----------
+   Each app's built-in browser keeps its own memory, so playing there makes a second account. */
+(function(){
+  try{
+    if(window.claude)return;
+    const ua=navigator.userAgent||"";
+    const inApp=/Snapchat|Instagram|FBAN|FBAV|FB_IAB|FBIOS|TikTok|musical_ly|BytedanceWebview|Twitter|LinkedInApp|Line\/|Pinterest|GSA\/|DiscordBot/i.test(ua)||(/Android/.test(ua)&&/; wv\)/.test(ua));
+    if(!inApp||sessionStorage.getItem("redegg2:iabSkip"))return;
+    const ios=/iPhone|iPad|iPod/.test(ua),url=location.href.replace(/#.*$/,"");
+    const go=ios?"x-safari-"+url:"intent://"+url.replace(/^https?:\/\//,"")+"#Intent;scheme=https;end";
+    const bar=document.createElement("div");bar.className="iabbar";bar.setAttribute("role","alert");
+    bar.innerHTML=`<span class="iabt">Open in ${ios?"Safari":"your browser"} to keep your progress</span><a class="iabgo" href="${go}">Open</a><button class="iabx" aria-label="Not now">×</button><span class="iabhint" hidden>Tap <b>•••</b> then <b>Open in ${ios?"Safari":"browser"}</b></span>`;
+    const add=()=>{document.body.prepend(bar);document.body.classList.add("iabon")};
+    if(document.body)add();else document.addEventListener("DOMContentLoaded",add);
+    bar.querySelector(".iabgo").addEventListener("click",()=>{setTimeout(()=>{bar.querySelector(".iabhint").hidden=false},1200)});
+    bar.querySelector(".iabx").onclick=()=>{try{sessionStorage.setItem("redegg2:iabSkip","1")}catch(e){}bar.remove();document.body.classList.remove("iabon")};
+  }catch(e){}
+})();
 
 /* ---------- leaderboard: shared scores ----------
    Inside Claude the scores live in the artifact's shared store; on the live site they go to /api/players. */
@@ -854,7 +979,8 @@ const LB={
   },
   async list(){
     const b=await this.init();if(!b)throw new Error("off");
-    if(b.kind==="claude"){const s=await b.db.collection("players").get();return s.docs.map(d=>({id:d.id,...d.data()}))}
+    if(b.kind==="claude"){const s=await b.db.collection("players").get();let mg={};try{(await b.db.collection("merged").get()).docs.forEach(d=>{mg[d.id]=d.data()})}catch(e){}
+      return s.docs.map(d=>{const p={id:d.id,...d.data()};if(mg[d.id]){const c=lbCombine({weeks:p.weeks||{},pen:p.pen||{}},mg[d.id]);p.weeks=c.weeks;p.pen=c.pen}return p})}
     const r=await fetch("/api/players",{cache:"no-store"});if(!r.ok)throw new Error("off");return (await r.json()).players||[];
   },
   async save(doc){
@@ -862,14 +988,49 @@ const LB={
     if(b.kind==="claude"){
       const k=lbKey(doc.name),all=await this.list();
       if(all.some(p=>p.id!==b.id&&lbKey(p.name)===k))throw new Error("taken");
-      const {save,...pub}=doc;return b.db.doc("players/"+b.id).set(pub);
+      const {save,...pub}=doc;
+      // the same person on another device: keep both devices' scores
+      try{const ex=await b.db.doc("players/"+b.id).get();if(ex.exists){const o=ex.data()||{},w={...(o.weeks||{})};
+        for(const [wk,n] of Object.entries(pub.weeks||{})){const p=w[wk];if(!p){w[wk]=n;continue}const days={...(n.days||{}),...(p.days||{})},sun=p.sun??n.sun??null,chick=p.chick??n.chick??null;
+          const s2=Object.values(days).reduce((a,v)=>a+(+v||0),0)+(+sun||0);w[wk]={days,sun,chick,total:chick?((p.chick?p.total:n.total)??Math.round(s2)):Math.round(s2)}}
+        pub.weeks=w;const pc={...(o.pen||{})};for(const [k,v] of Object.entries(pub.pen||{}))pc[k]=Math.max(+pc[k]||0,+v||0);pub.pen=pc}}catch(e){}
+      await b.db.doc("players/"+b.id).set(pub);return {};
     }
     const r=await fetch("/api/players",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({id:b.id,secret:b.secret,...doc})});
     if(r.status===409)throw new Error("taken");
     if(!r.ok)throw new Error("off");
+    try{return await r.json()}catch(e){return {}}
   }
 };
 function lbName(){return RS.get("lbName","")}
+/* fold a merged duplicate's weeks and chicks into a player's own (same rule as the live server) */
+function lbCombine(own,extra){
+  if(!extra)return own;const weeks={...(extra.weeks||{})};
+  for(const [wk,w] of Object.entries(own.weeks||{})){const x=weeks[wk]||{},days={...(x.days||{}),...(w.days||{})};
+    const sun=w.sun??x.sun??null,chick=w.chick??x.chick??null,sum=Object.values(days).reduce((a,v)=>a+(+v||0),0)+(+sun||0);
+    weeks[wk]={days,sun,chick,total:chick?((w.chick?w.total:x.total)??Math.round(sum)):Math.round(sum)}}
+  const pen={...(extra.pen||{})};for(const [k,n] of Object.entries(own.pen||{}))pen[k]=(+pen[k]||0)+(+n||0);
+  return {weeks,pen};
+}
+/* admin (tap Beta five times on the Leaderboard, then a 4-digit PIN): delete or merge players */
+LB.admin=async function(action,args){
+  const b=await this.init();if(!b)throw new Error("off");
+  const pin=args.pin??RS.get("adminPin","");
+  if(b.kind==="claude"){
+    if(pin!=="1234")throw new Error("bad_pin");
+    if(action==="check")return true;
+    if(action==="setpass")return true;
+    if(action==="delete"){await b.db.doc("players/"+args.id).delete();try{await b.db.doc("merged/"+args.id).delete()}catch(e){};return true}
+    if(action==="merge"){
+      const all=await this.list(),a=all.find(p=>p.id===args.from);if(!a)throw new Error("not_found");
+      let prev=null;try{const s=await b.db.doc("merged/"+args.into).get();prev=s.exists?s.data():null}catch(e){}
+      await b.db.doc("merged/"+args.into).set(lbCombine({weeks:a.weeks||{},pen:a.pen||{}},prev));
+      await b.db.doc("players/"+args.from).delete();try{await b.db.doc("merged/"+args.from).delete()}catch(e){};return true}
+    throw new Error("bad_action");
+  }
+  const r=await fetch("/api/admin",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({pin,action,...args})});
+  if(r.ok)return true;let e="off";try{e=(await r.json()).error||e}catch(x){}throw new Error(e);
+};
 const lbKey=n=>String(n||"").replace(/\s+/g," ").trim().toLowerCase();
 /* link a device: the first device makes a short code, the second enters it and becomes the same player */
 const LINK_MS=10*60*1000;
@@ -903,6 +1064,19 @@ LB.redeemLink=async function(code){
   if(d.save)lbMerge(d.save);
   return d;
 };
+LB.claim=async function(name){
+  const b=await this.init();if(!b)throw new Error("off");
+  if(b.kind==="claude"){
+    const all=await this.list(),p=all.find(x=>lbKey(x.name)===lbKey(name));if(!p)throw new Error("not_found");
+    if(p.id!==b.id)throw new Error("other");RS.set("lbName",p.name);RS.set("lbSent","");return p;
+  }
+  const r=await fetch("/api/link?name="+encodeURIComponent(name),{cache:"no-store"});
+  if(r.status===404)throw new Error("not_found");if(!r.ok)throw new Error("off");
+  const d=await r.json();
+  RS.set("lbId",d.id);RS.set("lbSecret",d.secret);RS.set("lbName",d.name);RS.set("lbSent","");this._p=null;
+  if(d.save)lbMerge(d.save);
+  return d;
+};
 function lbMerge(sv){
   const pen=RS.get("pen",[]);(sv.pen||[]).forEach(p=>{if(p&&p.id&&!pen.some(x=>x.id===p.id))pen.push(p)});
   pen.sort((a,b)=>a.id<b.id?-1:1);RS.set("pen",pen);
@@ -931,39 +1105,120 @@ function lbPayload(){
   const keep=Object.keys(weeks).sort().slice(-3);const out={};keep.forEach(k=>out[k]=weeks[k]);
   RS.set("lbWeeks",out);
   const counts={};pen.forEach(p=>{const k=penKey(p);counts[k]=(counts[k]||0)+1});
-  return {name:lbName(),weeks:out,pen:counts,save:{week:currentWeek(),pen,history:RS.get("history",[]).slice(-500),playDays:RS.get("playDays",[]).slice(-400),weeks:out}};
+  return {name:lbName(),weeks:out,pen:counts,save:{week:currentWeek(),pen:pen.map(p=>({...p,key:penKey(p)})),history:RS.get("history",[]).slice(-500),playDays:RS.get("playDays",[]).slice(-400),weeks:out}};
 }
 async function lbSync(force){
+  if(WEEK_SHIFT)return;
   if(!lbName())return;
   const doc=lbPayload(),key=JSON.stringify(doc);
-  if(!force&&RS.get("lbSent","")===key)return;
-  try{await LB.save({...doc,updated:Date.now()});RS.set("lbSent",key)}catch(e){if(force)throw e}
+  // once per visit we check in even with nothing new, so this device picks up what your other devices played
+  let pulled=false;try{pulled=sessionStorage.getItem("redegg2:pulled")==="1"}catch(e){}
+  if(!force&&pulled&&RS.get("lbSent","")===key)return;
+  try{
+    const res=await LB.save({...doc,updated:Date.now()});RS.set("lbSent",key);
+    try{sessionStorage.setItem("redegg2:pulled","1")}catch(e){}
+    if(res&&res.save){const before=JSON.stringify([RS.get("week",null),RS.get("pen",[])]);lbMerge(res.save);
+      if(JSON.stringify([RS.get("week",null),RS.get("pen",[])])!==before){RS.set("lbSent",JSON.stringify(lbPayload()));document.dispatchEvent(new Event("redegg:synced"))}}
+  }catch(e){if(force)throw e}
 }
 /* ---------- the username card (Home and Leaderboard share it) ----------
    Needs: #nameCard #nameH #nameIn #nameAvail #nameErr #nameSave #swapMode, optional #cancelName #laterBtn */
+/* ---------- accounts: username + password, or Google ---------- */
+LB.authConfig=async function(){
+  const b=await this.init();if(!b||b.kind==="claude")return {google:null};
+  try{const r=await fetch("/api/auth",{cache:"no-store"});return r.ok?await r.json():{google:null}}catch(e){return {google:null}}
+};
+async function lbAuth(body){
+  const r=await fetch("/api/auth",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify(body)});
+  let d={};try{d=await r.json()}catch(e){}
+  if(!r.ok)throw new Error(d.error||"off");return d;
+}
+function lbAdopt(d){ /* this device is now that player; keep what this device already played */
+  RS.set("lbId",d.id);RS.set("lbSecret",d.secret);RS.set("lbName",d.name);RS.set("lbSent","");LB._p=null;
+  if(d.save)lbMerge(d.save);
+}
+LB.signup=async function(name,pw){
+  const b=await this.init();if(!b)throw new Error("off");
+  if(b.kind==="claude"){const old=lbName();RS.set("lbName",name);try{await lbSync(true)}catch(e){RS.set("lbName",old);throw e}return}
+  const d=await lbAuth({action:"signup",name,password:pw});lbAdopt(d);await lbSync(true);
+};
+LB.login=async function(name,pw){
+  const b=await this.init();if(!b)throw new Error("off");
+  if(b.kind==="claude")return this.claim(name);
+  const d=await lbAuth({action:"login",name,password:pw});lbAdopt(d);try{await lbSync(true)}catch(e){}
+};
+LB.status=async function(){const b=await this.init();if(!b||b.kind==="claude")return {hasPass:true,google:false};return lbAuth({action:"status",id:b.id,secret:b.secret})};
+LB.setPass=async function(pw){const b=await this.init();if(!b)throw new Error("off");if(b.kind==="claude")return;return lbAuth({action:"setpass",id:b.id,secret:b.secret,password:pw})};
+LB.google=async function(credential,name){const d=await lbAuth({action:"google",credential,name});if(d.needName)return d;lbAdopt(d);try{await lbSync(true)}catch(e){}return d};
+LB.linkGoogle=async function(credential){const b=await this.init();return lbAuth({action:"linkgoogle",id:b.id,secret:b.secret,credential})};
+/* Chrome and Android can be told directly to save the password; Safari offers on its own when the form is sent */
+async function lbStoreCred(name,pw){try{if(window.PasswordCredential&&navigator.credentials&&name&&pw)await navigator.credentials.store(new PasswordCredential({id:name,password:pw,name}))}catch(e){}}
+/* the Google button, when the site has a Google login key set up */
+async function lbGoogleButton(el,onCred){
+  const cfg=await LB.authConfig();if(!cfg.google||!el)return false;
+  if(!window.google||!google.accounts){await new Promise((res,rej)=>{const s=document.createElement("script");s.src="https://accounts.google.com/gsi/client";s.async=true;s.onload=res;s.onerror=rej;document.head.appendChild(s)}).catch(()=>{});}
+  if(!window.google||!google.accounts)return false;
+  google.accounts.id.initialize({client_id:cfg.google,callback:r=>onCred(r.credential)});
+  el.innerHTML="";google.accounts.id.renderButton(el,{theme:"outline",size:"large",text:"continue_with",shape:"pill",width:Math.min(360,el.clientWidth||320)});
+  return true;
+}
+
+/* ---------- the username card (Home and Leaderboard share it) ----------
+   modes: choose · join (new player) · login · link (code) · rename · setpass · gname (picking a name after Google) */
 function wireJoin(o){
-  o=o||{};let mode="join",me=null,cache=null,cacheAt=0,timer=null,seq=0;
+  o=o||{};let mode="join",me=null,cache=null,cacheAt=0,timer=null,seq=0,gcred=null;
   const el=id=>document.getElementById(id);
   LB.init().then(b=>{me=b&&b.id});
   async function others(){
     if(cache&&Date.now()-cacheAt<15000)return cache;
     cache=await LB.list();cacheAt=Date.now();return cache;
   }
-  const linkHint='<button type="button" class="islink">Is this you? Link this device</button>';
-  const wireHint=box=>{const y=box.querySelector(".islink");if(y)y.onclick=()=>setMode("link")};
-  function setMode(m){mode=m;el("nameErr").hidden=true;el("nameAvail").hidden=true;
-    el("nameH").textContent=m==="link"?"Link this device":m==="rename"?"Change username":"Pick a username";
-    el("nameSave").textContent=m==="link"?"Link":m==="rename"?"Save":"Join";
-    const inp=el("nameIn");inp.value=m==="rename"?lbName():"";
-    inp.placeholder=m==="link"?"Code":"Username";inp.maxLength=m==="link"?8:16;inp.inputMode=m==="link"?"numeric":"text";
-    el("swapMode").hidden=m==="rename";
-    el("swapMode").textContent=m==="link"?"New here? Pick a username":"Have a code? Link this device";
-    if(el("cancelName"))el("cancelName").hidden=m!=="rename";
-    if(el("laterBtn"))el("laterBtn").hidden=m==="rename";}
+  const linkHint='<button type="button" class="islink">Is this you? Log in</button>';
+  if(el("chooseNew"))el("chooseNew").onclick=()=>{setMode("join");el("nameIn").focus()};
+  if(el("choosePrev"))el("choosePrev").onclick=()=>{setMode("login");el("nameIn").focus()};
+  const wireHint=box=>{const y=box.querySelector(".islink");if(y)y.onclick=()=>{const v=el("nameIn").value;setMode("login");el("nameIn").value=v;el("passIn").focus()}};
+  let gReady=null;
+  function google(){
+    if(!el("gWrap"))return;
+    if(!gReady)gReady=lbGoogleButton(el("gBtn"),async cred=>{
+      el("nameErr").hidden=true;
+      try{const d=await LB.google(cred);if(d.needName){gcred=cred;setMode("gname");el("nameIn").focus();return}location.reload()}
+      catch(e){showErr(e.message==="bad_google"?"Google sign-in didn't work. Try again.":"Couldn't connect. Try again.")}});
+    gReady.then(ok=>{el("gWrap").hidden=!(ok&&(mode==="choose"||mode==="login"||mode==="join"))});
+  }
+  /* every screen of the card: title, short line under it, which fields show, the button, and the links at the bottom */
+  const SCREENS={
+    choose:{h:"Welcome to The Red Egg"},
+    join:{h:"Create account",name:1,pass:1,btn:"Create account",back:1,swap:"Already have an account? <b>Log in</b>",to:"login"},
+    login:{h:"Log in",name:1,pass:1,btn:"Log in",back:1,code:"Forgot your password?",swap:"New here? <b>Create account</b>",to:"join"},
+    link:{h:"Log in with a code",sub:"On a phone or computer where you're already logged in, go to Leaderboard and tap Link a device.",code1:1,btn:"Log in",back:1,swap:"Log in with your password instead",to:"login"},
+    rename:{h:"Change username",name:1,btn:"Save"},
+    setpass:{h:"Set a password",sub:"So you can log in on any phone or computer.",pass:1,btn:"Save"},
+    gname:{h:"Pick a username",sub:"This is the name your friends will see.",name:1,btn:"Create account",back:1}
+  };
+  function setMode(m){mode=m;const S=SCREENS[m];el("nameErr").hidden=true;el("nameAvail").hidden=true;
+    el("nameH").textContent=S.h;const sb=el("nameSub");if(sb){sb.textContent=S.sub||"";sb.hidden=!S.sub}
+    if(el("authBack"))el("authBack").hidden=!S.back;
+    if(el("chooseBox"))el("chooseBox").hidden=m!=="choose";
+    el("nameField").hidden=!(S.name||S.code1);el("nameLab").textContent=S.code1?"Code":"Username";
+    const inp=el("nameIn");inp.value=m==="rename"?lbName():"";inp.maxLength=S.code1?8:16;inp.inputMode=S.code1?"numeric":"text";inp.autocomplete=S.code1?"one-time-code":"username";inp.classList.toggle("codein",!!S.code1);
+    el("passField").hidden=!S.pass;el("passLab").textContent=m==="setpass"?"New password":"Password";
+    const p=el("passIn");p.value="";p.autocomplete=m==="login"?"current-password":"new-password";
+    /* password managers need a username next to the password, even on screens that only ask for the password */
+    const uh=el("userHint");if(uh){uh.value=m==="setpass"?lbName():"";uh.disabled=m!=="setpass";inp.name=m==="setpass"||S.code1?"":"username"}
+    el("nameSave").hidden=m==="choose";el("nameSave").textContent=S.btn||"";el("nameSave").disabled=false;
+    el("swapMode").hidden=!S.swap;el("swapMode").innerHTML=S.swap||"";
+    if(el("codeMode")){el("codeMode").hidden=!S.code;el("codeMode").textContent=S.code||""}
+    if(el("cancelName"))el("cancelName").hidden=!(m==="rename"||m==="setpass");
+    if(el("laterBtn"))el("laterBtn").hidden=!(m==="choose"||m==="setpass");
+    if(el("nameSugg"))el("nameSugg").hidden=true;
+    if(el("gWrap"))el("gWrap").hidden=true;
+    if(m==="choose"||m==="login"||m==="join")google();
+  }
   function showErr(html){const e=el("nameErr");e.innerHTML=html;e.hidden=false;wireHint(e)}
   async function check(){
     const n=el("nameIn").value.replace(/\s+/g," ").trim(),a=el("nameAvail"),my=++seq;
-    if(mode==="link"||!n||(mode==="rename"&&lbKey(n)===lbKey(lbName()))){a.hidden=true;return}
+    if(!(mode==="join"||mode==="rename"||mode==="gname")||!n||(mode==="rename"&&lbKey(n)===lbKey(lbName()))){a.hidden=true;return}
     try{const list=await others();if(my!==seq)return;
       const taken=list.some(p=>p.id!==me&&lbKey(p.name)===lbKey(n));
       a.className="nameavail "+(taken?"no":"ok");a.innerHTML=taken?"Taken · "+linkHint:"✓ Available";a.hidden=false;
@@ -971,24 +1226,32 @@ function wireJoin(o){
     }catch(e){a.hidden=true}
   }
   async function submit(){
-    const v=el("nameIn").value.replace(/\s+/g," ").trim();
-    if(!v){el("nameIn").focus();return}
+    const v=el("nameIn").value.replace(/\s+/g," ").trim(),pw=el("passIn")?el("passIn").value:"";
+    if(mode!=="setpass"&&!v){el("nameIn").focus();return}
+    if((mode==="join"||mode==="login"||mode==="setpass")&&pw.length<4){showErr(mode==="login"?"Enter your password.":"Pick a password with at least 4 characters.");el("passIn").focus();return}
     el("nameSave").disabled=true;el("nameErr").hidden=true;
     try{
+      if(mode==="login"){await LB.login(v,pw);await lbStoreCred(v,pw);location.reload();return}
       if(mode==="link"){await LB.redeemLink(v);location.reload();return}
+      if(mode==="join"){await LB.signup(v.slice(0,16),pw);cache=null;await lbStoreCred(v.slice(0,16),pw);location.reload();return}
+      if(mode==="gname"){await LB.google(gcred,v.slice(0,16));location.reload();return}
+      if(mode==="setpass"){await LB.setPass(pw);RS.set("hasPass",true);await lbStoreCred(lbName(),pw);location.reload();return}
       const n=v.slice(0,16),old=lbName();RS.set("lbName",n);
       try{await lbSync(true)}catch(e){RS.set("lbName",old);throw e}
       cache=null;el("nameAvail").hidden=true;
       if(o.onDone)o.onDone(mode);
     }catch(e){
-      if(e.message==="taken"){el("nameAvail").hidden=true;showErr("That username is taken. "+linkHint)}
-      else showErr(e.message==="badcode"?"That code didn't work.":e.message==="account"?"That code is for a different account.":"Couldn't connect. Try again.");
+      const c=e.message;
+      if(c==="taken"){el("nameAvail").hidden=true;showErr("That username is taken. "+linkHint)}
+      else showErr(c==="wrong"?"Wrong username or password.":c==="no_password"?"That account doesn't have a password yet. Use a code from your other device.":c==="slow_down"?"Too many tries. Wait a few minutes.":c==="short_password"?"Pick a password with at least 4 characters.":c==="badcode"?"That code didn't work.":c==="account"?"That code is for a different account.":c==="other"?"Can't log in as another player in this preview.":c==="not_found"?"No player by that name.":"Couldn't connect. Try again.");
     }finally{el("nameSave").disabled=false}
   }
-  el("nameSave").onclick=submit;
-  el("nameIn").onkeydown=e=>{if(e.key==="Enter")submit()};
+  /* a real form, so the phone offers to save the password (iCloud Keychain, Google Password Manager) */
+  if(el("nameForm"))el("nameForm").onsubmit=e=>{e.preventDefault();submit()};else el("nameSave").onclick=submit;
   el("nameIn").oninput=()=>{el("nameErr").hidden=true;clearTimeout(timer);timer=setTimeout(check,350)};
-  el("swapMode").onclick=()=>setMode(mode==="link"?"join":"link");
+  el("swapMode").onclick=()=>{const t=(SCREENS[mode]||{}).to;if(t){setMode(t);el("nameIn").focus()}};
+  if(el("codeMode"))el("codeMode").onclick=()=>{setMode("link");el("nameIn").focus()};
+  if(el("authBack"))el("authBack").onclick=()=>setMode("choose");
   if(el("cancelName"))el("cancelName").onclick=()=>{el("nameCard").hidden=true;if(o.onCancel)o.onCancel()};
   if(el("laterBtn"))el("laterBtn").onclick=()=>{RS.set("lbLater",LOCALDAY);el("nameCard").hidden=true};
   return {setMode};
@@ -1065,8 +1328,8 @@ function wireJoin(o){
     let rank=0,last=null;
     $("lbList").innerHTML=rows.map((r,i)=>{
       if(r.tot!==last){rank=i+1;last=r.tot}
-      const you=r.p.id===me,ch=r.chick?`<span class="lbchick" title="${esc(r.chick.name)}">${miniSVG(r.chick,!mine[r.chick.key])}</span>`:"";
-      return `<li><button class="lbrow${you?" you":""}${openId===r.p.id?" sel":""}" data-id="${esc(r.p.id)}">
+      const you=r.p.id===me,ch=r.chick?`<span class="lbchick" title="${esc(r.chick.name)}">${chickPic(r.chick,!!mine[r.chick.key])}</span>`:"";
+      return `<li><button class="lbrow${you?" you":""}" data-id="${esc(r.p.id)}">
         <span class="lbrank">${r.played?rank:"–"}</span>
         <span class="lbname">${ch}<span class="nmtxt">${esc(r.p.name||"Someone")}</span>${you?`<em>you</em>`:""}</span>
         <span class="lbgp">${r.gp||"–"}</span>
@@ -1074,20 +1337,59 @@ function wireJoin(o){
         <span class="lbtot">${r.tot}</span></button></li>`}).join("");
     renderPen();
   }
-  function renderPen(){
-    const card=$("fPenCard"),p=players&&players.find(x=>x.id===openId);
-    if(!p){card.hidden=true;return}
+  function renderPen(){}
+  function playerSheet(id){
+    const p=players&&players.find(x=>x.id===id);if(!p)return;
     const mine=myPen(),theirs=p.pen||{};
     const has=ALL_CHICKS.filter(t=>num(theirs[t.key])>0);
-    $("fPenTitle").textContent=p.id===me?"Your pen":`${p.name||"Someone"}'s pen`;
-    const tc=Math.round(has.reduce((a,t)=>a+num(theirs[t.key]),0));$("fPenCount").textContent=`${tc} chick${tc===1?"":"s"}`;
-    $("fPen").innerHTML=has.length?has.map(t=>{const n=Math.round(num(theirs[t.key])),known=!!mine[t.key];
-      return `<div class="slot${known?" b-"+t.rar:" locked"}${t.exact!=null?" special":""}"><span class="ct">×${n}</span>${miniSVG(t,!known)}<span class="nm">${known?t.name.replace(/ Chick$/,""):"???"}</span>${known?rarTag(t):""}</div>`}).join("")
-      :`<p class="empty">No chicks yet.</p>`;
-    card.hidden=false;
+    const tc=Math.round(has.reduce((a,t)=>a+num(theirs[t.key]),0));
+    const d=SPAN[pos],wk=ymd(mondayOf(d)),w=(p.weeks&&p.weeks[wk])||{},days=w.days||{};
+    const fmt=v=>v==null?'<span class="mut">–</span>':Math.round(num(v));
+    let tot=0;DAY_KEYS.slice(0,6).forEach(k=>{if(k in days)tot+=num(days[k])});if(w.sun!=null)tot+=num(w.sun);if(w.chick&&w.total!=null)tot=num(w.total);
+    const ch=w.chick?ALL_CHICKS.find(t=>t.key===w.chick):null;
+    const rows=DAYS.slice(0,6).map((g,i)=>`<li><span>${DAY_NAMES[i].slice(0,3)} · ${g.name}</span><b>${fmt(days[DAY_KEYS[i]])}</b></li>`).join("")
+      +`<li><span>Sun · The Red Egg</span><b>${fmt(w.sun)}</b></li><li class="tot"><span>Week${ch?" · "+(mine[ch.key]||!stayHidden(ch)?ch.name:"???"):""}</span><b>${Math.round(tot)}</b></li>`;
+    const pen=has.length?`<div class="coll">${has.map(t=>{const n=Math.round(num(theirs[t.key])),known=!!mine[t.key];
+      return `<div class="slot${known?" b-"+t.rar:" locked"}${!known&&!stayHidden(t)?" dull":""}${t.exact!=null?" special":""}"><span class="ct">×${n}</span>${chickPic(t,known)}<span class="nm">${chickLabel(t,known)}</span>${known?rarTag(t):'<span class="rar rarph" aria-hidden="true">&nbsp;</span>'}</div>`}).join("")}</div>`:`<p class="empty">No chicks yet.</p>`;
+    openSheet(`<div class="sheetpic">${ch?chickPic(ch,!!mine[ch.key]):eggMini()}</div><h3>${esc(p.name||"Someone")}${p.id===me?" <small class=\"you\">you</small>":""}</h3><div class="sheetsub"><span>${tc} chick${tc===1?"":"s"}</span></div>`,
+      `<h4>Week of ${label(new Date(wk+"T12:00:00"))}</h4><ul class="sheetlist">${rows}</ul><h4>Pen</h4>${pen}`+adminBox(p));
+    wireAdmin(p);
   }
-  $("lbList").onclick=e=>{const b=e.target.closest(".lbrow");if(!b)return;openId=openId===b.dataset.id?null:b.dataset.id;render();
-    if(openId)setTimeout(()=>$("fPenCard").scrollIntoView({behavior:"smooth",block:"nearest"}),30)};
+  /* ---- admin: delete a player, or merge a duplicate into the real account ---- */
+  const isAdmin=()=>!!RS.get("adminPin","");
+  function adminBox(p){
+    if(!isAdmin())return "";
+    const others=players.filter(x=>x.id!==p.id).sort((a,b)=>String(a.name).localeCompare(String(b.name)));
+    return `<div class="adminbox"><h4>Admin</h4>
+      <div class="adminrow"><select id="mergeInto"><option value="">Merge into…</option>${others.map(x=>`<option value="${esc(x.id)}">${esc(x.name)}</option>`).join("")}</select><button id="mergeBtn" class="adminbtn" disabled>Merge</button></div>
+      <div class="adminrow"><input id="newPass" type="text" autocomplete="off" placeholder="New password for ${esc(p.name)}"><button id="passSetBtn" class="adminbtn">Set</button></div>
+      <button id="delBtn" class="adminbtn danger">Delete ${esc(p.name)}</button><p class="adminmsg" id="adminMsg"></p></div>`;
+  }
+  function wireAdmin(p){
+    if(!isAdmin())return;
+    const sel=$("mergeInto"),mb=$("mergeBtn"),db=$("delBtn"),msg=$("adminMsg");let armDel=false,armMerge=false;
+    const fail=e=>{const c=e&&e.message;msg.textContent=c==="bad_pin"||c==="locked"?"Admin PIN no longer works.":"That didn't work. Try again.";if(c==="bad_pin"||c==="locked")RS.set("adminPin","")};
+    const done=async t=>{msg.textContent=t;await load();setTimeout(closeSheet,700)};
+    sel.onchange=()=>{mb.disabled=!sel.value;armMerge=false;mb.textContent="Merge"};
+    mb.onclick=async()=>{if(!sel.value)return;const to=players.find(x=>x.id===sel.value);
+      if(!armMerge){armMerge=true;mb.textContent="Tap to confirm";msg.textContent=`${p.name}'s scores and chicks move to ${to.name}, then ${p.name} is removed.`;return}
+      mb.disabled=true;try{await LB.admin("merge",{from:p.id,into:sel.value});await done("Merged.")}catch(e){fail(e);mb.disabled=false}};
+    $("passSetBtn").onclick=async()=>{const pw=$("newPass").value;if(pw.length<4){msg.textContent="At least 4 characters.";return}
+      try{await LB.admin("setpass",{id:p.id,password:pw});msg.textContent=`${p.name} can now log in with that password.`;$("newPass").value=""}catch(e){fail(e)}};
+    db.onclick=async()=>{if(!armDel){armDel=true;db.textContent="Tap again to delete";msg.textContent=`This removes ${p.name} from the leaderboard for good.`;return}
+      db.disabled=true;try{await LB.admin("delete",{id:p.id});await done("Deleted.")}catch(e){fail(e);db.disabled=false}};
+  }
+  (function(){const bb=$("betaBadge");if(!bb)return;let n=0,t=null;
+    bb.onclick=()=>{clearTimeout(t);t=setTimeout(()=>{n=0},2500);if(++n<5)return;n=0;
+      if(isAdmin()){RS.set("adminPin","");openSheet(`<h3>Admin off</h3>`,`<p class="empty" style="text-align:center">Admin tools are hidden on this device.</p>`);return}
+      openSheet(`<h3>Admin</h3>`,`<form class="pinform" id="pinForm"><input id="pinIn" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off" placeholder="PIN" aria-label="4-digit PIN"><button class="big" type="submit">Unlock</button><p class="adminmsg" id="pinMsg"></p></form>`);
+      setTimeout(()=>$("pinIn")&&$("pinIn").focus(),60);
+      $("pinForm").onsubmit=async e=>{e.preventDefault();const pin=$("pinIn").value.replace(/\D/g,"");if(pin.length!==4){$("pinMsg").textContent="Enter 4 digits.";return}
+        try{await LB.admin("check",{pin});RS.set("adminPin",pin);$("pinMsg").textContent="Admin on. Tap a player to manage them.";setTimeout(closeSheet,900)}
+        catch(err){const c=err&&err.message;$("pinMsg").textContent=c==="locked"?"Too many tries. Try again in an hour.":c==="not_set_up"?"Admin PIN isn't set up yet.":"Wrong PIN.";$("pinIn").value=""}};
+    }})();
+  function eggMini(){return `<svg viewBox="0 0 60 80" aria-hidden="true"><path d="M30 3C46 3 57 31 57 48C57 66 45 78 30 78C15 78 3 66 3 48C3 31 14 3 30 3Z" fill="var(--red)"/></svg>`}
+  $("lbList").onclick=e=>{const b=e.target.closest(".lbrow");if(!b)return;playerSheet(b.dataset.id)};
   $("prevDay").onclick=()=>{if(pos>0){pos--;render()}};
   $("nextDay").onclick=()=>{if(pos<SPAN.length-1){pos++;render()}};
 
@@ -1103,11 +1405,17 @@ function wireJoin(o){
     const b=await LB.init();
     if(!b){$("nameCard").hidden=true;$("board").hidden=true;$("lbStatus").hidden=false;$("lbStatus").textContent="The leaderboard can't load here.";return}
     me=b.id;
-    if(!lbName()){J.setMode("join");$("nameCard").hidden=false;$("board").hidden=true;return}
+    if(!lbName()){J.setMode("choose");$("nameCard").hidden=false;$("board").hidden=true;return}
     $("nameCard").hidden=true;$("renameRow").hidden=false;
     await lbSync();await load();
   }
   $("renameBtn").onclick=()=>{J.setMode("rename");$("nameCard").hidden=false;$("nameIn").focus()};
+  $("passBtn").onclick=()=>{J.setMode("setpass");$("nameCard").hidden=false;$("passIn").focus()};
+  /* Google as a backup way in, if the site has it set up and this account doesn't have it yet */
+  LB.authConfig().then(async cfg=>{if(!cfg.google)return;let st={};try{st=await LB.status()}catch(e){}if(st.google)return;
+    const b=document.createElement("button");b.textContent="Add Google";$("renameRow").appendChild(b);
+    b.onclick=()=>{openSheet(`<h3>Add Google</h3>`,`<div id="gLink" style="display:flex;justify-content:center;min-height:44px"></div><p class="adminmsg" id="gMsg"></p>`);
+      lbGoogleButton($("gLink"),async cred=>{try{await LB.linkGoogle(cred);$("gMsg").textContent="Google added.";b.remove();setTimeout(closeSheet,900)}catch(e){$("gMsg").textContent=e.message==="google_taken"?"That Google account is already used by another player.":"That didn't work. Try again."}})}});
   $("linkBtn").onclick=async()=>{
     const btn=$("linkBtn");btn.disabled=true;
     try{

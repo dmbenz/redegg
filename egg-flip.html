@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<html lang="en"><head><meta charset="utf-8"><link rel="icon" href="/favicon.ico" sizes="48x48"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="manifest" href="/site.webmanifest"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <script>document.documentElement.setAttribute("data-theme","light")</script><meta name="color-scheme" content="light"><meta name="theme-color" content="#FFC9A0">
 <style>html,body,button,a,[role=button]{touch-action:manipulation}.egg,.slot,button{-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}</style>
 <title>Red Egg: Egg Flip</title>
@@ -147,9 +147,14 @@ header .meta b{font-size:.82rem}
 .eggpanel .points .ptsdelta{font-family:"Fredoka",var(--body);font-size:20px;color:#3E8E3A;top:-4px}
 .eggpanel .points .streak{margin-top:6px}
 /* the share picture sits over everything */
-body>.cardcover,body>.confetti{position:fixed!important;inset:0!important;z-index:400!important}
+body>.cardcover,body>.confetti,body>.sheetcover{position:fixed!important;inset:0!important;z-index:400!important}
 /* very small phones: shrink the logo a little so the page info fits */
 @media (max-width:359px){header .brand h1{font-size:1.5rem!important}header .brand svg{width:22px;height:30px}header .brand{gap:6px}header .meta{font-size:.68rem}}
+
+/* computers only: keep the farm at phone size in the middle and let it run out past both edges */
+.farm .wide{display:none}
+@media (min-width:700px){.farm{height:940px}.farm svg{width:390px;overflow:visible}.farm .wide{display:inline}}
+body>.iabbar{position:sticky!important;z-index:280!important}
 </style>
 </head><body><div class="farm inner" aria-hidden="true"><svg viewBox="0 0 390 520" preserveAspectRatio="xMidYMin slice">
     <defs>
@@ -165,21 +170,21 @@ body>.cardcover,body>.confetti{position:fixed!important;inset:0!important;z-inde
       </radialGradient>
       <radialGradient id="gShade" cx=".36" cy=".3" r=".85"><stop offset="0" stop-color="#fff" stop-opacity=".5"></stop><stop offset=".35" stop-color="#fff" stop-opacity="0"></stop><stop offset=".78" stop-color="#000" stop-opacity="0"></stop><stop offset="1" stop-color="#000" stop-opacity=".2"></stop></radialGradient>
     </defs>
-    <rect width="390" height="520" fill="url(#sky4)"/>
+    <rect x="-1600" width="3590" height="520" fill="url(#sky4)" class="wide"/><rect width="390" height="520" fill="url(#sky4)"/>
     
     
-    <path d="M0 268 C70 232 130 236 200 258 C260 276 320 246 390 236 L390 340 L0 340 Z" fill="#B9D88E"/>
-    <path d="M0 300 C90 272 170 284 250 300 C310 312 350 292 390 286 L390 380 L0 380 Z" fill="#94C46A"/>
-    <g stroke="#E9CDA0" stroke-width="6" stroke-linecap="round">
+    <g class="wide"><path d="M-1600 250 C-1300 222 -1000 242 -700 262 C-400 282 -200 252 0 268 L0 340 L-1600 340Z" fill="#B9D88E"/><path d="M390 236 C600 220 820 262 1060 250 C1300 238 1600 228 1990 240 L1990 340 L390 340Z" fill="#B9D88E"/></g><path d="M0 268 C70 232 130 236 200 258 C260 276 320 246 390 236 L390 340 L0 340 Z" fill="#B9D88E"/>
+    <g class="wide"><path d="M-1600 296 C-1200 280 -800 312 -400 298 C-200 292 -80 296 0 300 L0 380 L-1600 380Z" fill="#94C46A"/><path d="M390 286 C620 276 900 304 1200 292 C1500 282 1720 290 1990 288 L1990 380 L390 380Z" fill="#94C46A"/></g><path d="M0 300 C90 272 170 284 250 300 C310 312 350 292 390 286 L390 380 L0 380 Z" fill="#94C46A"/>
+    <g stroke="#E9CDA0" stroke-width="6" stroke-linecap="round"><g class="wide"><path d="M-1600 352 L0 352"/><path d="M-1600 374 L0 374"/><path d="M390 352 L1990 352"/><path d="M390 374 L1990 374"/><path d="M-1586 340 L-1586 392"/><path d="M-1524 340 L-1524 392"/><path d="M-1462 340 L-1462 392"/><path d="M-1400 340 L-1400 392"/><path d="M-1338 340 L-1338 392"/><path d="M-1276 340 L-1276 392"/><path d="M-1214 340 L-1214 392"/><path d="M-1152 340 L-1152 392"/><path d="M-1090 340 L-1090 392"/><path d="M-1028 340 L-1028 392"/><path d="M-966 340 L-966 392"/><path d="M-904 340 L-904 392"/><path d="M-842 340 L-842 392"/><path d="M-780 340 L-780 392"/><path d="M-718 340 L-718 392"/><path d="M-656 340 L-656 392"/><path d="M-594 340 L-594 392"/><path d="M-532 340 L-532 392"/><path d="M-470 340 L-470 392"/><path d="M-408 340 L-408 392"/><path d="M-346 340 L-346 392"/><path d="M-284 340 L-284 392"/><path d="M-222 340 L-222 392"/><path d="M-160 340 L-160 392"/><path d="M-98 340 L-98 392"/><path d="M-36 340 L-36 392"/><path d="M430 340 L430 392"/><path d="M492 340 L492 392"/><path d="M554 340 L554 392"/><path d="M616 340 L616 392"/><path d="M678 340 L678 392"/><path d="M740 340 L740 392"/><path d="M802 340 L802 392"/><path d="M864 340 L864 392"/><path d="M926 340 L926 392"/><path d="M988 340 L988 392"/><path d="M1050 340 L1050 392"/><path d="M1112 340 L1112 392"/><path d="M1174 340 L1174 392"/><path d="M1236 340 L1236 392"/><path d="M1298 340 L1298 392"/><path d="M1360 340 L1360 392"/><path d="M1422 340 L1422 392"/><path d="M1484 340 L1484 392"/><path d="M1546 340 L1546 392"/><path d="M1608 340 L1608 392"/><path d="M1670 340 L1670 392"/><path d="M1732 340 L1732 392"/><path d="M1794 340 L1794 392"/><path d="M1856 340 L1856 392"/><path d="M1918 340 L1918 392"/><path d="M1980 340 L1980 392"/></g>
       <path d="M0 352 L390 352"/><path d="M0 374 L390 374"/>
       <path d="M22 340 L22 392"/><path d="M84 340 L84 392"/><path d="M306 340 L306 392"/><path d="M368 340 L368 392"/>
     </g>
-    <path d="M0 384 C80 372 160 376 230 382 C300 388 350 380 390 376 L390 520 L0 520 Z" fill="#F3D38A"/>
+    <g class="wide"><path d="M-1600 382 C-1000 376 -400 388 0 384 L0 520 L-1600 520Z" fill="#F3D38A"/><path d="M390 376 C800 368 1400 384 1990 378 L1990 520 L390 520Z" fill="#F3D38A"/></g><path d="M0 384 C80 372 160 376 230 382 C300 388 350 380 390 376 L390 520 L0 520 Z" fill="#F3D38A"/>
     <g stroke="#DDB45E" stroke-width="2.5" stroke-linecap="round">
       <path d="M30 420 l10 -8"/><path d="M48 470 l-8 -9"/><path d="M350 418 l9 -7"/><path d="M340 470 l-9 -6"/><path d="M20 496 l10 -6"/><path d="M372 498 l-8 -8"/>
     </g>
 
-    </svg></div>
+    <g class="wide"><defs><linearGradient id="sandFade" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F3D38A"/><stop offset=".7" stop-color="#F3D38A"/><stop offset="1" stop-color="#F3D38A" stop-opacity="0"/></linearGradient></defs><rect x="-1600" y="518" width="3590" height="420" fill="url(#sandFade)"/></g></svg></div>
 <div class="app">
   <header style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:6px"><a href="index.html" style="display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink)"><svg width="30" height="40" viewBox="0 0 60 80" aria-hidden="true"><path d="M30 3C46 3 57 31 57 48C57 66 45 78 30 78C15 78 3 66 3 48C3 31 14 3 30 3Z" fill="var(--red)"/><ellipse cx="20" cy="30" rx="6" ry="11" fill="#fff" opacity=".35" transform="rotate(20 20 30)"/></svg><span style="font-family:'Bagel Fat One',var(--display),sans-serif;font-size:1.9rem;line-height:1">The <span style="color:var(--red)">Red</span> Egg</span></a><div style="font-size:.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-weight:600;text-align:right;flex-shrink:0"><a href="index.html" style="display:block;color:var(--muted);text-decoration:none">← Home</a>Egg Flip<b style="display:block;color:var(--ink);font-size:.95rem;letter-spacing:.02em;text-transform:none">Preview</b></div></header>
   <div class="hud">
@@ -214,10 +219,12 @@ function ordered(list,salt){const r=rngOf(hstr(salt)),a=list.slice();for(let i=a
 const D=D0,TODAY=`${D.getFullYear()}-${D.getMonth()+1}-${D.getDate()}`;
 const store={get(k,d){try{const v=localStorage.getItem("redegg2:"+k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem("redegg2:"+k,JSON.stringify(v))}catch(e){}}};
 const SEEN=new Set(store.get("oeSeen",[]));
+/* a fresh game every time you play: new order, new lines */
+const PLAY=String(Math.random()).slice(2)+Date.now();
 // keep the "years between" questions to about one in four
-const ORDER=(()=>{const a=ordered(POOL.filter(q=>!q.gap),"oe|"+TODAY),g=ordered(POOL.filter(q=>q.gap),"oeg|"+TODAY),out=[];
+const ORDER=(()=>{const a=ordered(POOL.filter(q=>!q.gap),"oe|"+PLAY),g=ordered(POOL.filter(q=>q.gap),"oeg|"+PLAY),out=[];
   while(a.length||g.length){for(let k=0;k<3&&a.length;k++)out.push(a.shift());if(g.length)out.push(g.shift())}return out})();
-let R=rngOf(hstr("oe-lines|"+TODAY));
+let R=rngOf(hstr("oe-lines|"+PLAY));
 /* every question is the same difficulty: the line sits a fair distance from the truth */
 function lineFor(q){
   const up=R()<.5;
@@ -306,7 +313,7 @@ input,textarea,[contenteditable],.share,#shareText{-webkit-user-select:text;user
 @keyframes htin{from{opacity:0}to{opacity:1}}
 </style>
 <script id="ux-how">(function(){
-var H={"egg-sort": ["Scrambled", "Put the eggs in the hidden order.", ["Tap two eggs to swap them.", "After each swap you see how many are in the right spot, but not which ones.", "Use your past swaps to work it out.", "Faster means more points. 5 rounds, 3 to 7 eggs."]], "blind-stop": ["Blind Stop", "Stop the clock right on the target.", ["Tap Start, then tap Stop when you think you\u2019ve hit the target time.", "The clock hides partway through, so you have to feel it.", "The closer you stop, the more points. 5 rounds."]], "flash": ["Flash", "Remember which eggs glow.", ["Tap Flash. Some eggs glow for half a second.", "Tap the eggs that glowed, then Submit.", "Right picks earn points. Wrong picks cost points.", "The carton gets bigger each round. 5 rounds."]], "trivia": ["Egghead", "Answer fast.", ["5 questions from this week\u2019s category.", "The faster you get it right, the more points.", "A wrong tap is crossed out and adds 4 seconds."]], "bridge": ["Link", "Build a chain of words.", ["Each word joins onto the last to make a new word: SUN \u2192 LIGHT \u2192 HOUSE \u2192 BOAT.", "You see the first letter and how long the word is.", "Hint adds a letter (+5s). Skip scores 0.", "5 links. Faster means more points."]], "bridge-sun": ["Link", "Find the word in the middle.", ["One word fits between the two: SUN \u2192 ? \u2192 HOUSE is LIGHT (SUNLIGHT, LIGHTHOUSE).", "You see the first letter and how long the word is.", "Faster means more points."]], "pecking-order": ["Pecking Order", "Put five things in order.", ["Drag to reorder, then Submit.", "Anything in the right spot locks in green.", "Fewer tries means more points. 5 tries per round."]], "egg-flip": ["Egg Flip", "Over or under?", ["Guess if the real answer is over or under the number shown.", "A wrong guess cracks one of your 3 eggs.", "Keep going until you run out of eggs or time."]], "clutch": ["Clutch", "Name as many as you can.", ["Tap Start to see the category.", "Type answers and press Enter after each one.", "Small typos are fine. 20 seconds a round."]]},base="egg-flip",sun=location.hash==="#sunday";
+var H={"egg-sort": ["Scrambled", "Put the eggs in the hidden order.", ["Tap two eggs to swap them.", "After each swap you see how many are in the right spot, but not which ones.", "Use your past swaps to work it out.", "Faster means more points. 5 rounds, 3 to 7 eggs."]], "blind-stop": ["Blind Stop", "Stop the clock right on the target.", ["Tap Start, then tap Stop when you think you\u2019ve hit the target time.", "The clock hides partway through, so you have to feel it.", "The closer you stop, the more points. 5 rounds."]], "flash": ["Flash", "Remember which eggs glow.", ["Tap Flash. Some eggs glow for half a second.", "Tap the eggs that glowed, then Submit.", "Right picks earn points. Wrong picks cost points.", "The carton gets bigger each round. 5 rounds."]], "trivia": ["Egghead", "Answer fast.", ["One question each: Sports, Movies & TV, Music, History & Geography, Wild Card.", "The faster you get it right, the more points.", "A wrong tap is crossed out and adds 4 seconds."]], "bridge": ["Link", "Build a chain of words.", ["Each word joins onto the last to make a new word: SUN \u2192 FLOWER \u2192 POT \u2192 HOLE.", "You see the first letter and how long the word is.", "Hint adds a letter (+5s). Skip scores 0.", "5 links. Faster means more points."]], "bridge-sun": ["Link", "Find the word in the middle.", ["One word fits between the two: SUN \u2192 ? \u2192 POT is FLOWER (SUNFLOWER, FLOWERPOT).", "You see the first letter and how long the word is.", "Faster means more points."]], "pecking-order": ["Pecking Order", "Put five things in order.", ["Drag to reorder, then Submit.", "Anything in the right spot locks in green.", "Fewer tries means more points. 5 tries per round."]], "egg-flip": ["Egg Flip", "Over or under?", ["Guess if the real answer is over or under the number shown.", "A wrong guess cracks one of your 3 eggs.", "Keep going until you run out of eggs or time."]], "clutch": ["Clutch", "Name as many as you can.", ["Tap Start to see the category.", "Type answers and press Enter after each one.", "Small typos are fine. 20 seconds a round."]]},base="egg-flip",sun=location.hash==="#sunday";
 var key=base==="bridge"&&sun?"bridge-sun":base,h=H[key];if(!h)return;
 function seen(){try{return localStorage.getItem("redegg2:how:"+key)==="1"}catch(e){return false}}
 function mark(){try{localStorage.setItem("redegg2:how:"+key,"1")}catch(e){}}
