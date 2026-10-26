@@ -247,7 +247,15 @@ function seededOrder(list,salt){const r=rngFrom(hashStr(salt)),a=list.slice();fo
 const RS={get(k,d){try{const v=localStorage.getItem("redegg2:"+k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem("redegg2:"+k,JSON.stringify(v))}catch(e){}}};
 /* a new egg every Monday */
 function currentWeek(){let w=RS.get("week",null);if(!w||!w.id||w.id!==CUR_MONDAY){w={id:CUR_MONDAY,days:{},sunday:{}};RS.set("week",w)}w.days=w.days||{};w.sunday=w.sunday||{};return w}
-function markPlayed(){const s=RS.get("playDays",[]);if(!s.includes(LOCALDAY)){s.push(LOCALDAY);RS.set("playDays",s)}}
+function markPlayed(){const s=RS.get("playDays",[]);if(!s.includes(LOCALDAY)){s.push(LOCALDAY);RS.set("playDays",s)}Promise.resolve().then(lbQuick)}
+/* the moment a game is finished, send it to the server, so your other phone or computer knows you played */
+function lbQuick(){try{
+  if(window.claude||WEEK_SHIFT)return;const id=RS.get("lbId",null),secret=RS.get("lbSecret",null),name=RS.get("lbName","");if(!id||!secret||!name)return;
+  const w=currentWeek(),r=v=>Math.round((+v||0)*10)/10,days={};Object.keys(w.days).forEach(k=>days[k]=r(w.days[k]));
+  const sun=Object.keys(w.sunday).length?r(Object.values(w.sunday).reduce((a,b)=>a+(+b||0),0)):null;
+  const tot=Math.round(Object.values(w.days).reduce((a,b)=>a+(+b||0),0)+(sun||0));
+  fetch("/api/players",{method:"POST",keepalive:true,headers:{"content-type":"application/json"},body:JSON.stringify({id,secret,name,weeks:{[w.id]:{days,sun,chick:null,total:tot}},save:{week:w}})}).catch(()=>{});
+}catch(e){}}
 function dayStreak(){const s=new Set(RS.get("playDays",[]));const d=new Date(NOW);if(!s.has(ymd(d)))d.setDate(d.getDate()-1);let n=0;while(s.has(ymd(d))){n++;d.setDate(d.getDate()-1)}return n}
 function bestDayStreak(){const s=[...new Set(RS.get("playDays",[]))].sort();let best=0,run=0,prev=null;for(const k of s){const d=new Date(k+"T12:00:00");run=prev&&Math.round((d-prev)/864e5)===1?run+1:1;best=Math.max(best,run);prev=d}return best}
 function weekStreak(){const ids=new Set(RS.get("pen",[]).map(p=>p.id));const d=new Date(CUR_MONDAY+"T12:00:00");if(!ids.has(ymd(d)))d.setDate(d.getDate()-7);let n=0;while(ids.has(ymd(d))){n++;d.setDate(d.getDate()-7)}return n}
@@ -267,10 +275,25 @@ function dailyGate(mode,key,name){
     else if(key in w.sunday)msg=`You already played this round of the Red Egg.`;
     else{const nx=SUN_KEYS.find(k=>!(k in w.sunday));if(nx&&nx!==key){location.replace(nx+".html#sunday");return true}}
   }
-  if(!msg)return false;
+  if(!msg){remoteGate(mode,key,name);return false}
+  gateShow(msg);return true;
+}
+/* already played on your other phone or computer? the server knows, even if this browser doesn't yet */
+function remoteGate(mode,key,name){
+  if(mode!=="day"||window.claude)return;const id=RS.get("lbId",null);if(!id)return;
+  fetch("/api/players",{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+    const me=d&&(d.players||[]).find(p=>p.id===id),wk=me&&me.weeks&&me.weeks[CUR_MONDAY];
+    if(!wk||!wk.days||!(key in wk.days))return;
+    const w=currentWeek();if(key in w.days)return;w.days[key]=wk.days[key];RS.set("week",w);
+    try{PAUSE.done()}catch(e){}
+    gateShow(`You already played today's ${name}. You scored <b>${Math.round(wk.days[key])}</b>. A new puzzle is waiting tomorrow.`);
+  }).catch(()=>{});
+}
+function gateShow(msg){
+  if(document.getElementById("gateMsg"))return;
   const wrap=document.querySelector(".wrap");
   [...wrap.children].forEach(el=>{if(el.tagName!=="HEADER")el.hidden=true});
-  wrap.insertAdjacentHTML("beforeend",`<section class="card" style="align-items:center;text-align:center;gap:16px"><p style="margin:0;font-size:1.05rem;max-width:36ch">${msg}</p><a href="index.html" style="display:block;width:100%;text-align:center;text-decoration:none;border-radius:16px;padding:16px;font:700 1.05rem var(--body);background:var(--btn);color:var(--btn-ink)">Back to the egg</a></section>`);
+  wrap.insertAdjacentHTML("beforeend",`<section class="card" id="gateMsg" style="align-items:center;text-align:center;gap:16px"><p style="margin:0;font-size:1.05rem;max-width:36ch">${msg}</p><a href="index.html" style="display:block;width:100%;text-align:center;text-decoration:none;border-radius:16px;padding:16px;font:700 1.05rem var(--body);background:var(--btn);color:var(--btn-ink)">Back to the egg</a></section>`);
   return true;
 }
 

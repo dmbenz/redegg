@@ -31,7 +31,8 @@ export const mergeWeeks = (prev = {}, next = {}) => {
     const p = out[wk];
     if (!p) { out[wk] = n; continue; }
     const days = { ...(n.days || {}), ...(p.days || {}) };
-    const sun = p.sun ?? n.sun ?? null, chick = p.chick ?? n.chick ?? null;
+    // Sunday adds up round by round, so the bigger running total is the newer one
+    const sun = p.sun != null && n.sun != null ? Math.max(+p.sun, +n.sun) : p.sun ?? n.sun ?? null, chick = p.chick ?? n.chick ?? null;
     const sum = Object.values(days).reduce((a, v) => a + (+v || 0), 0) + (+sun || 0);
     out[wk] = { days, sun, chick, total: chick ? ((p.chick ? p.total : n.total) ?? Math.round(sum)) : Math.round(sum) };
   }
