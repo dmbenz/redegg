@@ -441,6 +441,46 @@ body.sheeton{overflow:hidden}
 .authform{display:flex;flex-direction:column;gap:14px;margin:0}
 .vh{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);border:0;opacity:0}
 
+/* the seal on the card preview catches the light */
+.cardpic{position:relative;width:fit-content;max-width:100%;margin:0 auto;line-height:0}
+.sealshine{position:absolute;left:81.1%;top:2.4%;width:17.04%;aspect-ratio:1;border-radius:50%;pointer-events:none;overflow:hidden;mix-blend-mode:screen;
+  -webkit-mask:radial-gradient(circle,#000 62%,transparent 71%);mask:radial-gradient(circle,#000 62%,transparent 71%)}
+.sealshine::before{content:"";position:absolute;inset:-60%;background:conic-gradient(from 0deg,rgba(255,80,160,.0),rgba(255,80,160,.35),rgba(255,220,80,.35),rgba(90,255,180,.35),rgba(80,170,255,.35),rgba(190,110,255,.35),rgba(255,80,160,.0));animation:sealspin 6s linear infinite;mix-blend-mode:color-dodge}
+.sealshine::after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 35%,rgba(255,255,255,.95) 48%,rgba(255,255,255,.2) 52%,transparent 62%);background-size:300% 100%;animation:sealglint 2.8s ease-in-out infinite}
+@keyframes sealspin{to{transform:rotate(360deg)}}
+@keyframes sealglint{0%{background-position:120% 0}55%,100%{background-position:-60% 0}}
+
+/* the Red Bomb, front and center */
+.bombpromo{position:relative;display:flex;align-items:center;gap:12px;overflow:hidden;text-decoration:none;color:#fff;border-radius:24px;padding:12px 16px 12px 8px;margin:0 0 14px;
+  background:radial-gradient(120% 140% at 20% 110%,#FF7A3D 0,#C2283A 30%,#3A1450 68%,#120A2E 100%);box-shadow:0 10px 26px rgba(80,20,40,.35),inset 0 1px 0 rgba(255,255,255,.25);transition:transform .15s}
+.bombpromo:active{transform:scale(.98)}
+.bpsky{position:absolute;inset:0;pointer-events:none}
+.bpsky i{position:absolute;width:3px;height:3px;border-radius:50%;background:#fff;opacity:.8;animation:bptw 2.2s ease-in-out infinite}
+.bpsky i:nth-child(1){left:42%;top:18%}.bpsky i:nth-child(2){left:60%;top:70%;animation-delay:.4s}.bpsky i:nth-child(3){left:72%;top:22%;animation-delay:.9s}
+.bpsky i:nth-child(4){left:84%;top:58%;animation-delay:1.3s;width:2px;height:2px}.bpsky i:nth-child(5){left:52%;top:42%;animation-delay:1.7s;width:2px;height:2px}
+.bpsky i:nth-child(6){left:93%;top:16%;animation-delay:.2s}.bpsky i:nth-child(7){left:33%;top:80%;animation-delay:1.1s;width:2px;height:2px}
+@keyframes bptw{50%{opacity:.15}}
+.bpbomb{position:relative;flex:none;width:84px;height:91px;filter:drop-shadow(0 6px 10px rgba(0,0,0,.35));animation:bpbob 2.4s ease-in-out infinite}
+.bpbomb svg{width:100%;height:100%;overflow:visible;display:block}
+@keyframes bpbob{0%,100%{transform:translateY(0) rotate(-6deg)}50%{transform:translateY(-6px) rotate(5deg)}}
+.bpspark{transform-box:fill-box;transform-origin:center;animation:bpspark .22s ease-in-out infinite alternate}
+@keyframes bpspark{from{transform:scale(.75);opacity:.8}to{transform:scale(1.25);opacity:1}}
+.bpshadow{animation:bpsh 2.4s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+@keyframes bpsh{50%{transform:scaleX(.8);opacity:.6}}
+.bptext{position:relative;display:flex;flex-direction:column;line-height:1;flex:1;min-width:0}
+.bptext small{font:800 .66rem var(--body);letter-spacing:.16em;text-transform:uppercase;color:#FFD9A0}
+.bptext b{font:400 clamp(1.15rem,5.4vw,1.5rem) var(--display);margin-top:4px}
+.bptext b em{font-style:normal;color:#FF6B74;text-shadow:0 0 12px rgba(255,90,100,.6)}
+.bpkick{font:700 .85rem var(--body);letter-spacing:.32em;color:#FFC23D;margin-top:4px}
+.bpgo{position:relative;flex:none;font:700 .95rem var(--body);background:#fff;color:#C2283A;border-radius:999px;padding:8px 14px;box-shadow:0 4px 0 rgba(0,0,0,.25)}
+@media (prefers-reduced-motion:reduce){.bpbomb,.bpspark,.bpshadow,.bpsky i{animation:none}}
+
+/* first-time sign-in: a window over the home screen */
+body>.joincover{position:fixed!important;inset:0;z-index:900!important;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(30,18,10,.55);overflow:auto}
+body>.joincover[hidden]{display:none}
+.joincover #nameCard{width:100%;max-width:420px;margin:auto;box-shadow:0 18px 50px rgba(0,0,0,.35);max-height:calc(100dvh - 32px);overflow:auto}
+html.joinopen,html.joinopen body{overflow:hidden}
+
 </style>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Nunito:wght@600;700;800&display=swap"><style id="sunrise">/* ---------- Sunrise Farm theme for every page: colors + background art only ---------- */
 :root,:root[data-theme="dark"],:root[data-theme="light"]{
@@ -459,7 +499,7 @@ body.sheeton{overflow:hidden}
   --glow:#FFC23D; --gold:#D99A00; --miss:#B98100; --hint:#B98100; --yolk:#FFC23D; --chick:#FFD447; --hole:#2A1206;
   --pick:#2F6FCB; --pick-bg:#D9E6FA; --t1:#B98100; --t2:#3E8E3A; --t3:#2F6FCB; --t4:#8A7560; --t5:#8A5A3C; color-scheme:light}}
 html,body{background:var(--bg)}
-.farm{position:absolute;left:0;right:0;top:0;height:520px;z-index:0;pointer-events:none;overflow:hidden}
+.farm{position:fixed;left:0;right:0;top:0;height:520px;z-index:0;pointer-events:none;overflow:hidden}
 .farm svg{position:absolute;left:50%;top:0;width:max(100%,390px);height:520px;transform:translateX(-50%)}
 body>*:not(.farm):not(.htcover){position:relative;z-index:1}
 /* tab bar: the dark floating pill */
@@ -513,6 +553,24 @@ body>.cardcover,body>.confetti,body>.sheetcover{position:fixed!important;inset:0
 .farm .wide{display:none}
 @media (min-width:700px){.farm{height:940px}.farm svg{width:390px;overflow:visible}.farm .wide{display:inline}}
 body>.iabbar{position:sticky!important;z-index:280!important}
+
+/* Home: the farm scrolls away with the page (every other page keeps it still) */
+.farm.home{position:absolute}
+/* Home: the Red Bomb waiting by the fence */
+body>a.farmbomb{position:absolute!important;z-index:2!important;display:block;-webkit-tap-highlight-color:transparent}
+.farmbomb svg{width:100%;height:100%;overflow:visible;display:block}
+.farmbomb:active svg{transform:scale(.94)}
+.fbflag{transform-box:fill-box;transform-origin:0% 50%;animation:fbwave 2.6s ease-in-out infinite}
+@keyframes fbwave{0%,100%{transform:skewY(0) scaleX(1)}50%{transform:skewY(-3deg) scaleX(.96)}}
+.fbbomb{transform-box:fill-box;transform-origin:50% 100%;animation:fbwob 3.2s ease-in-out infinite}
+@keyframes fbwob{0%,80%,100%{transform:rotate(0)}84%{transform:rotate(-4deg)}88%{transform:rotate(3.5deg)}92%{transform:rotate(-2deg)}96%{transform:rotate(1deg)}}
+.fbspark{transform-box:fill-box;transform-origin:center;animation:fbsp .2s ease-in-out infinite alternate}
+@keyframes fbsp{from{transform:scale(.7);opacity:.8}to{transform:scale(1.3);opacity:1}}
+.fbember{animation:fbem 1.1s ease-out infinite;opacity:0}
+.fbember.e2{animation-delay:.37s}.fbember.e3{animation-delay:.74s}
+.e1{--ex:7px;--ey:-12px}.e2{--ex:-5px;--ey:-10px}.e3{--ex:10px;--ey:-4px}
+@keyframes fbem{0%{transform:translate(0,0);opacity:1}100%{transform:translate(var(--ex),var(--ey));opacity:0}}
+@media (prefers-reduced-motion:reduce){.fbflag,.fbbomb,.fbspark,.fbember{animation:none}}
 </style>
 <div class="farm home" aria-hidden="true"><svg viewBox="0 0 390 520" preserveAspectRatio="xMidYMin slice">
     <defs>
@@ -561,7 +619,49 @@ body>.iabbar{position:sticky!important;z-index:280!important}
       <path d="M30 420 l10 -8"/><path d="M48 470 l-8 -9"/><path d="M350 418 l9 -7"/><path d="M340 470 l-9 -6"/><path d="M20 496 l10 -6"/><path d="M372 498 l-8 -8"/>
     </g>
 
-    <g class="wide"><defs><linearGradient id="sandFade" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F3D38A"/><stop offset=".7" stop-color="#F3D38A"/><stop offset="1" stop-color="#F3D38A" stop-opacity="0"/></linearGradient></defs><rect x="-1600" y="518" width="3590" height="420" fill="url(#sandFade)"/></g></svg></div><div class="wrap">
+    <g class="wide"><defs><linearGradient id="sandFade" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F3D38A"/><stop offset=".7" stop-color="#F3D38A"/><stop offset="1" stop-color="#F3D38A" stop-opacity="0"/></linearGradient></defs><rect x="-1600" y="518" width="3590" height="420" fill="url(#sandFade)"/></g></svg></div><a class="farmbomb" href="bomb.html" aria-label="New game: The Red Bomb. Tap to play">
+<svg viewBox="0 0 100 120" aria-hidden="true">
+  <defs>
+    <radialGradient id="fbBody" cx=".36" cy=".32" r=".8"><stop offset="0" stop-color="#FF8A8F"/><stop offset=".3" stop-color="#F0414E"/><stop offset=".72" stop-color="#B51E2E"/><stop offset="1" stop-color="#5E0A14"/></radialGradient>
+    <radialGradient id="fbRim" cx=".75" cy=".82" r=".5"><stop offset="0" stop-color="#FFB36B" stop-opacity=".55"/><stop offset="1" stop-color="#FFB36B" stop-opacity="0"/></radialGradient>
+    <linearGradient id="fbCap" x1="0" x2="1"><stop offset="0" stop-color="#3A0A10"/><stop offset=".45" stop-color="#8E2A33"/><stop offset="1" stop-color="#2A060B"/></linearGradient>
+    <radialGradient id="fbSpark" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#FFF8D0"/><stop offset=".4" stop-color="#FFC23D"/><stop offset="1" stop-color="#FF5A1F" stop-opacity="0"/></radialGradient>
+    <linearGradient id="fbPole" x1="0" x2="1"><stop offset="0" stop-color="#A7764A"/><stop offset="1" stop-color="#6E4A2C"/></linearGradient>
+  </defs>
+  <!-- the flag, planted in the dirt -->
+  <ellipse cx="11" cy="115" rx="8" ry="2.6" fill="rgba(110,70,30,.35)"/>
+  <rect x="9" y="12" width="3.4" height="104" rx="1.5" fill="url(#fbPole)"/>
+  <circle cx="10.7" cy="11" r="3" fill="#E8C27A"/>
+  <g class="fbflag">
+    <path d="M12.4 15 L84 15 L75 32.5 L84 50 L12.4 50 Z" fill="#FFF4E2" stroke="#D62F3C" stroke-width="2" stroke-linejoin="round"/>
+    <path d="M12.4 19 L80 19" stroke="#D62F3C" stroke-width="1" opacity=".35"/><path d="M12.4 46 L80 46" stroke="#D62F3C" stroke-width="1" opacity=".35"/>
+    <text x="42" y="29.5" text-anchor="middle" font-family="Nunito,system-ui,sans-serif" font-weight="900" font-size="9" fill="#D62F3C" letter-spacing=".8">NEW!</text>
+    <text x="42" y="42.5" text-anchor="middle" font-family="Fredoka,Nunito,system-ui,sans-serif" font-weight="700" font-size="11" fill="#3B2A1E">Red Bomb</text>
+  </g>
+  <!-- the bomb, sitting on the ground with its fuse lit -->
+  <ellipse cx="56" cy="114" rx="23" ry="4" fill="rgba(90,50,20,.35)"/>
+  <g class="fbbomb">
+    <path d="M68 75 C73 65 81 66 86 58" fill="none" stroke="#D9B07A" stroke-width="3.2" stroke-linecap="round"/>
+    <path d="M68 75 C73 65 81 66 86 58" fill="none" stroke="#8C6A3E" stroke-width="3.2" stroke-linecap="round" stroke-dasharray="2 3"/>
+    <rect x="59" y="70" width="14" height="10" rx="2.5" fill="url(#fbCap)" transform="rotate(34 66 75)"/>
+    <circle cx="55" cy="93" r="21" fill="url(#fbBody)"/>
+    <circle cx="55" cy="93" r="21" fill="url(#fbRim)"/>
+    <ellipse cx="47.5" cy="84" rx="7" ry="4.2" fill="#fff" opacity=".55" transform="rotate(-32 47.5 84)"/>
+    <circle cx="44.5" cy="88.5" r="1.7" fill="#fff" opacity=".8"/>
+  </g>
+  <g class="fbspark"><circle cx="86" cy="58" r="7" fill="url(#fbSpark)"/><circle cx="86" cy="58" r="2.2" fill="#FFFBE6"/></g>
+  <circle class="fbember e1" cx="86" cy="58" r="1.2" fill="#FFC23D"/>
+  <circle class="fbember e2" cx="86" cy="58" r="1" fill="#FF8A1F"/>
+  <circle class="fbember e3" cx="86" cy="58" r="1.1" fill="#FFE27A"/>
+</svg></a>
+<script>
+/* keep the bomb planted by the fence, wherever the farm picture sits */
+(function(){const a=document.currentScript.previousElementSibling;document.body.appendChild(a);
+  const place=()=>{const sv=document.querySelector(".farm svg");if(!sv)return;const r=sv.getBoundingClientRect(),s=r.width/390;
+    const room=Math.max(0,innerWidth-(r.left+390*s)),x=290*s+Math.min(70*s,room*.5),left=Math.min(r.left+x,innerWidth-100*s-2);a.style.left=(left+window.scrollX)+"px";a.style.top=(r.top+window.scrollY+298*s)+"px";a.style.width=(100*s)+"px";a.style.height=(120*s)+"px"};
+  place();addEventListener("resize",place);addEventListener("load",place);})();
+</script>
+<div class="wrap">
   <header>
     <a class="brand" href="index.html"><svg width="30" height="40" viewBox="0 0 60 80" aria-hidden="true"><path d="M30 3C46 3 57 31 57 48C57 66 45 78 30 78C15 78 3 66 3 48C3 31 14 3 30 3Z" fill="var(--red)"/><ellipse cx="20" cy="30" rx="6" ry="11" fill="#fff" opacity=".35" transform="rotate(20 20 30)"/></svg><h1>The <span>Red</span> Egg</h1></a>
     <div class="meta">Week of<b id="weekLabel"></b></div>
@@ -605,7 +705,7 @@ body>.iabbar{position:sticky!important;z-index:280!important}
   <section class="card">
     <h2>Previews</h2>
     <p class="empty">New ideas to try before they go into the week.</p>
-    <div class="demos"><a class="demo" href="egg-flip.html"><b>Egg Flip</b><span>Over or under, until you miss</span></a><a class="demo" href="egg-sort.html"><b>Scrambled</b><span>Sort the eggs into the hidden order</span></a></div>
+    <div class="demos"><a class="demo" href="egg-flip.html"><b>Egg Flip</b><span>Over or under, until you miss</span></a><a class="demo" href="egg-sort.html"><b>Scrambled</b><span>Sort the eggs into the hidden order</span></a><a class="demo" href="bomb.html"><b>Red Bomb</b><span>Defuse words, climb to space</span></a></div>
   </section>
 
   <details id="testTools" hidden>
@@ -650,7 +750,33 @@ function seededOrder(list,salt){const r=rngFrom(hashStr(salt)),a=list.slice();fo
 const RS={get(k,d){try{const v=localStorage.getItem("redegg2:"+k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem("redegg2:"+k,JSON.stringify(v))}catch(e){}}};
 /* a new egg every Monday */
 function currentWeek(){let w=RS.get("week",null);if(!w||!w.id||w.id!==CUR_MONDAY){w={id:CUR_MONDAY,days:{},sunday:{}};RS.set("week",w)}w.days=w.days||{};w.sunday=w.sunday||{};return w}
-function markPlayed(){const s=RS.get("playDays",[]);if(!s.includes(LOCALDAY)){s.push(LOCALDAY);RS.set("playDays",s)}Promise.resolve().then(lbQuick)}
+function markPlayed(){const s=RS.get("playDays",[]);if(!s.includes(LOCALDAY)){s.push(LOCALDAY);RS.set("playDays",s)}Promise.resolve().then(lbQuick);if(location.hash==="#day")keepResult()}
+/* keep the finished results screen, so you can open the game again this week to see it or share it */
+const pageKey=()=>(location.pathname.split("/").pop()||"").replace(/\.html$/,"");
+function keepResult(){
+  const key=pageKey();if(!DAY_KEYS.includes(key))return;let n=0;
+  const grab=()=>{const end=document.getElementById("end"),st=document.getElementById("shareText");
+    if(end&&!end.hidden&&st&&st.textContent.trim()){
+      try{Object.keys(localStorage).forEach(k=>{if(k.startsWith("redegg2:res:")&&!k.startsWith("redegg2:res:"+CUR_MONDAY))localStorage.removeItem(k)})}catch(e){}
+      RS.set("res:"+CUR_MONDAY+":"+key,{html:end.innerHTML,share:st.textContent});return}
+    if(++n<40)setTimeout(grab,250)};
+  setTimeout(grab,30);
+}
+function showResult(key,name){
+  const r=RS.get("res:"+CUR_MONDAY+":"+key,null);if(!r||!r.html)return false;
+  const wrap=document.querySelector(".wrap");if(!wrap||document.getElementById("gateMsg"))return true;
+  [...wrap.children].forEach(el=>{if(el.tagName!=="HEADER")el.hidden=true});
+  wrap.insertAdjacentHTML("beforeend",`<section class="card end" id="gateMsg">${r.html}</section>`);
+  const box=document.getElementById("gateMsg"),share=r.share.includes("redegg.netlify.app")?r.share:r.share+"\nredegg.netlify.app";
+  box.querySelectorAll("button,a").forEach(b=>{if(b.id!=="copyBtn")b.remove()});
+  box.querySelectorAll("[id]").forEach(el=>{if(el.id!=="copyBtn"&&el.id!=="toast")el.removeAttribute("id")});
+  const cp=box.querySelector("#copyBtn"),toast=box.querySelector("#toast");
+  if(cp)cp.onclick=()=>{const ok=()=>{if(toast)toast.textContent="Copied";else cp.textContent="Copied"};try{navigator.clipboard.writeText(share.includes("redegg.netlify.app")?share:share+"\nredegg.netlify.app").then(ok,()=>{})}catch(e){}};
+  box.insertAdjacentHTML("afterbegin",`<p style="margin:0 0 4px;font-weight:800;color:var(--muted,#7A5636);text-align:center">You already played this week's ${name}.</p>`);
+  box.insertAdjacentHTML("beforeend",`<a href="index.html" style="display:block;width:100%;text-align:center;text-decoration:none;border-radius:16px;padding:16px;font:700 1.05rem var(--body);background:var(--btn);color:var(--btn-ink);margin-top:10px">Back to the egg</a>`);
+  try{PAUSE.done()}catch(e){}
+  return true;
+}
 /* the moment a game is finished, send it to the server, so your other phone or computer knows you played */
 function lbQuick(){try{
   if(window.claude||WEEK_SHIFT)return;const id=RS.get("lbId",null),secret=RS.get("lbSecret",null),name=RS.get("lbName","");if(!id||!secret||!name)return;
@@ -679,6 +805,7 @@ function dailyGate(mode,key,name){
     else{const nx=SUN_KEYS.find(k=>!(k in w.sunday));if(nx&&nx!==key){location.replace(nx+".html#sunday");return true}}
   }
   if(!msg){remoteGate(mode,key,name);return false}
+  if(mode==="day"&&key in w.days&&showResult(key,name))return true;
   gateShow(msg);return true;
 }
 /* already played on your other phone or computer? the server knows, even if this browser doesn't yet */
@@ -803,10 +930,11 @@ const GRADS=`
 const DEFS=`<defs>${GRADS}</defs>`;
 const BODY=`<path d="M100 64 C130 64 148 92 148 124 C148 154 128 172 100 172 C72 172 52 154 52 124 C52 92 70 64 100 64 Z"/>`;
 function chickParts(t){
+  const BD=bodyFor(t);
   const shiny=["silver","golden","platinum","diamond","galaxy"].includes(t.key);
   const crown=t.crown==="gem"?`<path d="M82 66 L88 50 L100 44 L112 50 L118 66 Z" fill="url(#gDiamond)" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/><path d="M88 50 L100 66 L112 50 M100 44 L100 66 M82 66 L100 56 L118 66" stroke="#fff" stroke-width="1.1" opacity=".85" fill="none"/>`
     :t.crown?`<path d="M80 64 L86 46 L96 58 L100 42 L104 58 L114 46 L120 64 Z" fill="${t.crown==="plat"?"url(#gPlat)":"url(#gGold)"}" stroke="${t.crown==="plat"?"#7D8BA0":"#8A5A00"}" stroke-width="2" stroke-linejoin="round"/><circle cx="100" cy="56" r="3" fill="${t.crown==="plat"?"#8FE3FF":"#D11F35"}"/>`:"";
-  const cape=t.acc==="cape"?`<path d="M80 96 Q60 150 66 176 L100 166 L134 176 Q140 150 120 96 Z" fill="#D11F35"/><path d="M80 96 Q60 150 66 176 L100 166" fill="none" stroke="#9E1426" stroke-width="2"/>`:"";
+  const cape=t.acc==="cape"?`<path d="M80 90 Q36 132 40 184 Q70 172 100 178 Q130 172 160 184 Q164 132 120 90 Z" fill="#D11F35" stroke="#8E1020" stroke-width="2.5" stroke-linejoin="round"/><path d="M62 128 Q56 156 58 178 M138 128 Q144 156 142 178" fill="none" stroke="#9E1426" stroke-width="2" opacity=".6"/>`:"";
   const behind=t.key==="diamond"
     ?`<circle cx="100" cy="112" r="78" fill="url(#gHalo)"/><g opacity=".55"><g><animateTransform attributeName="transform" type="rotate" from="0 100 112" to="360 100 112" dur="14s" repeatCount="indefinite"/>${Array.from({length:12},(_,i)=>`<polygon points="100,112 ${100+90*Math.cos(i*Math.PI/6-.09)},${112+90*Math.sin(i*Math.PI/6-.09)} ${100+90*Math.cos(i*Math.PI/6+.09)},${112+90*Math.sin(i*Math.PI/6+.09)}" fill="${["#8FE3FF","#FF9BD2","#C9B8FF"][i%3]}"/>`).join("")}</g></g>`
     :t.key==="galaxy"?`<circle cx="100" cy="112" r="80" fill="url(#gHaloGalaxy)"/><g fill="none" stroke="#C9B8FF" stroke-width="2" opacity=".55"><ellipse cx="100" cy="118" rx="76" ry="18" transform="rotate(-14 100 118)"/></g>`
@@ -814,17 +942,17 @@ function chickParts(t){
     :t.key==="golden"?`<circle cx="100" cy="112" r="62" fill="url(#gHaloGold)" opacity=".7"/>`:"";
   const stars=t.key==="galaxy"?`<g fill="#fff">${[[80,90,1.6],[118,84,1.2],[132,120,1.8],[70,140,1.3],[104,152,1.5],[90,128,1],[124,148,1.1],[110,100,.9],[66,112,1],[140,104,1]].map(([x,y,r])=>`<circle cx="${x}" cy="${y}" r="${r}"/>`).join("")}<path d="M120 132 l2 5 l5 2 l-5 2 l-2 5 l-2 -5 l-5 -2 l5 -2 Z" opacity=".9"/><path d="M78 102 l1.5 4 l4 1.5 l-4 1.5 l-1.5 4 l-1.5 -4 l-4 -1.5 l4 -1.5 Z" opacity=".85"/></g>`:"";
   const facets=t.key==="diamond"?`<path d="M64 112 L100 74 L136 112 L100 168 Z M64 112 H136 M84 112 L100 168 L116 112 M84 112 L100 74 L116 112" fill="none" stroke="#fff" stroke-width="1.4" opacity=".55"/>`:"";
-  const sheen=shiny?`<g fill="url(#gSheen)" opacity="${t.key==="diamond"?1:t.key==="platinum"?.95:.8}">${BODY}</g>`:"";
+  const sheen=shiny?`<g fill="url(#gSheen)" opacity="${t.key==="diamond"?1:t.key==="platinum"?.95:.8}">${BD}</g>`:"";
   const rim="";
   return `${cape}${behind}
     ${t.scruff?`<path d="M92 68 L84 50 M100 66 L102 46 M108 68 L118 52 M54 110 L42 104 M146 112 L158 106 M60 150 L48 156" stroke="var(--chick)" stroke-width="6" stroke-linecap="round"/><path d="M92 68 L84 50 M100 66 L102 46 M108 68 L118 52" stroke="#D99A00" stroke-width="1.5" stroke-linecap="round" opacity=".6"/>`:""}
-    ${t.fluff?`<g fill="${t.fill}" stroke="${outline(t)}" stroke-width="3"><circle cx="100" cy="66" r="11"/><circle cx="119" cy="70" r="11"/><circle cx="135" cy="82" r="11"/><circle cx="146" cy="99" r="11"/><circle cx="150" cy="120" r="11"/><circle cx="146" cy="141" r="11"/><circle cx="135" cy="158" r="11"/><circle cx="65" cy="158" r="11"/><circle cx="54" cy="141" r="11"/><circle cx="50" cy="120" r="11"/><circle cx="54" cy="99" r="11"/><circle cx="65" cy="82" r="11"/><circle cx="81" cy="70" r="11"/></g>`:""}
     ${feet(t)}
-    <g fill="${t.fill}">${BODY}</g>
-    <g fill="url(#gShade)" opacity=".7">${BODY}</g>
+    <g fill="${t.fill}">${BD}</g>
+    <g fill="url(#gShade)" opacity=".7">${BD}</g>
+    ${t.fluff?`<g stroke="${outline(t)}" opacity=".45">${FLUFF_TEX}</g>`:""}
     <ellipse cx="100" cy="146" rx="26" ry="18" fill="#fff" opacity=".22"/>
     <ellipse cx="82" cy="84" rx="9" ry="5" fill="#fff" opacity=".5" transform="rotate(-30 82 84)"/>
-    <g fill="none" stroke="${outline(t)}" stroke-width="3">${BODY}</g>
+    <g fill="none" stroke="${outline(t)}" stroke-width="3" stroke-linejoin="round">${BD}</g>
     ${stars}${sheen}${rim}
     ${wings(t)}
     ${facets}${crown}
@@ -840,17 +968,13 @@ function feet(t){
   const f=x=>`<ellipse cx="${x}" cy="172" rx="10" ry="6" fill="${col}" stroke="#C9661A" stroke-width="2"/>`;
   return f(86)+f(114);
 }
-/* the Red Egg signature: a piece of red shell still stuck on the chick's head */
-function shellCap(t){
-  const hatted=!!t.crown||t.scruff||["party","chef","sleepy","nice","chill","duck","bow","spinner","sport"].includes(t.acc);
-  if(hatted)return "";
-  return `<g transform="rotate(-14 100 70)">
-    <path d="M78 76 Q78 50 100 48 Q122 50 122 76 L117 71 L112 77 L106 70 L100 77 L94 70 L88 77 L83 71 Z" fill="#D11F35"/>
-    <path d="M78 76 Q78 50 100 48 Q122 50 122 76 L117 71 L112 77 L106 70 L100 77 L94 70 L88 77 L83 71 Z" fill="url(#gShade)"/>
-    <path d="M86 60 Q90 53 98 52" stroke="#fff" stroke-width="3" stroke-linecap="round" fill="none" opacity=".45"/>
-    <circle cx="108" cy="58" r="1.2" fill="#6E0C18" opacity=".5"/><circle cx="92" cy="66" r="1" fill="#6E0C18" opacity=".5"/>
-  </g>`;
-}
+/* chicks with nothing on their head get a short scruffy tuft: two little spikes that are part of the body's own outline (one clean shape, no overlapping lines) */
+function shellCap(t){return ""}
+function tuft(t){return ""}
+const TUFT_BODY=`<path d="M113 65.91 C135.12 72.73 148 96.93 148 124 C148 154 128 172 100 172 C72 172 52 154 52 124 C52 96.53 65.27 72.01 88 65.61 Q91 61 94 54 Q97 59 101.5 61 Q105 55 110 51 Q110 59 113 65.91 Z"/>`;
+const FLUFF_BODY=`<path d="M100.0 65.0A7.4 7.4 0 0 1 112.1 66.7A7.5 7.5 0 0 1 123.2 71.8A8.0 8.0 0 0 1 132.3 79.9A7.4 7.4 0 0 1 139.1 90.0A7.5 7.5 0 0 1 143.7 101.3A7.6 7.6 0 0 1 146.3 113.3A7.1 7.1 0 0 1 147.0 125.5A7.5 7.5 0 0 1 145.5 137.6A7.6 7.6 0 0 1 141.1 149.0A7.8 7.8 0 0 1 133.7 158.7A7.0 7.0 0 0 1 123.7 165.7A7.2 7.2 0 0 1 112.2 169.8A7.0 7.0 0 0 1 100.0 171.0A7.8 7.8 0 0 1 87.8 169.8A7.7 7.7 0 0 1 76.3 165.7A6.9 6.9 0 0 1 66.3 158.7A8.0 8.0 0 0 1 58.9 149.0A8.0 8.0 0 0 1 54.5 137.6A7.6 7.6 0 0 1 53.0 125.5A7.6 7.6 0 0 1 53.7 113.3A7.0 7.0 0 0 1 56.3 101.3A6.9 6.9 0 0 1 60.9 90.0A7.5 7.5 0 0 1 67.7 79.9A6.9 6.9 0 0 1 76.8 71.8A7.1 7.1 0 0 1 87.9 66.7A7.1 7.1 0 0 1 100.0 65.0Z"/>`;
+const FLUFF_TEX=`<path d="M75.9 82.0 Q77.9 77.9 80.0 82.0 Q82.1 77.9 84.1 82.0 M107.6 78.0 Q109.8 73.6 112.0 78.0 Q114.2 73.6 116.4 78.0 M60.6 104.0 Q63.3 98.6 66.0 104.0 Q68.7 98.6 71.4 104.0 M129.1 108.0 Q131.6 103.1 134.0 108.0 Q136.4 103.1 138.9 108.0 M69.4 146.0 Q71.7 141.4 74.0 146.0 Q76.3 141.4 78.6 146.0 M120.8 146.0 Q123.4 140.8 126.0 146.0 Q128.6 140.8 131.2 146.0 M95.1 160.0 Q97.5 155.1 100.0 160.0 Q102.5 155.1 104.9 160.0 M83.4 136.0 Q85.7 131.4 88.0 136.0 Q90.3 131.4 92.6 136.0 M110.4 132.0 Q113.2 126.4 116.0 132.0 Q118.8 126.4 121.6 132.0 M56.6 128.0 Q59.3 122.6 62.0 128.0 Q64.7 122.6 67.4 128.0 M133.5 128.0 Q135.8 123.5 138.0 128.0 Q140.2 123.5 142.5 128.0 M94.9 92.0 Q97.4 86.9 100.0 92.0 Q102.6 86.9 105.1 92.0" fill="none" stroke-width="2" stroke-linecap="round"/>`;
+function bodyFor(t){if(t.fluff)return FLUFF_BODY;const hatted=!!t.crown||t.scruff||["party","chef","sleepy","nice","chill","duck","bow","spinner","sport"].includes(t.acc);return hatted?BODY:TUFT_BODY}
 function face(t){
   // big low eyes and a tiny beak: the cute proportions
   const EY=108,LX=84,RX=116;
@@ -862,6 +986,11 @@ function face(t){
   const blush=(o)=>`<ellipse cx="72" cy="122" rx="8" ry="5" fill="#FF7F9C" opacity="${o}"/><ellipse cx="128" cy="122" rx="8" ry="5" fill="#FF7F9C" opacity="${o}"/>`;
   if(t.key==="galaxy")return `<ellipse cx="${LX}" cy="${EY}" rx="8.5" ry="10" fill="#fff"/><ellipse cx="${RX}" cy="${EY}" rx="8.5" ry="10" fill="#fff"/>`+eye(LX,EY+1)+eye(RX,EY+1)+beak+`<ellipse cx="72" cy="124" rx="8" ry="5" fill="#FF7FD0" opacity=".55"/><ellipse cx="128" cy="124" rx="8" ry="5" fill="#FF7FD0" opacity=".55"/>`;
   switch(t.acc){
+    case "cape":{
+      // hero mask over the eyes, with the knot tails flying out the side, and a lightning badge on the chest
+      const mask=`<path d="M136 102 L152 94 L149 104 L154 112 L136 108 Z" fill="#B3182C" stroke="#7E0F1D" stroke-width="1.5" stroke-linejoin="round"/><path d="M64 104 Q66 93 84 95 Q100 98 116 95 Q134 93 136 104 Q136 119 119 120 Q106 120 100 113 Q94 120 81 120 Q64 119 64 104 Z" fill="#D11F35" stroke="#7E0F1D" stroke-width="2" stroke-linejoin="round"/>`;
+      const badge=`<circle cx="100" cy="148" r="13" fill="#D11F35" stroke="#fff" stroke-width="3"/><path d="M102 138 L94 150 L100 150 L97 159 L106 145 L100 145 Z" fill="#FFD447" stroke="#B98500" stroke-width="1" stroke-linejoin="round"/>`;
+      return badge+mask+eye(LX,EY)+eye(RX,EY)+beak+blush(.5)}
     case "nerd":return eye(LX,EY)+eye(RX,EY)+beak+blush(.5)+`<g fill="none" stroke="#1A1D23" stroke-width="3.2"><circle cx="${LX}" cy="${EY}" r="13"/><circle cx="${RX}" cy="${EY}" r="13"/><path d="M${LX+13} ${EY-2} Q100 ${EY-7} ${RX-13} ${EY-2}"/><path d="M${LX-13} ${EY-2} L60 ${EY-6} M${RX+13} ${EY-2} L140 ${EY-6}"/></g><rect x="96" y="${EY-6}" width="8" height="6" rx="1.5" fill="#fff" stroke="#C9D0D8" stroke-width="1"/><path d="M${LX-7} ${EY-6} l5 -3" stroke="#fff" stroke-width="2" opacity=".7" stroke-linecap="round"/><path d="M${RX-7} ${EY-6} l5 -3" stroke="#fff" stroke-width="2" opacity=".7" stroke-linecap="round"/>`;
     case "shades":return `<path d="M68 100 H132 V108 Q130 120 117 120 Q106 120 104 108 H96 Q94 120 83 120 Q70 120 68 108 Z" fill="#1A1D23"/><path d="M74 104 L84 104" stroke="#fff" stroke-width="2.5" opacity=".6" stroke-linecap="round"/><path d="M108 104 L118 104" stroke="#fff" stroke-width="2.5" opacity=".6" stroke-linecap="round"/>${beak}${blush(.45)}`;
     case "sleepy":return closed(LX,EY)+closed(RX,EY)+beak+blush(.5)+`<text x="134" y="88" font-family="Bagel Fat One, sans-serif" font-size="14" fill="var(--muted)">z</text><text x="144" y="74" font-family="Bagel Fat One, sans-serif" font-size="18" fill="var(--muted)">z</text>`;
@@ -1334,7 +1463,9 @@ const CARD_VARS={"--chick":"#FFD447","--red":"#D62F3C","--muted":"#7A5636","--gl
 const RAR_COL={mythic:"#7A4FD1",legendary:"#B98500",epic:"#8E44C9",rare:"#2F6FDB",uncommon:"#2E9B57",common:"#6B7480",rough:"#8A5A3C",cursed:"#3B2A1E",secret:"#D14F8E"};
 function chickImage(t){
   let svg=(t.shell||t.peek)?miniSVG(t,false):`<svg viewBox="${["diamond","galaxy","platinum","golden"].includes(t.key)?"-10 0 220 220":"26 16 148 162"}">${DEFS}${chickParts(t)}</svg>`;
-  svg=svg.replace("<svg ",'<svg xmlns="http://www.w3.org/2000/svg" width="640" height="'+((t.shell||t.peek)?768:["diamond","galaxy","platinum","golden"].includes(t.key)?640:700)+'" ');
+  /* every chick is drawn at the same scale on the card; the top tiers just get extra room for their glow */
+  const BIGK=["diamond","galaxy","platinum","golden"].includes(t.key),dims=(t.shell||t.peek)?[640,768]:BIGK?[1428,1428]:[960,1051];
+  svg=svg.replace("<svg ",'<svg xmlns="http://www.w3.org/2000/svg" width="'+dims[0]+'" height="'+dims[1]+'" ');
   svg=svg.replace(/var\((--[a-z-]+)\)/g,(m,v)=>CARD_VARS[v]||"#3B2A1E");
   return new Promise((res,rej)=>{const img=new Image();img.onload=()=>res(img);img.onerror=rej;setTimeout(()=>rej(new Error("slow")),4000);img.src="data:image/svg+xml;charset=utf-8,"+encodeURIComponent(svg)});
 }
@@ -1349,27 +1480,54 @@ function drawSeal(c,cx,cy,r,seed,text){
   for(let k=0;k<pts*2;k++){const a=spin+k*Math.PI/pts,rr2=k%2?r*depth:r;const x=cx+Math.cos(a)*rr2,y=cy+Math.sin(a)*rr2;k?burst.lineTo(x,y):burst.moveTo(x,y)}
   burst.closePath();
   c.save();
-  // a soft shadow so it reads as a stamp pressed onto the picture
-  c.shadowColor="rgba(80,40,10,.18)";c.shadowBlur=14;c.shadowOffsetY=4;c.fillStyle="rgba(255,255,255,.18)";c.fill(burst);c.shadowColor="transparent";
+  // a soft shadow so it reads as a sticker pressed onto the picture
+  c.shadowColor="rgba(60,30,80,.28)";c.shadowBlur=18;c.shadowOffsetY=6;c.fillStyle="rgba(235,238,250,.3)";c.fill(burst);c.shadowColor="transparent";
   c.clip(burst);
-  let g;if(c.createConicGradient){g=c.createConicGradient(rnd()*6.28,cx,cy);for(let k=0;k<=8;k++)g.addColorStop(k/8,`hsla(${(hue+k*45)%360},95%,70%,.38)`)}
-  else{g=c.createLinearGradient(cx-r,cy-r,cx+r,cy+r);for(let k=0;k<=8;k++)g.addColorStop(k/8,`hsla(${(hue+k*45)%360},95%,70%,.38)`)}
+  // 1. silver foil base: bright in the top-left, darker in the bottom-right
+  const fb=c.createLinearGradient(cx-r,cy-r,cx+r,cy+r);fb.addColorStop(0,"rgba(255,255,255,.5)");fb.addColorStop(.45,"rgba(220,226,240,.28)");fb.addColorStop(1,"rgba(150,160,190,.38)");
+  c.fillStyle=fb;c.fillRect(cx-r,cy-r,2*r,2*r);
+  // 2. the rainbow, swirling around the middle
+  let g;if(c.createConicGradient){g=c.createConicGradient(rnd()*6.28,cx,cy);for(let k=0;k<=12;k++)g.addColorStop(k/12,`hsla(${(hue+k*30)%360},100%,${k%2?62:74}%,.42)`)}
+  else{g=c.createLinearGradient(cx-r,cy-r,cx+r,cy+r);for(let k=0;k<=12;k++)g.addColorStop(k/12,`hsla(${(hue+k*30)%360},100%,66%,.42)`)}
   c.fillStyle=g;c.fillRect(cx-r,cy-r,2*r,2*r);
-  // a diagonal foil glint
-  const gl=c.createLinearGradient(cx-r,cy-r,cx+r,cy+r);gl.addColorStop(.3,"rgba(255,255,255,0)");gl.addColorStop(.47,"rgba(255,255,255,.55)");gl.addColorStop(.53,"rgba(255,255,255,.1)");gl.addColorStop(.7,"rgba(255,255,255,0)");
-  c.fillStyle=gl;c.fillRect(cx-r,cy-r,2*r,2*r);
+  // 3. diffraction bands: fine rainbow stripes across the foil, like a real hologram
+  c.globalCompositeOperation="overlay";
+  const bandA=rnd()*Math.PI,ux=Math.cos(bandA),uy=Math.sin(bandA);
+  const bd=c.createLinearGradient(cx-ux*r,cy-uy*r,cx+ux*r,cy+uy*r);
+  for(let k=0;k<=36;k++)bd.addColorStop(k/36,`hsla(${(hue+180+k*40)%360},100%,${k%2?80:50}%,.4)`);
+  c.fillStyle=bd;c.fillRect(cx-r,cy-r,2*r,2*r);
+  // 4. sunburst rays from the middle, catching the light at different angles
+  c.globalCompositeOperation="soft-light";
+  for(let k=0;k<pts;k++){const a0=spin+k*2*Math.PI/pts,a1=a0+Math.PI/pts;
+    c.fillStyle=k%2?"rgba(255,255,255,.4)":"rgba(40,20,90,.16)";c.beginPath();c.moveTo(cx,cy);c.arc(cx,cy,r,a0,a1);c.closePath();c.fill()}
+  c.globalCompositeOperation="source-over";
   // fine guilloche lines, different for every seed
   const loops=3+Math.floor(rnd()*3);
   for(let k=0;k<loops;k++){const base=r*(.28+.12*k),amp=r*(.03+rnd()*.05),fr=6+Math.floor(rnd()*10),ph=rnd()*6.28;
-    c.strokeStyle=`hsla(${(hue+120+k*40)%360},70%,40%,.28)`;c.lineWidth=1.3;c.beginPath();
+    c.strokeStyle=`rgba(255,255,255,.55)`;c.lineWidth=1.4;c.beginPath();
     for(let a=0;a<=Math.PI*2+.01;a+=.02){const q=base+amp*Math.sin(fr*a+ph);const x=cx+Math.cos(a)*q,y=cy+Math.sin(a)*q;a===0?c.moveTo(x,y):c.lineTo(x,y)}c.stroke()}
+  // 5. the shine: a hard white glint across the foil, plus a soft glow behind it
+  c.globalCompositeOperation="screen";
+  const gl=c.createLinearGradient(cx-r,cy-r*1.1,cx+r*.7,cy+r);
+  gl.addColorStop(.18,"rgba(255,255,255,0)");gl.addColorStop(.34,"rgba(255,255,255,.35)");gl.addColorStop(.4,"rgba(255,255,255,.95)");gl.addColorStop(.43,"rgba(255,255,255,.4)");
+  gl.addColorStop(.5,"rgba(255,255,255,0)");gl.addColorStop(.6,"rgba(255,255,255,.3)");gl.addColorStop(.63,"rgba(255,255,255,0)");
+  c.fillStyle=gl;c.fillRect(cx-r,cy-r,2*r,2*r);
+  const hot=c.createRadialGradient(cx-r*.38,cy-r*.42,0,cx-r*.38,cy-r*.42,r*.55);hot.addColorStop(0,"rgba(255,255,255,.7)");hot.addColorStop(1,"rgba(255,255,255,0)");
+  c.fillStyle=hot;c.fillRect(cx-r,cy-r,2*r,2*r);
+  c.globalCompositeOperation="source-over";
   c.restore();
-  // crisp edges: the spiky outline and a double ring inside it
+  // crisp edges: an embossed spiky outline (lit top-left, shaded bottom-right) and a double ring inside it
   c.save();
-  c.strokeStyle="rgba(255,255,255,.85)";c.lineWidth=2.5;c.stroke(burst);
-  c.strokeStyle="rgba(70,45,110,.35)";c.lineWidth=1.5;c.beginPath();c.arc(cx,cy,r*.72,0,7);c.stroke();c.beginPath();c.arc(cx,cy,r*.48,0,7);c.stroke();
+  const em=c.createLinearGradient(cx-r,cy-r,cx+r,cy+r);em.addColorStop(0,"rgba(255,255,255,1)");em.addColorStop(.5,"rgba(230,225,255,.9)");em.addColorStop(1,"rgba(90,70,140,.75)");
+  c.strokeStyle=em;c.lineWidth=3;c.stroke(burst);
+  c.strokeStyle="rgba(255,255,255,.9)";c.lineWidth=2.2;c.beginPath();c.arc(cx,cy,r*.72,0,7);c.stroke();c.beginPath();c.arc(cx,cy,r*.48,0,7);c.stroke();
+  c.strokeStyle="rgba(70,45,110,.35)";c.lineWidth=1;c.beginPath();c.arc(cx,cy,r*.72+2,0,7);c.stroke();c.beginPath();c.arc(cx,cy,r*.48+2,0,7);c.stroke();
+  // sparkles: little four-point stars where the light hits
+  const star=(x,y,s,o)=>{c.save();c.translate(x,y);c.fillStyle=`rgba(255,255,255,${o})`;c.shadowColor="rgba(255,255,255,.95)";c.shadowBlur=s*1.6;c.beginPath();
+    for(let k=0;k<8;k++){const a=k*Math.PI/4,q=k%2?s*.18:s;c.lineTo(Math.cos(a)*q,Math.sin(a)*q)}c.closePath();c.fill();c.restore()};
+  star(cx-r*.55,cy-r*.6,r*.24,1);star(cx+r*.62,cy+r*.18,r*.13,.9);star(cx-r*.1,cy+r*.7,r*.1,.85);star(cx+r*.92,cy-r*.55,r*.16,1);star(cx-r*.95,cy+r*.25,r*.09,.8);
   // small print between the rings, once around
-  c.fillStyle="rgba(60,40,100,.62)";c.textAlign="center";c.textBaseline="middle";
+  c.fillStyle="rgba(50,30,95,.8)";c.textAlign="center";c.textBaseline="middle";
   const str=text+" ★ ",R2=r*.6;let fs=13,tot=0;
   do{c.font=`800 ${fs}px "Nunito", sans-serif`;tot=[...str].reduce((a,ch)=>a+c.measureText(ch).width,0);fs-=.5}while(tot>2*Math.PI*R2*.97&&fs>7);
   const gap=Math.max(0,(2*Math.PI*R2-tot)/str.length);let ang=0;
@@ -1377,7 +1535,7 @@ function drawSeal(c,cx,cy,r,seed,text){
   for(const ch of str){const w=c.measureText(ch).width,step=(w+gap)/R2;c.save();c.rotate(ang+step/2);c.translate(0,-R2);c.fillText(ch,0,0);c.restore();ang+=step}
   // the egg in the middle
   const egg=new Path2D("M30 3C46 3 57 31 57 48C57 66 45 78 30 78C15 78 3 66 3 48C3 31 14 3 30 3Z");
-  const k=r*.0072;c.translate(-30*k,-41*k);c.scale(k,k);c.fillStyle="rgba(214,47,60,.6)";c.fill(egg);c.strokeStyle="rgba(255,255,255,.9)";c.lineWidth=5;c.stroke(egg);
+  const k=r*.0072;c.translate(-30*k,-41*k);c.scale(k,k);const eg=c.createLinearGradient(0,0,60,80);eg.addColorStop(0,"rgba(255,110,120,.95)");eg.addColorStop(1,"rgba(170,20,40,.9)");c.fillStyle=eg;c.fill(egg);c.strokeStyle="rgba(255,255,255,.95)";c.lineWidth=5;c.stroke(egg);c.fillStyle="rgba(255,255,255,.6)";c.beginPath();c.ellipse(20,24,7,12,-.4,0,7);c.fill();
   c.restore();
 }
 async function makeCard(t,total,weekId){
@@ -1395,7 +1553,7 @@ async function makeCard(t,total,weekId){
   c.fillStyle="#F3D38A";c.beginPath();c.moveTo(0,830+Y);c.bezierCurveTo(300,800+Y,600,812+Y,1080,800+Y);c.lineTo(1080,H);c.lineTo(0,H);c.fill();
   // the chick
   if(!t.plain)try{const img=await chickImage(t);const iw=img.width,ih=img.height,big=["diamond","galaxy","platinum","golden"].includes(t.key),sp=t.shell||t.peek;
-    const sz=sp?960:big?1080:960,s=sp?Math.min(sz/ih,1000/iw):sz/iw;c.drawImage(img,(W-iw*s)/2,sp?290:big?320:225,iw*s,ih*s)}catch(e){}
+    const sz=sp?960:big?1428:960,s=sp?Math.min(sz/ih,1000/iw):sz/iw;c.drawImage(img,(W-iw*s)/2,sp?290:big?121:225,iw*s,ih*s)}catch(e){}
   // brand
   const egg=new Path2D("M30 3C46 3 57 31 57 48C57 66 45 78 30 78C15 78 3 66 3 48C3 31 14 3 30 3Z");
   c.save();c.translate(64,70);c.scale(1,1);c.fillStyle="#D62F3C";c.fill(egg);c.restore();
@@ -1416,6 +1574,7 @@ async function makeCard(t,total,weekId){
   c.font="700 132px "+ROUND;c.fillText(sc,sx,CY+330);c.fillStyle="#7A5636";c.font="700 56px "+ROUND;c.fillText(" / 720",sx+scw,CY+330);
   const wk=new Date(weekId+"T12:00:00"),wkTxt="Week of "+label(wk)+", "+wk.getFullYear();
   c.textAlign="center";c.font="800 36px "+BODYF;c.fillStyle="#7A5636";c.fillText(wkTxt,W/2,CY+410);
+  c.font="800 34px "+BODYF;c.fillStyle="rgba(59,42,30,.7)";c.fillText("redegg.netlify.app",W/2,H-38);
   // the seal, stamped in the top corner
   const who=(typeof lbName==="function"&&lbName())||"";
   drawSeal(c,968,138,92,[who,weekId,total,t.key].join("|"),[who.toUpperCase()||"THE RED EGG",total+"/720",(label(wk)+" "+wk.getFullYear()).toUpperCase()].join(" ★ "));
@@ -1425,7 +1584,7 @@ async function makeCard(t,total,weekId){
 let DL=null;try{if(window.claude&&claude.use)claude.use("downloads").then(d=>{DL=d}).catch(()=>{})}catch(e){}
 async function shareCard(t,total,weekId){
   const d=document.createElement("div");d.className="cardcover";d.setAttribute("role","dialog");d.setAttribute("aria-modal","true");
-  d.innerHTML=`<div class="cardbox"><div class="cardwait"></div><img alt="${t.name}, ${total} points" hidden><div class="cardbtns" hidden><button class="big red" data-a="share" hidden>Share</button><button class="big" data-a="copy">Copy picture</button><a data-a="save" download="red-egg-${t.key}.png" hidden></a><button class="hatchshare" data-a="close">Close</button></div></div>`;
+  d.innerHTML=`<div class="cardbox"><div class="cardwait"></div><div class="cardpic"><img alt="${t.name}, ${total} points" hidden><i class="sealshine" hidden></i></div><div class="cardbtns" hidden><button class="big red" data-a="share" hidden>Share</button><button class="big" data-a="copy">Copy picture</button><a data-a="save" download="red-egg-${t.key}.png" hidden></a><button class="hatchshare" data-a="close">Close</button></div></div>`;
   document.body.appendChild(d);
   let url=null,file=null,blob=null;
   const close=()=>{d.remove();if(url)URL.revokeObjectURL(url)};
@@ -1438,14 +1597,14 @@ async function shareCard(t,total,weekId){
       if(ok){a.textContent="Copied";setTimeout(()=>{a.textContent="Copy picture"},1600)}
       else if(!(await save()))d.querySelector("a").click();
       return}
-    if(a.dataset.a==="share"){try{await navigator.share({files:[file],title:"The Red Egg"})}
+    if(a.dataset.a==="share"){try{await navigator.share({files:[file],title:"The Red Egg",text:"redegg.netlify.app"})}
       catch(err){if(!err||err.name!=="AbortError"){if(!(await save()))d.querySelector("a").click()}}}};
   try{blob=await makeCard(t,total,weekId)}catch(e){blob=null}
   if(!blob){try{blob=await makeCard({...t,plain:true},total,weekId)}catch(e){}}
   if(!blob){close();return}
   url=URL.createObjectURL(blob);file=new File([blob],"red-egg-"+t.key+".png",{type:"image/png"});
   let canShare=false;try{canShare=!!(navigator.share&&navigator.canShare&&navigator.canShare({files:[file]}))}catch(e){}
-  const img=d.querySelector("img");img.src=url;img.hidden=false;d.querySelector(".cardwait").remove();
+  const img=d.querySelector("img");img.src=url;img.hidden=false;d.querySelector(".sealshine").hidden=false;d.querySelector(".cardwait").remove();
   d.querySelector("a").href=url;d.querySelector('[data-a="share"]').hidden=!canShare;d.querySelector(".cardbtns").hidden=false;
 }
 /* a perfect week deserves a party */
@@ -1633,6 +1792,10 @@ lbSync();
 /* ask for a username until they pick one; Later hides it for the day */
 (function(){const c=$("nameCard");if(!c)return;
   if(RS.get("lbLater","")===LOCALDAY)return;
+  /* the sign-in shows as a window over the farm, not in the page */
+  const cov=document.createElement("div");cov.className="joincover";cov.hidden=true;document.body.appendChild(cov);cov.appendChild(c);
+  const sync=()=>{cov.hidden=c.hidden;document.documentElement.classList.toggle("joinopen",!c.hidden)};
+  new MutationObserver(sync).observe(c,{attributes:true,attributeFilter:["hidden"]});
   const J=wireJoin({onDone:()=>{c.hidden=true}});
   if(!lbName()){J.setMode("choose");LB.init().then(b=>{if(b)c.hidden=false});return}
   /* players from before passwords: set one once, so they can log in anywhere */
