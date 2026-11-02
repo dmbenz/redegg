@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><link rel="icon" href="/favicon.ico" sizes="48x48"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="manifest" href="/site.webmanifest"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<html lang="en"><head><meta charset="utf-8"><meta name="description" content="One of the daily games on The Red Egg. Play every day, crack your egg on Sunday and hatch a chick."><link rel="canonical" href="https://redegg.netlify.app/flash.html"><meta property="og:title" content="Red Egg: Flash"><meta property="og:description" content="One of the daily games on The Red Egg. Play every day, crack your egg on Sunday and hatch a chick."><meta property="og:url" content="https://redegg.netlify.app/flash.html"><meta property="og:image" content="https://redegg.netlify.app/icon-512.png"><meta property="og:type" content="website"><link rel="icon" href="/favicon.ico" sizes="48x48"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="manifest" href="/site.webmanifest"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
 <script>document.documentElement.setAttribute("data-theme","light")</script><meta name="color-scheme" content="light"><meta name="theme-color" content="#FFC9A0">
 <style>html,body,button,a,[role=button]{touch-action:manipulation}.egg,.slot,button{-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}</style>
@@ -280,22 +280,30 @@ function keepResult(){
   const grab=()=>{const end=document.getElementById("end"),st=document.getElementById("shareText");
     if(end&&!end.hidden&&st&&st.textContent.trim()){
       try{Object.keys(localStorage).forEach(k=>{if(k.startsWith("redegg2:res:")&&!k.startsWith("redegg2:res:"+CUR_MONDAY))localStorage.removeItem(k)})}catch(e){}
-      RS.set("res:"+CUR_MONDAY+":"+key,{html:end.innerHTML,share:st.textContent});return}
+      const r={html:end.innerHTML,share:st.textContent};RS.set("res:"+CUR_MONDAY+":"+key,r);
+      /* also keep it with your week on the server, so your other phone or computer can show the same screen */
+      const w=currentWeek();w.res=w.res||{};w.res[key]=r;RS.set("week",w);lbQuick();dcWire(document.getElementById("copyBtn"),key,r.share);dcOrder(end);return}
     if(++n<40)setTimeout(grab,250)};
   setTimeout(grab,30);
 }
 function showResult(key,name){
-  const r=RS.get("res:"+CUR_MONDAY+":"+key,null);if(!r||!r.html)return false;
+  const r=RS.get("res:"+CUR_MONDAY+":"+key,null)||(currentWeek().res||{})[key];if(!r||!r.html)return false;
   const wrap=document.querySelector(".wrap");if(!wrap||document.getElementById("gateMsg"))return true;
   [...wrap.children].forEach(el=>{if(el.tagName!=="HEADER")el.hidden=true});
   wrap.insertAdjacentHTML("beforeend",`<section class="card end" id="gateMsg">${r.html}</section>`);
   const box=document.getElementById("gateMsg"),share=r.share.includes("redegg.netlify.app")?r.share:r.share+"\nredegg.netlify.app";
-  box.querySelectorAll("button,a").forEach(b=>{if(b.id!=="copyBtn")b.remove()});
+  /* the same screen you saw at the end: only the buttons that would start a new game are taken out */
+  box.querySelectorAll("button").forEach(b=>{if(b.id!=="copyBtn")b.remove()});
+  box.querySelectorAll("a").forEach(a=>{const h=a.getAttribute("href")||"";if(h.includes("#")&&!/index\.html/.test(h))a.remove()});
   box.querySelectorAll("[id]").forEach(el=>{if(el.id!=="copyBtn"&&el.id!=="toast")el.removeAttribute("id")});
   const cp=box.querySelector("#copyBtn"),toast=box.querySelector("#toast");
-  if(cp)cp.onclick=()=>{const ok=()=>{if(toast)toast.textContent="Copied";else cp.textContent="Copied"};try{navigator.clipboard.writeText(share.includes("redegg.netlify.app")?share:share+"\nredegg.netlify.app").then(ok,()=>{})}catch(e){}};
-  box.insertAdjacentHTML("afterbegin",`<p style="margin:0 0 4px;font-weight:800;color:var(--muted,#7A5636);text-align:center">You already played this week's ${name}.</p>`);
-  box.insertAdjacentHTML("beforeend",`<a href="index.html" style="display:block;width:100%;text-align:center;text-decoration:none;border-radius:16px;padding:16px;font:700 1.05rem var(--body);background:var(--btn);color:var(--btn-ink);margin-top:10px">Back to the egg</a>`);
+  dcWire(cp,key,share);
+  /* Copy and Home sit side by side, tidy, with no empty gap under them */
+  const back=`<a href="index.html" class="revback" style="flex:1;display:flex;align-items:center;justify-content:center;text-align:center;text-decoration:none;border-radius:16px;padding:16px 10px;font:700 1.05rem var(--body);background:var(--tray,#F3E6CF);color:var(--ink,#3B2A1E)">Back to the egg</a>`;
+  const acts=cp&&cp.closest(".actions");
+  if(acts){acts.style.cssText+=";display:flex;gap:10px;width:100%";cp.style.flex="1";acts.insertAdjacentHTML("beforeend",back)}
+  else if(!box.querySelector('a[href^="index.html"]'))box.insertAdjacentHTML("beforeend",back.replace("flex:1;display:flex","display:flex;width:100%;box-sizing:border-box"));
+  if(toast){toast.style.minHeight="0";toast.style.margin="0"}
   try{PAUSE.done()}catch(e){}
   return true;
 }
@@ -327,7 +335,7 @@ function dailyGate(mode,key,name){
     else{const nx=SUN_KEYS.find(k=>!(k in w.sunday));if(nx&&nx!==key){location.replace(nx+".html#sunday");return true}}
   }
   if(!msg){remoteGate(mode,key,name);return false}
-  if(mode==="day"&&key in w.days&&showResult(key,name))return true;
+  if(mode==="day"&&key in w.days){if(!showResult(key,name))showSummary(key,name,w.days[key]);return true}
   gateShow(msg);return true;
 }
 /* already played on your other phone or computer? the server knows, even if this browser doesn't yet */
@@ -338,8 +346,23 @@ function remoteGate(mode,key,name){
     if(!wk||!wk.days||!(key in wk.days))return;
     const w=currentWeek();if(key in w.days)return;w.days[key]=wk.days[key];RS.set("week",w);
     try{PAUSE.done()}catch(e){}
-    gateShow(`You already played today's ${name}. You scored <b>${Math.round(wk.days[key])}</b>. A new puzzle is waiting tomorrow.`);
+    if(!showResult(key,name))showSummary(key,name,wk.days[key]);
   }).catch(()=>{});
+}
+/* no saved results screen here (an older game, or played on another device): a simple summary you can still share */
+function showSummary(key,name,score){
+  if(document.getElementById("gateMsg"))return;
+  const sc=Math.round(+score||0),tier=sc>=95?["Perfect Yolk","🟨"]:sc>=75?["Sunny Side Up","🟩"]:sc>=50?["Over Easy","🟦"]:sc>=25?["Cracked","⬜"]:["Rotten Egg","🟫"];
+  const share=`The Red Egg · ${name}\n${gameDate(key)}\n${tier[1]} ${sc}/100\nredegg.netlify.app`;
+  const wrap=document.querySelector(".wrap");[...wrap.children].forEach(el=>{if(el.tagName!=="HEADER")el.hidden=true});
+  wrap.insertAdjacentHTML("beforeend",`<section class="card end" id="gateMsg" style="align-items:center;text-align:center;gap:12px">
+    <p style="margin:0;font-weight:800;color:var(--muted,#7A5636)">You already played this week's ${name}.</p>
+    <div class="tier">${name}</div><div class="score">${sc}<small>/100</small></div><div style="font-weight:800">${tier[1]} ${tier[0]}</div>
+    <div class="share" id="shareText">${share}</div>
+    <button id="sumCopy" style="width:100%;border:0;cursor:pointer;border-radius:16px;padding:16px;font:700 1.05rem var(--body);background:var(--red,#D62F3C);color:#fff">Share</button><div class="toast" id="toast" aria-live="polite"></div>
+    <a href="index.html" style="display:block;width:100%;text-align:center;text-decoration:none;border-radius:16px;padding:16px;font:700 1.05rem var(--body);background:var(--btn);color:var(--btn-ink)">Back to the egg</a></section>`);
+  document.getElementById("sumCopy").onclick=()=>openDayCard(key,share);
+  try{PAUSE.done()}catch(e){}
 }
 function gateShow(msg){
   if(document.getElementById("gateMsg"))return;
@@ -348,6 +371,115 @@ function gateShow(msg){
   wrap.insertAdjacentHTML("beforeend",`<section class="card" id="gateMsg" style="align-items:center;text-align:center;gap:16px"><p style="margin:0;font-size:1.05rem;max-width:36ch">${msg}</p><a href="index.html" style="display:block;width:100%;text-align:center;text-decoration:none;border-radius:16px;padding:16px;font:700 1.05rem var(--body);background:var(--btn);color:var(--btn-ink)">Back to the egg</a></section>`);
   return true;
 }
+
+/* ---------- the daily card: a picture of today's game to send to friends ---------- */
+const GAME_NAMES={"blind-stop":"Blind Stop",clutch:"Clutch",flash:"Flash",trivia:"Egghead",bridge:"Link","pecking-order":"Pecking Order"};
+const DC_TIERS=[[95,"PERFECT YOLK","#B98500"],[75,"SUNNY SIDE UP","#2E9B57"],[50,"OVER EASY","#2F6FDB"],[25,"CRACKED","#7A6F62"],[0,"ROTTEN EGG","#8A5A3C"]];
+const DC_MARKS={"🟨":0,"🟩":1,"🟦":2,"⬜":3,"🟫":4};
+/* one picture per rating: a perfect yolk, sunny side up, over easy, a dropped egg, a rotten egg */
+const DC_ICONS=[
+`<svg xmlns="http://www.w3.org/2000/svg" viewBox="8 8 184 184"><defs><radialGradient id="pg" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#FFF0A0" stop-opacity="1"/><stop offset=".45" stop-color="#FFD34A" stop-opacity=".55"/><stop offset="1" stop-color="#FFD34A" stop-opacity="0"/></radialGradient><radialGradient id="py" cx=".36" cy=".32" r=".78"><stop offset="0" stop-color="#FFF8C8"/><stop offset=".25" stop-color="#FFDA45"/><stop offset=".68" stop-color="#FAAE14"/><stop offset="1" stop-color="#DB7A06"/></radialGradient><radialGradient id="pr" cx=".5" cy=".5" r=".5"><stop offset=".8" stop-color="#B85E04" stop-opacity="0"/><stop offset="1" stop-color="#B85E04" stop-opacity=".4"/></radialGradient></defs><g fill="#FFD95A" opacity=".55"><path d="M100 100 L191.4 89.9 L191.4 110.1 Z"/><path d="M100 100 L184.2 137.0 L174.1 154.5 Z"/><path d="M100 100 L154.5 174.1 L137.0 184.2 Z"/><path d="M100 100 L110.1 191.4 L89.9 191.4 Z"/><path d="M100 100 L63.0 184.2 L45.5 174.1 Z"/><path d="M100 100 L25.9 154.5 L15.8 137.0 Z"/><path d="M100 100 L8.6 110.1 L8.6 89.9 Z"/><path d="M100 100 L15.8 63.0 L25.9 45.5 Z"/><path d="M100 100 L45.5 25.9 L63.0 15.8 Z"/><path d="M100 100 L89.9 8.6 L110.1 8.6 Z"/><path d="M100 100 L137.0 15.8 L154.5 25.9 Z"/><path d="M100 100 L174.1 45.5 L184.2 63.0 Z"/></g><circle cx="100" cy="100" r="80" fill="url(#pg)"/><ellipse cx="100" cy="146" rx="40" ry="7" fill="#C98A20" opacity=".25"/><circle cx="100" cy="100" r="46" fill="url(#py)"/><circle cx="100" cy="100" r="46" fill="url(#pr)"/><circle cx="100" cy="100" r="46" fill="none" stroke="#B5670A" stroke-width="3"/><ellipse cx="84" cy="80" rx="17" ry="10" fill="#FFFFFF" opacity=".9" transform="rotate(-30 84 80)"/><circle cx="110" cy="72" r="4" fill="#FFFFFF"/><path d="M128 118 Q120 132 104 136" fill="none" stroke="#FFE07A" stroke-width="4" stroke-linecap="round" opacity=".7"/><g fill="#FFFFFF" stroke="#F0B020" stroke-width="1.4" stroke-linejoin="round"><path d="M158 36 l5.5 -17 l5.5 17 l17 5.5 l-17 5.5 l-5.5 17 l-5.5 -17 l-17 -5.5 Z"/><path d="M34 52 l4 -12 l4 12 l12 4 l-12 4 l-4 12 l-4 -12 l-12 -4 Z"/><path d="M162 150 l3.5 -10 l3.5 10 l10 3.5 l-10 3.5 l-3.5 10 l-3.5 -10 l-10 -3.5 Z"/><path d="M40 150 l2.5 -7 l2.5 7 l7 2.5 l-7 2.5 l-2.5 7 l-2.5 -7 l-7 -2.5 Z"/></g></svg>`,
+`<svg xmlns="http://www.w3.org/2000/svg" viewBox="14 28 172 152"><defs><radialGradient id="sw" cx=".42" cy=".38" r=".75"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".65" stop-color="#FCF6EA"/><stop offset="1" stop-color="#F0E2C6"/></radialGradient><radialGradient id="sy" cx=".36" cy=".32" r=".78"><stop offset="0" stop-color="#FFF4B4"/><stop offset=".3" stop-color="#FFCB2E"/><stop offset=".8" stop-color="#F59E0B"/><stop offset="1" stop-color="#D97706"/></radialGradient></defs><path d="M40 112 C18 72 56 38 100 48 C150 30 190 70 172 112 C186 152 140 178 100 168 C52 182 16 152 40 112 Z" fill="#E7B26A"/><path d="M44 112 C24 76 58 44 100 53 C148 36 184 72 167 112 C180 148 138 172 100 163 C56 176 22 148 44 112 Z" fill="url(#sw)" stroke="#D9BE92" stroke-width="2.5"/><path d="M40 112 C18 72 56 38 100 48 C150 30 190 70 172 112 C186 152 140 178 100 168 C52 182 16 152 40 112 Z" fill="none" stroke="#B9823A" stroke-width="3" stroke-dasharray="7 4 3 5" stroke-linecap="round" opacity=".8"/><g fill="#FFFFFF"><circle cx="62" cy="96" r="3.4"/><circle cx="148" cy="88" r="2.6"/><circle cx="138" cy="146" r="3"/><circle cx="70" cy="144" r="2.2"/></g><g fill="none" stroke="#E6D3B0" stroke-width="2"><circle cx="62" cy="96" r="3.4"/><circle cx="138" cy="146" r="3"/></g><ellipse cx="106" cy="122" rx="34" ry="9" fill="#D9A55A" opacity=".35"/><circle cx="104" cy="104" r="33" fill="url(#sy)" stroke="#B9690A" stroke-width="3"/><ellipse cx="92" cy="91" rx="11" ry="7" fill="#FFFFFF" opacity=".85" transform="rotate(-28 92 91)"/><circle cx="112" cy="86" r="3" fill="#FFFFFF" opacity=".8"/></svg>`,
+`<svg xmlns="http://www.w3.org/2000/svg" viewBox="14 34 172 124"><defs><radialGradient id="ow" cx=".45" cy=".3" r=".85"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".55" stop-color="#FBF1DF"/><stop offset="1" stop-color="#EBD6B0"/></radialGradient><radialGradient id="ob" cx=".5" cy=".4" r=".55"><stop offset="0" stop-color="#FFD15A" stop-opacity=".75"/><stop offset="1" stop-color="#FFD15A" stop-opacity="0"/></radialGradient><linearGradient id="oc" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#E9B470"/><stop offset="1" stop-color="#B9772F"/></linearGradient></defs><path d="M24 128 C22 112 34 104 46 104 C52 80 76 62 104 62 C134 62 158 80 162 104 C176 104 184 116 178 130 C170 146 140 150 100 150 C60 150 28 146 24 128 Z" fill="url(#oc)"/><path d="M32 126 C32 114 42 108 52 108 C58 86 80 70 104 70 C130 70 152 86 156 108 C168 108 176 118 170 128 C162 140 136 144 100 144 C64 144 36 140 32 126 Z" fill="url(#ow)" stroke="#D2B486" stroke-width="2.5"/><ellipse cx="104" cy="104" rx="38" ry="26" fill="url(#ob)"/><path d="M70 104 C74 86 90 78 104 78 C120 78 134 86 138 104" fill="none" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round" opacity=".8"/><path d="M38 132 C60 140 140 142 164 132" fill="none" stroke="#C88A44" stroke-width="3" stroke-linecap="round" opacity=".7"/><g fill="#7A4E22" opacity=".55"><circle cx="76" cy="118" r="1.8"/><circle cx="122" cy="96" r="1.6"/><circle cx="138" cy="122" r="1.8"/><circle cx="96" cy="128" r="1.4"/><circle cx="60" cy="126" r="1.4"/></g><g fill="#FFFFFF" opacity=".9"><circle cx="58" cy="114" r="2.2"/><circle cx="150" cy="116" r="2"/></g></svg>`,
+`<svg xmlns="http://www.w3.org/2000/svg" viewBox="14 52 172 124"><defs><radialGradient id="cw" cx=".45" cy=".4" r=".8"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#EFE2C8"/></radialGradient><radialGradient id="cy" cx=".36" cy=".32" r=".8"><stop offset="0" stop-color="#FFF0A8"/><stop offset=".45" stop-color="#FFC22E"/><stop offset="1" stop-color="#E08608"/></radialGradient><linearGradient id="cs" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#EF4A55"/><stop offset="1" stop-color="#A51B2A"/></linearGradient></defs><ellipse cx="100" cy="160" rx="82" ry="12" fill="#B08A50" opacity=".25"/><path d="M26 146 C24 132 42 126 56 130 C60 116 84 112 98 120 C110 108 140 110 146 126 C164 122 180 134 174 148 C168 162 140 164 120 160 C100 168 70 166 56 160 C40 162 28 156 26 146 Z" fill="url(#cw)" stroke="#D3BF9A" stroke-width="2.5"/><circle cx="24" cy="132" r="4.5" fill="#FBF3E4" stroke="#D3BF9A" stroke-width="2"/><circle cx="182" cy="128" r="3.5" fill="#FBF3E4" stroke="#D3BF9A" stroke-width="2"/><circle cx="168" cy="166" r="3" fill="#FBF3E4" stroke="#D3BF9A" stroke-width="2"/><path d="M80 146 C78 132 90 124 102 126 C114 124 124 132 120 144 C118 154 104 158 94 156 C86 156 80 152 80 146 Z" fill="url(#cy)" stroke="#BC6E08" stroke-width="2.5"/><path d="M90 134 C94 130 102 130 106 132" stroke="#FFFFFF" stroke-width="3" fill="none" stroke-linecap="round" opacity=".85"/><path d="M118 148 C126 150 132 154 132 158" fill="none" stroke="#F5A81C" stroke-width="5" stroke-linecap="round"/><g transform="translate(46 112) rotate(-18)"><path d="M-24 0 L-18 -9 L-10 -2 L-2 -11 L6 -3 L14 -10 L22 0 C22 18 -24 18 -24 0 Z" fill="url(#cs)" stroke="#7E0F1D" stroke-width="2.5" stroke-linejoin="round"/><path d="M-21 1 L-17 -5 L-10 1 L-2 -7 L6 0 L13 -6 L19 1 C17 4 -19 4 -21 1 Z" fill="#FFF4EC"/><ellipse cx="-12" cy="8" rx="4" ry="2.5" fill="#FFFFFF" opacity=".5"/></g><g transform="translate(152 110) rotate(24)"><path d="M-22 4 L-15 -6 L-8 2 L0 -8 L8 1 L15 -6 L22 4 C20 -26 -20 -26 -22 4 Z" fill="url(#cs)" stroke="#7E0F1D" stroke-width="2.5" stroke-linejoin="round"/><ellipse cx="-8" cy="-12" rx="4" ry="2.5" fill="#FFFFFF" opacity=".55"/></g><path d="M128 140 L136 134 L140 142 Z" fill="#C42838" stroke="#7E0F1D" stroke-width="1.8" stroke-linejoin="round"/><path d="M64 156 L70 150 L74 158 Z" fill="#C42838" stroke="#7E0F1D" stroke-width="1.8" stroke-linejoin="round"/></svg>`,
+`<svg xmlns="http://www.w3.org/2000/svg" viewBox="16 0 172 240"><defs><radialGradient id="rg" cx=".35" cy=".3" r=".85"><stop offset="0" stop-color="#E4EFB4"/><stop offset=".45" stop-color="#AAC26A"/><stop offset=".85" stop-color="#6E853C"/><stop offset="1" stop-color="#4E6026"/></radialGradient></defs><g fill="none" stroke="#9DB46A" stroke-width="6" stroke-linecap="round" opacity=".85"><path d="M70 54 q-12 -14 0 -28 q12 -14 0 -26"/><path d="M100 46 q-12 -14 0 -28 q12 -14 0 -26"/><path d="M130 54 q-12 -14 0 -28 q12 -14 0 -26"/></g><ellipse cx="100" cy="232" rx="52" ry="6" fill="#4E6026" opacity=".25"/><path d="M100 62 C140 62 165 128 165 166 C165 208 136 230 100 230 C64 230 35 208 35 166 C35 128 60 62 100 62 Z" fill="url(#rg)" stroke="#3E4C18" stroke-width="4"/><ellipse cx="74" cy="104" rx="11" ry="20" fill="#FFFFFF" opacity=".38" transform="rotate(18 74 104)"/><path d="M104 63 L96 84 L110 98 L94 118 L108 132 L98 148" fill="none" stroke="#2E3A12" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M110 98 L122 104" fill="none" stroke="#2E3A12" stroke-width="2.5" stroke-linecap="round"/><g transform="translate(160 96) rotate(-20)"><ellipse cx="-4.5" cy="-5" rx="6" ry="3.8" fill="#EEF6FF" opacity=".85" stroke="#8AA0B0" stroke-width=".8"/><ellipse cx="4.5" cy="-5" rx="6" ry="3.8" fill="#EEF6FF" opacity=".85" stroke="#8AA0B0" stroke-width=".8"/><ellipse cx="0" cy="0" rx="4.2" ry="5.6" fill="#262626"/><circle cx="-1.8" cy="-3.6" r="1.4" fill="#B03020"/><circle cx="1.8" cy="-3.6" r="1.4" fill="#B03020"/></g><g transform="translate(36 140) rotate(15)"><ellipse cx="-4.5" cy="-5" rx="6" ry="3.8" fill="#EEF6FF" opacity=".85" stroke="#8AA0B0" stroke-width=".8"/><ellipse cx="4.5" cy="-5" rx="6" ry="3.8" fill="#EEF6FF" opacity=".85" stroke="#8AA0B0" stroke-width=".8"/><ellipse cx="0" cy="0" rx="4.2" ry="5.6" fill="#262626"/><circle cx="-1.8" cy="-3.6" r="1.4" fill="#B03020"/><circle cx="1.8" cy="-3.6" r="1.4" fill="#B03020"/></g><g transform="translate(168 176) rotate(10)"><ellipse cx="-4.5" cy="-5" rx="6" ry="3.8" fill="#EEF6FF" opacity=".85" stroke="#8AA0B0" stroke-width=".8"/><ellipse cx="4.5" cy="-5" rx="6" ry="3.8" fill="#EEF6FF" opacity=".85" stroke="#8AA0B0" stroke-width=".8"/><ellipse cx="0" cy="0" rx="4.2" ry="5.6" fill="#262626"/><circle cx="-1.8" cy="-3.6" r="1.4" fill="#B03020"/><circle cx="1.8" cy="-3.6" r="1.4" fill="#B03020"/></g><g fill="none" stroke="#5C6A3A" stroke-width="1.4" stroke-dasharray="2.5 3.5" opacity=".55"><path d="M150 104 q-14 12 -2 26 q10 12 -4 22"/><path d="M42 150 q12 14 2 26"/><path d="M160 184 q-10 10 -24 6"/></g></svg>`];
+function dcParse(share){const sc=(share.match(/(\d+)\/100/)||[])[1];const marks=Array.from(share).filter(c=>c in DC_MARKS).map(c=>DC_MARKS[c]);return {score:sc!=null?+sc:null,marks}}
+function dcImg(svg){return new Promise((res,rej)=>{const i=new Image();i.onload=()=>res(i);i.onerror=rej;i.src="data:image/svg+xml;charset=utf-8,"+encodeURIComponent(svg)})}
+function dcRR(c,x,y,w,h,r){c.beginPath();c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath()}
+async function makeDayCard(key,share){
+  const {score,marks}=dcParse(share),name=GAME_NAMES[key]||key,W=1080,H=1080;
+  try{await Promise.all(["700 132px Fredoka","58px \"Bagel Fat One\"","900 30px Nunito","800 30px Nunito"].map(f=>document.fonts.load(f)));await document.fonts.ready}catch(e){}
+  const cv=document.createElement("canvas");cv.width=W;cv.height=H;const c=cv.getContext("2d");
+  const DISP='"Bagel Fat One","Arial Rounded MT Bold",sans-serif',BODY='"Nunito","Figtree",sans-serif';
+  // the sunrise farm behind the card
+  const sky=c.createLinearGradient(0,0,0,H);sky.addColorStop(0,"#FFC9A0");sky.addColorStop(.55,"#FFE3B8");sky.addColorStop(1,"#FFEFC9");c.fillStyle=sky;c.fillRect(0,0,W,H);
+  c.fillStyle="rgba(255,240,184,.7)";c.beginPath();c.arc(860,250,130,0,7);c.fill();c.fillStyle="#FFE07A";c.beginPath();c.arc(860,250,95,0,7);c.fill();
+  c.fillStyle="rgba(255,248,238,.9)";c.beginPath();c.ellipse(190,200,110,30,0,0,7);c.fill();c.beginPath();c.ellipse(240,180,60,30,0,0,7);c.fill();
+  const hill=(pts,col)=>{c.fillStyle=col;c.beginPath();c.moveTo(0,H);pts.forEach((p,i)=>i?c.bezierCurveTo(...p):c.lineTo(...p));c.lineTo(W,H);c.fill()};
+  hill([[0,640],[200,570,380,590,560,625],[740,660,900,590,1080,580]],"#B9D88E");
+  hill([[0,700],[260,650,520,680,760,700],[900,712,1000,690,1080,682]],"#94C46A");
+  hill([[0,760],[300,730,600,740,1080,750]],"#F3D38A");
+  // logo
+  c.fillStyle="#D62F3C";c.save();c.translate(70,64);c.scale(46/60,60/80);c.fill(new Path2D("M30 3C46 3 57 31 57 48C57 66 45 78 30 78C15 78 3 66 3 48C3 31 14 3 30 3Z"));c.restore();
+  c.font="58px "+DISP;c.textBaseline="alphabetic";let x=134;[["The ","#3B2A1E"],["Red","#D62F3C"],[" Egg","#3B2A1E"]].forEach(([s,col])=>{c.fillStyle=col;c.fillText(s,x,124);x+=c.measureText(s).width});
+  // the card
+  c.save();c.shadowColor="rgba(90,50,20,.22)";c.shadowBlur=60;c.shadowOffsetY=24;c.fillStyle="#FFF8EC";dcRR(c,70,250,940,720,48);c.fill();c.restore();
+  const d=new Date(gameDate(key)+"T12:00:00"),day=d.toLocaleDateString("en-US",{weekday:"long"}).toUpperCase(),md=d.toLocaleDateString("en-US",{month:"short",day:"numeric"}).toUpperCase();
+  c.textAlign="center";c.fillStyle="#7A5636";c.font="900 30px "+BODY;
+  const dl=`${day} · ${md}`;let lx=W/2-([...dl].length*30*.08)/2;c.save();c.letterSpacing="4.8px";c.fillText(dl,W/2,340);c.restore();
+  c.fillStyle="#3B2A1E";c.font="96px "+DISP;c.fillText(name,W/2,450);
+  // one tile per round
+  if(marks.length){const n=marks.length,tw=132,th=150,gap=22,tot=n*tw+(n-1)*gap,x0=(W-tot)/2,y0=500;
+    const imgs=await Promise.all(marks.map(m=>dcImg(DC_ICONS[m]).catch(()=>null)));
+    imgs.forEach((im,i)=>{const tx=x0+i*(tw+gap);c.fillStyle="#F5E6CC";dcRR(c,tx,y0,tw,th,28);c.fill();
+      if(im){const s=Math.min(112/im.width,126/im.height),iw=im.width*s,ih=im.height*s;c.drawImage(im,tx+(tw-iw)/2,y0+(th-ih)/2,iw,ih)}})}
+  // score and rating
+  const ROUND='"Fredoka","Nunito",sans-serif',sc=String(score??"–"),scY=marks.length?810:700;c.textAlign="left";c.font="700 150px "+ROUND;const sw=c.measureText(sc).width;c.font="700 60px "+ROUND;const ow=c.measureText(" / 100").width;
+  const sx=(W-sw-ow)/2;c.fillStyle="#C8362F";c.font="700 150px "+ROUND;c.fillText(sc,sx,scY);c.fillStyle="#7A5636";c.font="700 60px "+ROUND;c.fillText(" / 100",sx+sw,scY);
+  const tier=DC_TIERS.find(t=>(score||0)>=t[0]);c.font="900 34px "+BODY;const tw2=c.measureText(tier[1]).width+60;
+  c.strokeStyle=tier[2];c.lineWidth=4;dcRR(c,(W-tw2)/2,scY+30,tw2,58,29);c.stroke();c.fillStyle=tier[2];c.textAlign="center";c.fillText(tier[1],W/2,scY+71);
+  c.fillStyle="rgba(59,42,30,.7)";c.font="800 30px "+BODY;c.fillText("redegg.netlify.app",W/2,H-44);
+  return new Promise((res,rej)=>{try{cv.toBlob(b=>b?res(b):rej(new Error("no image")),"image/png")}catch(e){rej(e)}});
+}
+/* open the card: share it straight to Messages and friends on a phone, or copy it on a computer */
+let DC_DL=null;try{if(window.claude&&claude.use)claude.use("downloads").then(d=>{DC_DL=d}).catch(()=>{})}catch(e){}
+async function openDayCard(key,share){
+  const {score}=dcParse(share),name=GAME_NAMES[key]||key;
+  const text=`${name}: ${score}/100 today. Think you can beat it? 🥚 https://redegg.netlify.app`;
+  const d=document.createElement("div");d.setAttribute("role","dialog");d.setAttribute("aria-modal","true");
+  d.style.cssText="position:fixed;inset:0;z-index:950;background:rgba(20,12,8,.72);display:flex;align-items:center;justify-content:center;padding:16px";
+  const btn="display:block;width:100%;border:0;border-radius:16px;padding:15px;font:700 1.05rem var(--body,Nunito,sans-serif);cursor:pointer;text-align:center;text-decoration:none";
+  d.innerHTML=`<div style="width:100%;max-width:400px;display:flex;flex-direction:column;gap:10px"><div class="dcwait" style="width:46px;height:46px;margin:40px auto;border-radius:50%;border:5px solid rgba(255,255,255,.35);border-top-color:#fff;animation:dcspin .8s linear infinite"></div>
+    <img alt="${name}, ${score} out of 100" hidden style="width:100%;border-radius:18px;box-shadow:0 18px 50px rgba(0,0,0,.45);max-height:calc(100dvh - 240px);object-fit:contain">
+    <div class="dcbtns" hidden style="display:flex;flex-direction:column;gap:8px"><div style="display:flex;gap:8px"><button data-a="copy" style="${btn};flex:1;background:#3B2A1E;color:#FFF1DC">Copy picture</button><button data-a="share" style="${btn};flex:1;background:#D62F3C;color:#fff">Share</button></div><button data-a="close" style="${btn};background:#FFF6E6;color:#3B2A1E">Close</button></div></div>
+    <style>@keyframes dcspin{to{transform:rotate(360deg)}}</style>`;
+  document.body.appendChild(d);
+  let blob=null,file=null,url=null;const close=()=>{d.remove();if(url)URL.revokeObjectURL(url)};
+  const save=async()=>{if(DC_DL){try{await DC_DL.save({filename:`red-egg-${key}.png`,data:blob})}catch(e){}return true}const a=document.createElement("a");a.href=url;a.download=`red-egg-${key}.png`;a.click();return true};
+  d.onclick=async e=>{const a=e.target.closest("[data-a]");if(e.target===d||(a&&a.dataset.a==="close")){close();return}if(!a||!blob)return;
+    if(a.dataset.a==="share"){await dcShare(a,file,text);return}
+    if(a.dataset.a==="copy"){let ok=false;try{await navigator.clipboard.write([new ClipboardItem({"image/png":blob,"text/plain":new Blob([text],{type:"text/plain"})})]);ok=true}catch(err){try{await navigator.clipboard.write([new ClipboardItem({"image/png":blob})]);ok=true}catch(e2){}}
+      if(ok){a.textContent="Copied";setTimeout(()=>{a.textContent="Copy picture"},1600)}else await save()}};
+  try{blob=await makeDayCard(key,share)}catch(e){close();try{await navigator.clipboard.writeText(text)}catch(e2){}return}
+  url=URL.createObjectURL(blob);file=new File([blob],`red-egg-${key}.png`,{type:"image/png"});
+  const img=d.querySelector("img");img.src=url;img.hidden=false;d.querySelector(".dcwait").remove();d.querySelector(".dcbtns").hidden=false;
+}
+/* the game's own Copy button becomes Share */
+function dcWire(btn,key,share){if(!btn)return;btn.textContent="Share";btn.onclick=e=>{e.preventDefault();openDayCard(key,share)}}
+
+/* Share: the picture plus a short line and the link, straight into Messages or any app; where that isn't possible, the line and link are copied */
+async function dcShare(btn,file,text){
+  const old=btn.textContent,flash=t=>{btn.textContent=t;setTimeout(()=>{btn.textContent=old},2200)};
+  /* the link goes as its own item so Messages makes it tappable and apps like Snapchat take picture + link */
+  const link=(text.match(/https?:\/\/\S+/)||["https://redegg.netlify.app"])[0],line=text.replace(/\s*https?:\/\/\S+/,"").trim();
+  const tries=[{files:[file],text:line,url:link},{files:[file],url:link},{files:[file],text}];
+  for(const d of tries){let ok=false;try{ok=!!(navigator.share&&navigator.canShare&&navigator.canShare(d))}catch(e){}
+    if(!ok)continue;try{await navigator.share(d);return}catch(err){if(err&&err.name==="AbortError")return}}
+  /* this browser can't send pictures through the share sheet: put the card on the clipboard so it pastes right in, and send the line and link */
+  /* no share sheet here (some computer browsers, or inside another app): pick the app yourself.
+     The card goes on the clipboard so it pastes straight into the message; the line and link are filled in. */
+  let pic=false;try{await navigator.clipboard.write([new ClipboardItem({"image/png":file})]);pic=true}catch(e){}
+  dcApps(text,pic);
+}
+function dcApps(text,pic){
+  const t=encodeURIComponent(text),apps=[["Messages",`sms:&body=${t}`],["WhatsApp",`https://wa.me/?text=${t}`],["Email",`mailto:?subject=${encodeURIComponent("The Red Egg")}&body=${t}`],["X",`https://twitter.com/intent/tweet?text=${t}`],["Facebook",`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent("https://redegg.netlify.app")}`]];
+  const d=document.createElement("div");d.style.cssText="position:fixed;inset:0;z-index:960;background:rgba(20,12,8,.55);display:flex;align-items:flex-end;justify-content:center;padding:16px";
+  const b="display:block;width:100%;box-sizing:border-box;border:0;border-radius:14px;padding:14px;font:700 1rem var(--body,Nunito,sans-serif);text-align:center;text-decoration:none;cursor:pointer;background:#FFF6E6;color:#3B2A1E";
+  d.innerHTML=`<div style="width:100%;max-width:400px;background:#FFF8EC;border-radius:22px;padding:16px;display:flex;flex-direction:column;gap:8px;box-shadow:0 18px 50px rgba(0,0,0,.35)">
+    <div style="font:800 .95rem var(--body,Nunito,sans-serif);color:#3B2A1E;text-align:center;padding:2px 0 4px">Share to…</div>
+    ${pic?`<div style="font:700 .8rem var(--body,Nunito,sans-serif);color:#7A5636;text-align:center;margin-top:-4px">Your card is copied. Paste it into the message.</div>`:""}
+    <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px">${apps.map(([n,u])=>`<a href="${u}" target="_blank" rel="noopener" style="${b}">${n}</a>`).join("")}<button data-c="1" style="${b}">Copy text</button></div>
+    <button data-x="1" style="${b};background:#3B2A1E;color:#FFF1DC">Done</button></div>`;
+  document.body.appendChild(d);
+  d.onclick=async e=>{if(e.target===d||e.target.closest("[data-x]")){d.remove();return}const c=e.target.closest("[data-c]");if(c){try{await navigator.clipboard.writeText(text);c.textContent="Copied"}catch(err){}}};
+}
+/* the old row of colored squares is gone from the results screens; the card replaces it */
+(function(){try{const st=document.createElement("style");st.textContent=".end .share,#gateMsg .share{display:none!important}";document.head.appendChild(st)}catch(e){}})();
+
+/* the results screen's buttons: Share on the left, a lighter Back to the egg on the right */
+function dcOrder(box){try{const cp=box.querySelector("#copyBtn");if(!cp)return;const row=cp.parentElement;row.insertBefore(cp,row.firstChild);
+  [...row.children].filter(el=>el!==cp&&/back to the egg/i.test(el.textContent)).forEach(el=>{el.style.setProperty("background","var(--tray,#F3E6CF)","important");el.style.setProperty("color","var(--ink,#3B2A1E)","important");el.style.setProperty("border","0","important")});
+  [cp,...row.querySelectorAll("a,button")].forEach(el=>{el.style.flex="1";el.style.whiteSpace="nowrap"})}catch(e){}}
 
 /* ---------- pause & resume a daily game ----------
    Leaving mid-game (switching apps, locking the phone, reloading) pauses it. Coming back shows a

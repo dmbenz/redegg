@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><link rel="icon" href="/favicon.ico" sizes="48x48"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="manifest" href="/site.webmanifest">
+<html lang="en"><head><meta charset="utf-8"><meta name="description" content="The Red Bomb: type words with the three letters before the fuse burns out. Daily high scores."><link rel="canonical" href="https://redegg.netlify.app/bomb.html"><meta property="og:title" content="Red Egg: The Red Bomb"><meta property="og:description" content="The Red Bomb: type words with the three letters before the fuse burns out. Daily high scores."><meta property="og:url" content="https://redegg.netlify.app/bomb.html"><meta property="og:image" content="https://redegg.netlify.app/icon-512.png"><meta property="og:type" content="website"><link rel="icon" href="/favicon.ico" sizes="48x48"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="manifest" href="/site.webmanifest">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content">
 <meta name="color-scheme" content="light"><meta name="theme-color" content="#FFC9A0">
 <title>Red Egg: The Red Bomb</title>
@@ -32,7 +32,7 @@ body{position:fixed;inset:0}
 @keyframes spinr{to{transform:rotate(360deg)}}
 
 /* ---------- top bar ---------- */
-.top{position:fixed;left:0;right:0;top:var(--vvtop);z-index:4;display:flex;align-items:flex-start;justify-content:space-between;padding:calc(env(safe-area-inset-top,0px) + 10px) 16px 6px}
+.top{position:fixed;left:0;right:0;top:var(--vvtop);z-index:9;display:flex;align-items:flex-start;justify-content:space-between;padding:calc(env(safe-area-inset-top,0px) + 10px) 16px 6px}
 .brand{display:flex;flex-direction:column;text-decoration:none;color:var(--ink);line-height:1}
 .brand b{font:400 1.35rem var(--disp)}
 .brand b span{color:var(--red)}
@@ -65,7 +65,10 @@ body.fire #meter i.on{background:linear-gradient(90deg,#FF5A1F,#FFC23D)}
 
 /* the word you're typing, on the phone's own keyboard */
 #entry{width:min(100%,360px);display:flex;gap:8px}
-#word{flex:1;min-width:0;font:700 1.6rem var(--round);letter-spacing:.06em;text-transform:uppercase;text-align:center;padding:10px 12px;border-radius:16px;border:3px solid rgba(59,42,30,.15);background:rgba(255,248,236,.94);color:var(--ink);outline:none;-webkit-user-select:text;user-select:text;caret-color:var(--red)}
+.wbox{flex:1;min-width:0;position:relative}
+#wordShow{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:10px 12px;border:3px solid transparent;font:700 1.6rem var(--round);letter-spacing:.06em;text-transform:uppercase;color:var(--ink);pointer-events:none;white-space:pre;overflow:hidden;z-index:1}
+#wordShow b{color:var(--red);font-weight:700}
+#word{width:100%;box-sizing:border-box;color:transparent!important;font:700 1.6rem var(--round);letter-spacing:.06em;text-transform:uppercase;text-align:center;padding:10px 12px;border-radius:16px;border:3px solid rgba(59,42,30,.15);background:rgba(255,248,236,.94);color:var(--ink);outline:none;-webkit-user-select:text;user-select:text;caret-color:var(--red)}
 #word:focus{border-color:var(--red)}
 #go{flex:none;border:0;border-radius:16px;padding:0 18px;font:700 1.05rem var(--round);background:var(--red);color:#fff;box-shadow:0 4px 0 #A81E2B;cursor:pointer}
 body.fire #go{background:linear-gradient(90deg,#FF4E00,#FFA41B);box-shadow:0 4px 0 #C23D00}
@@ -185,6 +188,41 @@ body.fire #flames{opacity:1}
 @keyframes fflick{from{transform:scale(.9,1) skewX(-4deg)}to{transform:scale(1.08,1.15) skewX(5deg)}}
 .fglow{animation:fglow .3s ease-in-out infinite alternate}
 @keyframes fglow{to{opacity:.65}}
+
+.steps{list-style:none;margin:6px 0 14px;padding:0;display:flex;flex-direction:column;gap:8px;text-align:left}
+.steps li{display:flex;gap:10px;align-items:flex-start;font-weight:700;font-size:.95rem;line-height:1.35;color:var(--ink)}
+.steps li span{flex:none;width:24px;height:24px;border-radius:50%;background:var(--red);color:#fff;font:700 .8rem var(--round);display:flex;align-items:center;justify-content:center;margin-top:-1px}
+.steps b{color:var(--red)}
+.ptsrow{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin:0 0 16px}
+.ptsrow div{background:#F5E6CC;border-radius:14px;padding:9px 4px;display:flex;flex-direction:column;align-items:center;gap:2px}
+.ptsrow b{font:700 1.05rem var(--round);color:#2E7D32}
+.ptsrow small{font-weight:800;font-size:.7rem;color:var(--muted);letter-spacing:.02em}
+.ptsrow i{font-style:normal;font:700 .82rem var(--round);letter-spacing:.04em;color:var(--ink);margin-top:3px}
+.ptsrow u{text-decoration:none;color:var(--red)}
+.steps b.chip{display:inline-block;background:var(--red);color:#fff;font:700 .85rem var(--round);letter-spacing:.06em;padding:1px 8px;border-radius:999px;vertical-align:1px}
+
+/* the daily leaderboard */
+.lbbtn{display:inline-block;margin-top:12px;border:1.5px solid rgba(59,42,30,.18);background:transparent;color:var(--ink);border-radius:999px;padding:8px 16px;font:800 .9rem var(--body);cursor:pointer}
+.endlinks{display:flex;justify-content:center;align-items:center;gap:16px;margin-top:4px}
+.endlinks .homelink{margin-top:12px}
+.rankline{margin:10px 0 2px;font:800 .95rem var(--body);color:var(--muted);min-height:1.2em}
+.rankline b{color:var(--red);font:700 1.1rem var(--round)}
+.rankline a{color:var(--red)}
+#boardCover{z-index:10}
+.board h2{margin:0;font:400 1.7rem var(--disp);color:var(--ink)}
+.board .tabs{display:flex;gap:6px;justify-content:center;margin:10px 0 12px}
+.board .tabs button{border:0;border-radius:999px;padding:7px 16px;font:800 .85rem var(--body);background:#F5E6CC;color:var(--muted);cursor:pointer}
+.board .tabs button.on{background:var(--ink);color:#FFF1DC}
+.board ol{list-style:none;margin:0 0 14px;padding:0;display:flex;flex-direction:column;gap:6px;text-align:left}
+.board li{display:grid;grid-template-columns:28px minmax(0,1fr) auto auto;align-items:center;gap:8px;background:#F5E6CC;border-radius:14px;padding:9px 12px;font-weight:800}
+.board li.me{outline:2.5px solid var(--red);background:#FFF0E4}
+.board li .rk{font:700 1rem var(--round);color:var(--muted);text-align:center}
+.board li .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.board li .nm small{display:block;font-size:.72rem;color:var(--muted);font-weight:800}
+.board li .zn{font-size:1.2rem}
+.board li .sc{font:700 1.15rem var(--round);color:var(--red);min-width:46px;text-align:right}
+.board .empty{color:var(--muted);font-weight:700;margin:6px 0 16px}
+.board .gap{background:none;padding:0;justify-content:center;color:var(--muted);display:block;text-align:center}
 </style>
 </head><body>
 <div id="sky"></div>
@@ -247,7 +285,7 @@ body.fire #flames{opacity:1}
     <div id="secs"></div>
   </div>
   <div id="meter"><i></i><i></i><i></i></div>
-  <form id="entry" autocomplete="off"><input id="word" type="text" inputmode="text" enterkeyhint="go" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" maxlength="20" aria-label="Your word"><button id="go" type="submit">GO</button></form>
+  <form id="entry" autocomplete="off"><div class="wbox"><div id="wordShow" aria-hidden="true"></div><input id="word" type="text" inputmode="text" enterkeyhint="go" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" maxlength="20" aria-label="Your word"></div><button id="go" type="submit">GO</button></form>
   <div id="msg"></div>
 </div>
 
@@ -255,17 +293,23 @@ body.fire #flames{opacity:1}
   <div class="card">
     <h1>The <span>Red</span> Bomb</h1>
     <div class="kicker">LIFTOFF</div>
-    <p class="sub">Type words with the letters on the bomb before it blows. Every point takes you higher.</p>
-    <div class="rules">
-      <div><b>4–5</b>Short word<em>1 pt</em></div>
-      <div><b>6–8</b>Medium word<em>2 pts</em></div>
-      <div><b>9+</b>Big word<em>3 pts</em></div>
-      <div style="justify-content:center">3 pts defuses the bomb 💣</div>
+    <ol class="steps">
+      <li><span>1</span><div>Each bomb shows 3 letters, like <b class="chip">ING</b></div></li>
+      <li><span>2</span><div>Type any word with those letters together: K<b>ING</b>, S<b>ING</b>ER</div></li>
+      <li><span>3</span><div>Get <b>3 points</b> before the fuse burns out</div></li>
+      <li><span>4</span><div>Each bomb you defuse launches you higher. Go fast to catch fire 🔥</div></li>
+    </ol>
+    <div class="ptsrow">
+      <div><b>1 pt</b><small>4–5 letters</small><i>K<u>ING</u></i></div>
+      <div><b>2 pts</b><small>6–8 letters</small><i>S<u>ING</u>ER</i></div>
+      <div><b>3 pts</b><small>9+ letters</small><i>SPR<u>ING</u>TIME</i></div>
     </div>
     <button class="btn" id="startBtn">Light it</button>
     <div class="best" id="bestLine"></div>
+    <button class="lbbtn" id="lbOpen1">🏆 Today's best</button>
   </div>
 </div>
+<div class="cover" id="boardCover" hidden><div class="card board" id="boardCard"></div></div>
 <div class="cover" id="endCover" hidden><div class="card" id="endCard"></div></div>
 <div id="loading">Loading words…</div>
 
@@ -458,9 +502,9 @@ const RECENT=new Set(store.get("bombRecent",[]));
 function rememberCombo(c){const a=store.get("bombRecent",[]).filter(x=>x!==c);a.push(c);store.set("bombRecent",a.slice(-90))}
 const fuseFor=n=>Math.max(8,18-n*.6);
 function start(){
-  G={score:0,bombs:0,charge:0,used:new Set(),usedCombos:new Set(),streak:0,bestStreak:0,fireRuns:0,fire:false,lastOk:0,longest:"",over:false,paused:false};
+  G={log:[],bonus:[],score:0,bombs:0,charge:0,used:new Set(),usedCombos:new Set(),streak:0,bestStreak:0,fireRuns:0,fire:false,lastOk:0,longest:"",over:false,paused:false};
   $("startCover").hidden=true;$("endCover").hidden=true;$("score").textContent="0";document.body.classList.remove("fire","low");$("fireTag").hidden=true;
-  G.best=store.get("bombBest",0);G.passed=!G.best;curZone=-1;showZone(0,true);newBomb();drawAlt(false);checkBest();setTimeout(placeAlt,400);const inp=$("word");inp.value="";inp.focus({preventScroll:true});say("");
+  G.best=store.get("bombBest",0);G.passed=!G.best;curZone=-1;showZone(0,true);newBomb();drawAlt(false);checkBest();setTimeout(placeAlt,400);const inp=$("word");inp.value="";showWord&&showWord();inp.focus({preventScroll:true});say("");
   cancelAnimationFrame(raf);let last=performance.now();
   const loop=now=>{const dt=Math.min(.1,(now-last)/1000);last=now;if(!G.over&&!G.paused&&!G.hold){G.left-=dt;drawFuse();if(G.left<=0){explode();return}}raf=requestAnimationFrame(loop)};
   raf=requestAnimationFrame(loop);
@@ -494,11 +538,11 @@ function submit(){
   if(!w.includes(G.combo))return bad(`Needs ${G.combo.toUpperCase()}`);
   if(G.used.has(w))return bad("Already used");
   if(!WORDS||!WORDS.has(w))return bad("Not a word");
-  G.used.add(w);inp.value="";G.bestNow=false;
+  G.used.add(w);inp.value="";showWord&&showWord();G.bestNow=false;
   const p=pointsOf(w),now=performance.now(),quick=now-(G.lastOk||G.bornAt)<4000;G.lastOk=now;
   G.streak=quick?G.streak+1:1;G.bestStreak=Math.max(G.bestStreak,G.streak);
   if(!G.fire&&G.streak>=3)setFire(true);
-  const pts=w.length*p*(G.fire?2:1);G.score+=pts;$("score").textContent=G.score;
+  const pts=w.length*p*(G.fire?2:1);G.score+=pts;G.log.push({w,c:G.combo,pts});$("score").textContent=G.score;
   if(w.length>G.longest.length)G.longest=w;
   pop("+"+pts);G.charge+=p;G.left=Math.min(G.full,G.left+1.2);drawMeter();
   G.lastBig=p===3;
@@ -509,7 +553,8 @@ function pop(t){const r=$("bombWrap").getBoundingClientRect(),p=document.createE
 function tag(t){const p=document.createElement("div");p.className="tierTag";p.textContent=t;const r=$("bombWrap").getBoundingClientRect();p.style.left=Math.max(70,r.left+r.width*.2)+"px";p.style.top=(r.top+r.height*.1)+"px";document.body.appendChild(p);setTimeout(()=>p.remove(),1000)}
 function setFire(on){G.fire=on;document.body.classList.toggle("fire",on);$("fireTag").hidden=!on;if(on){G.fireRuns++;try{navigator.vibrate&&navigator.vibrate([30,40,30])}catch(e){}}}
 function defuse(){
-  const bonus=10+Math.round(G.left*2)*(G.fire?2:1);G.score+=bonus;$("score").textContent=G.score;G.bombs++;
+  G.hold=true; /* no words count while the defused bomb flies off and the next one drops in */
+  const bonus=10+Math.round(G.left*2)*(G.fire?2:1);G.score+=bonus;G.bonus.push(bonus);$("score").textContent=G.score;G.bombs++;
   const nz=climb();if(!nz&&!G.bestNow)tag(G.lastBig?"BIG WORD!":"DEFUSED!");G.bestNow=false;
   say(`+${bonus} bonus`,"good");document.body.classList.remove("low");$("bombWrap").classList.remove("tick");
   $("bombWrap").animate([{transform:"scale(1)",opacity:1},{transform:"scale(1.25)",opacity:0}],{duration:260,easing:"ease-in"}).onfinish=()=>newBomb(nz);
@@ -538,17 +583,67 @@ function showEnd(){
       <div><b>${G.bestStreak}</b><small>Streak</small></div>
       <div><b class="lw">${G.longest?G.longest.toUpperCase():"–"}</b><small>Longest</small></div>
     </div>
+    <div class="rankline" id="rankLine"></div>
     <div class="endbtns"><button class="btn" id="againBtn">Play again</button><button class="btn alt" id="copyBtn">Copy result</button></div>
-    <a class="homelink" href="index.html">Home</a>`;
+    <div class="endlinks"><button class="lbbtn" id="lbOpen2">🏆 Today's best</button><a class="homelink" href="index.html">Home</a></div>`;
   $("endCover").hidden=false;
-  $("againBtn").onclick=start;
+  $("againBtn").onclick=start;$("lbOpen2").onclick=()=>openBoard(0);postRun();
   $("copyBtn").onclick=async()=>{try{await navigator.clipboard.writeText(share.includes("redegg.netlify.app")?share:share+"\nredegg.netlify.app");$("copyBtn").textContent="Copied"}catch(e){$("copyBtn").textContent="Couldn't copy"}};
 }
-$("entry").addEventListener("submit",e=>{e.preventDefault();submit()});
+$("entry").addEventListener("submit",e=>{e.preventDefault();submit();showWord()});
+/* the word you type is mirrored on top, with the bomb's three letters in red once they appear in a row */
+function showWord(){const inp=$("word"),v=inp.value.toUpperCase(),el=$("wordShow"),cb=(G&&!G.hold&&G.combo||"").toUpperCase();
+  const fs=v.length>15?"1rem":v.length>12?"1.2rem":"1.6rem";inp.style.fontSize=fs;el.style.fontSize=fs;
+  const esc=t=>t.replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"})[c]);const k=cb?v.indexOf(cb):-1;
+  el.innerHTML=k<0?esc(v):esc(v.slice(0,k))+"<b>"+esc(cb)+"</b>"+esc(v.slice(k+cb.length))}
+$("word").addEventListener("input",showWord);
 $("stage").addEventListener("pointerdown",e=>{if(G&&!G.over&&e.target.id!=="go"&&e.target.id!=="word")setTimeout(()=>$("word").focus({preventScroll:true}),0)});
 $("startBtn").onclick=()=>{if(!WORDS){$("loading").hidden=false;return}$("word").focus({preventScroll:true});start()};
 const b0=store.get("bombBest",0);$("bestLine").textContent=b0?`Your best: ${b0}`:"";
 document.addEventListener("visibilitychange",()=>{if(G&&!G.over)G.paused=document.visibilityState==="hidden"});
 showZone(0,true);
+
+/* ---------- the daily leaderboard: everyone's best run today ---------- */
+const ymdL=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+const dayOf=off=>{const d=new Date();d.setDate(d.getDate()+off);return ymdL(d)};
+const BS={_b:null,
+  init(){if(this._b)return this._b;this._b=(async()=>{
+    if(window.claude&&typeof window.claude.use==="function"){try{const db=await window.claude.use("db"),u=await window.claude.use("user"),id=u&&await u.id();return db&&id?{kind:"claude",db,id}:null}catch(e){return null}}
+    return {kind:"web",id:store.get("lbId",null),secret:store.get("lbSecret",null)}})();return this._b},
+  async list(){const b=await this.init();if(!b)return [];
+    if(b.kind==="claude"){const s=await b.db.collection("players").get();return s.docs.map(d=>({id:d.id,...d.data()}))}
+    const r=await fetch("/api/players",{cache:"no-store"});return r.ok?((await r.json()).players||[]):[]},
+  async post(run){const b=await this.init();const name=store.get("lbName","");if(!b||!name)return {error:"signin"};
+    if(b.kind==="claude"){/* inside Claude: kept on your own player record */
+      const ref=b.db.doc("players/"+b.id),ex=await ref.get();if(!ex.exists)return {error:"signin"};const o=ex.data()||{},bomb={...(o.bomb||{})};
+      const cur=bomb[run.day];if(!cur||run.score>cur.score)bomb[run.day]={score:run.score,zone:run.zone,bombs:run.bombs,at:Date.now()};
+      Object.keys(bomb).sort().slice(0,-3).forEach(k=>delete bomb[k]);await ref.set({...o,bomb});return {ok:true}}
+    if(!b.id||!b.secret)return {error:"signin"};
+    const r=await fetch("/api/bomb",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({id:b.id,secret:b.secret,name,day:run.day,log:run.log,bonus:run.bonus})});
+    try{return await r.json()}catch(e){return {error:"off"}}}};
+function rowsFor(list,day){return list.filter(p=>p.bomb&&p.bomb[day]).map(p=>({id:p.id,name:p.name,...p.bomb[day]})).sort((a,b)=>b.score-a.score||a.at-b.at)}
+async function postRun(){const el=$("rankLine");if(!el)return;
+  if(!G.log.length){el.textContent="";return}
+  if(!store.get("lbName","")){el.innerHTML=`<a href="index.html">Sign in on The Red Egg</a> to post your score`;return}
+  el.textContent="Posting your score…";
+  const run={day:dayOf(0),score:G.score,zone:zoneOf(G.score),bombs:G.bombs,log:G.log,bonus:G.bonus};
+  let res=null;try{res=await BS.post(run)}catch(e){}
+  if(!res||res.error){el.textContent=res&&res.error==="signin"?"Sign in on The Red Egg to post your score":"Couldn't post your score right now";return}
+  try{const b=await BS.init(),rows=rowsFor(await BS.list(),run.day),i=rows.findIndex(r=>r.id===b.id);
+    el.innerHTML=i>=0?`<b>#${i+1}</b> today${rows[i].score>G.score?` (your best: ${rows[i].score})`:""}`:""}catch(e){el.textContent=""}}
+async function openBoard(off){
+  const cv=$("boardCover"),card=$("boardCard");cv.hidden=false;
+  card.innerHTML=`<h2>🏆 Today's best</h2><div class="tabs"><button class="${off===0?"on":""}" data-o="0">Today</button><button class="${off===-1?"on":""}" data-o="-1">Yesterday</button></div><p class="empty">Loading…</p><button class="btn alt" data-x="1">Close</button>`;
+  card.onclick=e=>{const t=e.target.closest("[data-o]");if(t)openBoard(+t.dataset.o);if(e.target.closest("[data-x]"))cv.hidden=true};
+  cv.onclick=e=>{if(e.target===cv)cv.hidden=true};
+  let list=[],me=null;try{list=await BS.list();const b=await BS.init();me=b&&b.id}catch(e){}
+  const day=dayOf(off),rows=rowsFor(list,day),champ=rowsFor(list,dayOf(off-1))[0];
+  const row=(r,i)=>`<li class="${r.id===me?"me":""}"><span class="rk">${i+1}</span><span class="nm">${champ&&champ.id===r.id?"👑 ":""}${esc(r.name||"Someone")}<small>${ZONES[Math.min(ZONES.length-1,r.zone||0)].name} · ${r.bombs||0} bomb${r.bombs===1?"":"s"}</small></span><span class="zn">${ZONES[Math.min(ZONES.length-1,r.zone||0)].icon}</span><span class="sc">${r.score}</span></li>`;
+  let body;if(!rows.length)body=`<p class="empty">${off===0?"No scores yet today. Be the first!":"Nobody played yesterday."}</p>`;
+  else{const top=rows.slice(0,10),mi=rows.findIndex(r=>r.id===me);body=`<ol>${top.map(row).join("")}${mi>=10?`<li class="gap">…</li>`+row(rows[mi],mi):""}</ol>`}
+  card.querySelector(".empty").outerHTML=body;
+}
+const esc=t=>String(t).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c]);
+$("lbOpen1").onclick=()=>openBoard(0);
 </script>
 </body></html>

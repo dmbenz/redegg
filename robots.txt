@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://redegg.netlify.app/sitemap.xml

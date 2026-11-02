@@ -45,7 +45,7 @@ export const mergeSave = (p, n) => {
   if (!n) return p;
   let week = n.week || p.week;
   if (p.week && n.week) {
-    if (p.week.id === n.week.id) week = { ...n.week, days: { ...(n.week.days || {}), ...(p.week.days || {}) }, sunday: { ...(n.week.sunday || {}), ...(p.week.sunday || {}) }, hatched: !!(p.week.hatched || n.week.hatched) };
+    if (p.week.id === n.week.id) week = { ...n.week, days: { ...(n.week.days || {}), ...(p.week.days || {}) }, sunday: { ...(n.week.sunday || {}), ...(p.week.sunday || {}) }, hatched: !!(p.week.hatched || n.week.hatched), res: { ...(n.week.res || {}), ...(p.week.res || {}) } };
     else week = p.week.id > n.week.id ? p.week : n.week;
   }
   const pen = [...(p.pen || [])];

@@ -16,7 +16,7 @@ export default async (req) => {
     return json({
       players: list.filter(([, p]) => p && p.name).map(([id, p]) => {
         const c = combine({ weeks: p.weeks || {}, pen: p.pen || {} }, p.merged);
-        return { id, name: p.name, weeks: c.weeks, pen: c.pen };
+        return { id, name: p.name, weeks: c.weeks, pen: c.pen, ...(p.bomb ? { bomb: p.bomb } : {}) };
       }),
     });
   }
@@ -56,6 +56,7 @@ export default async (req) => {
       weeks,
       pen,
       save,
+      ...(prev?.bomb ? { bomb: prev.bomb } : {}), // Red Bomb daily bests (written by /api/bomb)
       merged: prev?.merged ?? null, // scores folded in from a duplicate account (admin merge)
       updated: Date.now(),
     });
