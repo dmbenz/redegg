@@ -29,6 +29,13 @@ export default async (req) => {
 
   if (body.action === "check") return json({ ok: true });
 
+  if (body.action === "friendGroup") { // the admin picks a group of players who know each other; they all become friends
+    const ids = [...new Set((Array.isArray(body.ids) ? body.ids : []).map(String))].slice(0, 100);
+    const got = (await Promise.all(ids.map((id) => players.get(id, { type: "json" }).then((p) => (p && p.name ? [id, p] : null))))).filter(Boolean);
+    const ok = got.map(([id]) => id);
+    await Promise.all(got.map(([id, p]) => { p.friends = [...new Set([...(p.friends || []), ...ok.filter((x) => x !== id)])].slice(-300); return players.setJSON(id, p); }));
+    return json({ ok: true, players: ok.length });
+  }
   if (body.action === "suggestions") { // ideas players sent from the gear's Suggest a puzzle
     const box = getStore({ name: "suggestions", consistency: "strong" });
     const { blobs } = await box.list();
