@@ -11,14 +11,11 @@ export default async (req) => {
   const names = getStore({ name: "names", consistency: "strong" });
 
   if (req.method === "GET") {
-    const { blobs } = await players.list();
-    const list = await Promise.all(blobs.map((b) => players.get(b.key, { type: "json" }).then((p) => [b.key, p])));
-    return json({
-      players: list.filter(([, p]) => p && p.name).map(([id, p]) => {
-        const c = combine({ weeks: p.weeks || {}, pen: p.pen || {} }, p.merged);
-        return { id, name: p.name, weeks: c.weeks, pen: c.pen, ...(p.bomb ? { bomb: p.bomb } : {}) };
-      }),
-    });
+    // only one thing is public now: whether a username is taken (scores are seen by friends, via /api/friends)
+    const u = new URL(req.url), n = clean(u.searchParams.get("name"));
+    if (!n) return json({ players: [] });
+    const owner = await names.get(keyOf(n));
+    return json({ taken: !!owner && owner !== u.searchParams.get("id") });
   }
 
   if (req.method === "POST") {
@@ -56,7 +53,10 @@ export default async (req) => {
       weeks,
       pen,
       save,
-      ...(prev?.bomb ? { bomb: prev.bomb } : {}), // Red Bomb daily bests (written by /api/bomb)
+      ...(prev?.bomb ? { bomb: prev.bomb } : {}), // Red Bomb daily runs (written by /api/bomb)
+      ...(prev?.friends ? { friends: prev.friends } : {}), // friends and invite code (written by /api/friends)
+      ...(prev?.code ? { code: prev.code } : {}),
+      ...(prev?.sugg ? { sugg: prev.sugg } : {}), // today's count of puzzle ideas (written by /api/suggest)
       merged: prev?.merged ?? null, // scores folded in from a duplicate account (admin merge)
       updated: Date.now(),
     });

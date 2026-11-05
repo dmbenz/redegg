@@ -29,6 +29,27 @@ export default async (req) => {
 
   if (body.action === "check") return json({ ok: true });
 
+  if (body.action === "suggestions") { // ideas players sent from the gear's Suggest a puzzle
+    const box = getStore({ name: "suggestions", consistency: "strong" });
+    const { blobs } = await box.list();
+    const list = (await Promise.all(blobs.map((b) => box.get(b.key, { type: "json" }).then((v) => (v ? { key: b.key, ...v } : null))))).filter(Boolean);
+    list.sort((a, b) => b.at - a.at);
+    return json({ suggestions: list.slice(0, 300) });
+  }
+  if (body.action === "suggestDel") {
+    const box = getStore({ name: "suggestions", consistency: "strong" });
+    if (body.key) await box.delete(String(body.key));
+    return json({ ok: true });
+  }
+  if (body.action === "list") { // admin sees everyone, to manage accounts
+    const { blobs } = await players.list();
+    const list = await Promise.all(blobs.map((b) => players.get(b.key, { type: "json" }).then((p) => [b.key, p])));
+    return json({ players: list.filter(([, p]) => p && p.name).map(([id, p]) => {
+      const c = combine({ weeks: p.weeks || {}, pen: p.pen || {} }, p.merged);
+      return { id, name: p.name, weeks: c.weeks, pen: c.pen, friends: (p.friends || []).length, ...(p.bomb ? { bomb: p.bomb } : {}) };
+    }) });
+  }
+
   if (body.action === "delete") {
     const p = await players.get(String(body.id || ""), { type: "json" });
     if (!p) return json({ error: "not_found" }, 404);
@@ -57,6 +78,7 @@ export default async (req) => {
     if (!a || !b) return json({ error: "not_found" }, 404);
     const dup = combine({ weeks: a.weeks || {}, pen: a.pen || {} }, a.merged);
     b.merged = combine(dup, b.merged);
+    b.friends = [...new Set([...(b.friends || []), ...(a.friends || [])])].filter((x) => x !== into && x !== from);
     await players.setJSON(into, b);
     if ((await names.get(keyOf(a.name))) === from) await names.delete(keyOf(a.name));
     if (a.google && !b.google) { b.google = a.google; await players.setJSON(into, b); await getStore({ name: "google", consistency: "strong" }).set(a.google, into); }

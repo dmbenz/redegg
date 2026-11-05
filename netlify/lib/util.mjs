@@ -57,3 +57,25 @@ export const mergeSave = (p, n) => {
   return { week, pen, history, playDays, weeks: mergeWeeks(p.weeks, n.weeks) };
 };
 export const penCounts = (pen) => { const c = {}; (pen || []).forEach((x) => { if (x && x.key) c[x.key] = (c[x.key] || 0) + 1; }); return c; };
+
+// Where you stand: every player's scores with no names attached, so each phone can work out its own percentile.
+// Each week is a list of rows [Mon..Sat, Sunday] (null = not played); the Red Bomb is a list of scores per day.
+const DAYS = ["blind-stop", "clutch", "flash", "trivia", "bridge", "pecking-order"];
+export const boardDist = (all) => {
+  const wkKeys = [...new Set(all.flatMap((p) => Object.keys(p.weeks || {})))].sort().slice(-3);
+  const weeks = {};
+  for (const wk of wkKeys) {
+    weeks[wk] = all.map((p) => (p.weeks || {})[wk]).filter(Boolean).map((w) => {
+      const d = w.days || {};
+      return [...DAYS.map((k) => (k in d ? Math.round(+d[k] * 10) / 10 : null)), w.sun != null ? Math.round(+w.sun * 10) / 10 : null];
+    }).filter((r) => r.some((v) => v != null));
+  }
+  const bkeys = [...new Set(all.flatMap((p) => Object.keys(p.bomb || {})))].sort().slice(-3), bomb = {};
+  for (const day of bkeys) bomb[day] = all.map((p) => p.bomb && p.bomb[day] && p.bomb[day].d ? +p.bomb[day].score : null).filter((v) => v != null);
+  return { weeks, bomb };
+};
+// what a friend (or you) can see of a player
+export const publicOf = (id, p) => {
+  const c = combine({ weeks: p.weeks || {}, pen: p.pen || {} }, p.merged);
+  return { id, name: p.name, weeks: c.weeks, pen: c.pen, ...(p.bomb ? { bomb: p.bomb } : {}) };
+};

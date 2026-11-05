@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="description" content="One of the daily games on The Red Egg. Play every day, crack your egg on Sunday and hatch a chick."><link rel="canonical" href="https://redegg.netlify.app/trivia.html"><meta property="og:title" content="Red Egg: Egghead"><meta property="og:description" content="One of the daily games on The Red Egg. Play every day, crack your egg on Sunday and hatch a chick."><meta property="og:url" content="https://redegg.netlify.app/trivia.html"><meta property="og:image" content="https://redegg.netlify.app/icon-512.png"><meta property="og:type" content="website"><link rel="icon" href="/favicon.ico" sizes="48x48"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="manifest" href="/site.webmanifest"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<html lang="en"><head><meta charset="utf-8"><script>(function(){var H="redegg.app";try{if(/\.netlify\.app$/.test(location.hostname)){var d={};for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);if(!k||k.indexOf("redegg2:")!==0||k==="redegg2:lbSent")continue;d[k]=localStorage.getItem(k)}var dest="https://"+H+location.pathname+location.search;document.documentElement.style.visibility="hidden";if(!Object.keys(d).length){location.replace(dest);return}var raw=JSON.stringify(d);var b64=function(u){var s="";for(var j=0;j<u.length;j+=8192)s+=String.fromCharCode.apply(null,u.subarray(j,j+8192));return btoa(s).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"")};if(window.CompressionStream){new Response(new Blob([raw]).stream().pipeThrough(new CompressionStream("deflate-raw"))).arrayBuffer().then(function(a){location.replace(dest+"#mvz="+b64(new Uint8Array(a)))},function(){location.replace(dest+"#mv="+b64(new TextEncoder().encode(raw)))})}else location.replace(dest+"#mv="+b64(new TextEncoder().encode(raw)));return}var h=location.hash,z=h.indexOf("#mvz=")===0,p=h.indexOf("#mv=")===0;if(!z&&!p)return;history.replaceState(null,"",location.pathname+location.search);var s=h.slice(z?5:4).replace(/-/g,"+").replace(/_/g,"/");while(s.length%4)s+="=";var bin=atob(s),u=new Uint8Array(bin.length);for(var j=0;j<bin.length;j++)u[j]=bin.charCodeAt(j);var put=function(t){var d=JSON.parse(t),n=0;for(var k in d)if(k.indexOf("redegg2:")===0&&localStorage.getItem(k)===null){localStorage.setItem(k,d[k]);n++}if(n)location.reload()};if(z){document.documentElement.style.visibility="hidden";new Response(new Blob([u]).stream().pipeThrough(new DecompressionStream("deflate-raw"))).text().then(put).catch(function(){}).then(function(){document.documentElement.style.visibility=""})}else put(new TextDecoder().decode(u))}catch(e){document.documentElement.style.visibility=""}})()</script><script data-goatcounter="https://redegg.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script><meta name="description" content="One of the daily games on The Red Egg. Play every day, crack your egg on Sunday and hatch a chick."><link rel="canonical" href="https://redegg.app/trivia.html"><meta property="og:title" content="Red Egg: Egghead"><meta property="og:description" content="One of the daily games on The Red Egg. Play every day, crack your egg on Sunday and hatch a chick."><meta property="og:url" content="https://redegg.app/trivia.html"><meta property="og:image" content="https://redegg.app/icon-512.png"><meta property="og:type" content="website"><link rel="icon" href="/favicon.ico" sizes="48x48"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="manifest" href="/site.webmanifest"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
 <script>document.documentElement.setAttribute("data-theme","light")</script><meta name="color-scheme" content="light"><meta name="theme-color" content="#FFC9A0">
 <title>Red Egg: Egghead</title>
@@ -135,8 +135,10 @@ footer.site .beta{border:1.5px solid #C9A577;color:#7A4E2A;background:transparen
 .egg svg>ellipse[fill^="rgba"]{display:none}
 .egg .whole circle,.egg .body>g[clip-path] circle,.egg .top circle{display:none}
 .egg .nest{position:absolute;left:50%;transform:translateX(-50%);width:380px;height:141px;pointer-events:none;overflow:visible}
-.egg .nest.back{bottom:-65px;z-index:0}
-.egg .nest.front{bottom:-65px;z-index:2}
+.egg .nest.back{bottom:-14px;z-index:0}
+.egg .nest.front{bottom:-14px;z-index:2}
+/* egg and nest sit lower, down in the dirt in front of the fence */
+.eggcard .egg{margin-top:135px}
 .eggpanel{background:var(--surface);border-radius:24px;padding:20px 18px;box-shadow:0 4px 0 #EED3A2;margin-top:58px;box-sizing:border-box;position:relative;z-index:3}
 .eggpanel .points{font-family:"Nunito",var(--body);font-weight:800;color:#7A4E2A;font-size:15px}
 .eggpanel .points b{font-family:"Fredoka",var(--body);font-weight:700;color:#C8362F;font-size:26px}
@@ -160,6 +162,8 @@ body>.cardcover,body>.confetti,body>.sheetcover{position:fixed!important;inset:0
 /* computers only: keep the farm at phone size in the middle and let it run out past both edges */
 .farm .wide{display:none}
 @media (min-width:700px){.farm{height:940px}.farm svg{width:390px;overflow:visible}.farm .wide{display:inline}}
+/* in between (big phones, tablets, the Claude side panel) the farm stays at its normal size, so the nest stays on the ground; the extra width shows more farm */
+@media (min-width:391px) and (max-width:699px){.farm svg{width:390px;overflow:visible}.farm .wide{display:inline}}
 body>.iabbar{position:sticky!important;z-index:280!important}
 
 /* Home: the farm scrolls away with the page (every other page keeps it still) */
@@ -179,6 +183,63 @@ body>a.farmbomb{position:absolute!important;z-index:2!important;display:block;-w
 .e1{--ex:7px;--ey:-12px}.e2{--ex:-5px;--ey:-10px}.e3{--ex:10px;--ey:-4px}
 @keyframes fbem{0%{transform:translate(0,0);opacity:1}100%{transform:translate(var(--ex),var(--ey));opacity:0}}
 @media (prefers-reduced-motion:reduce){.fbflag,.fbbomb,.fbspark,.fbember{animation:none}}
+
+/* the farm moves a little: clouds drift, the sun's rays turn, birds glide by, grass sways, the windmill spins */
+.farm .drift{animation:fdrift 90s ease-in-out infinite alternate}
+@keyframes fdrift{from{transform:translateX(-18px)}to{transform:translateX(26px)}}
+.farm .sunrays{animation:fspin 120s linear infinite}
+@keyframes fspin{to{transform:rotate(360deg)}}
+.farm .glide{animation:fglide 46s linear infinite}
+@keyframes fglide{from{transform:translateX(-80px)}to{transform:translateX(560px)}}
+.farm .sway{animation:fsway 4s ease-in-out infinite alternate}
+@keyframes fsway{from{transform:rotate(-5deg)}to{transform:rotate(5deg)}}
+.farm .mill{animation:fspin 14s linear infinite}
+@media (prefers-reduced-motion:reduce){.farm .drift,.farm .sunrays,.farm .glide,.farm .sway,.farm .mill{animation:none}}
+
+.eggpanel{margin-top:7px}
+/* Collection, Leaderboard, How to play: the dirt runs all the way to the bottom of the screen */
+html:has(.farm.inner),html:has(.farm.inner) body{background:#F3D38A}
+#stand:empty,#stand[hidden]{display:none}
+/* header: logo with one small line under it (week, pen...), the settings gear on the right */
+header{align-items:flex-start!important}
+header .hl{display:flex;flex-direction:column;gap:6px;min-width:0}
+header .hl .meta{text-align:left;max-width:none;display:flex;flex-wrap:wrap;column-gap:6px;align-items:baseline;margin-left:2px}
+header .hl .meta b{display:inline}
+.gear{flex-shrink:0;width:40px;height:40px;margin-top:2px;border-radius:50%;border:0;background:rgba(255,251,242,.92);color:#3B2A1E;box-shadow:0 2px 8px rgba(59,42,30,.18);display:grid;place-items:center;padding:0;cursor:pointer;-webkit-tap-highlight-color:transparent;position:relative;z-index:3}
+.gear:active{transform:scale(.94)}
+.gear.spin svg{animation:gspin .45s ease-out}
+@keyframes gspin{to{transform:rotate(90deg)}}
+@media (max-width:359px){.gear{width:36px;height:36px}.gear svg{width:20px;height:20px}}
+/* the settings squares */
+.setsheet .sheethead,.setsub .sheethead{align-items:flex-start;text-align:left}
+.setsub .sheethead{padding-top:26px}
+.setgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.setsq{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;border:0;border-radius:18px;padding:14px 13px 15px;min-height:104px;background:#F6E7C8;color:var(--ink);font:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.setsq:active{transform:scale(.97)}
+.setsq .setic{font-size:1.55rem;line-height:1;margin-bottom:8px}
+.setsq b{font:800 .98rem var(--body);line-height:1.2}
+.setsq small{font:500 .78rem var(--body);color:var(--muted);line-height:1.3}
+.setlater{position:absolute;top:10px;right:10px;font:800 .58rem var(--body);letter-spacing:.08em;text-transform:uppercase;color:#9C7646;border:1.5px solid #D9BE8E;border-radius:999px;padding:2px 7px}
+.setback{position:absolute;top:14px;left:14px;border:0;background:none;color:var(--muted);font:700 .9rem var(--body);cursor:pointer;padding:6px 4px}
+.setp{margin:0 0 12px;color:var(--ink);line-height:1.45}
+.setbtns{display:grid;gap:10px}
+.setbtns .big{text-align:center}
+.setbtns .big.alt{background:#F6E7C8!important;color:var(--ink)!important;box-shadow:none}
+#setLink .linkcode{display:block;text-align:center;margin:12px 0 4px}
+#setLink .linkleft{text-align:center;margin:0 0 8px;color:var(--muted)}
+.setstep{background:#F6E7C8;border-radius:14px;padding:12px 14px;margin-bottom:10px}
+.setstep ol{margin:6px 0 0;padding-left:20px;line-height:1.6}
+.sethow{text-align:left}
+.sethow h2{font-size:1.15rem;margin:16px 0 6px}
+.sethow .pagehead h2,.sethow>h2:first-child{display:none}
+.setkinds{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.setkinds button{border:0;border-radius:999px;padding:7px 12px;font:700 .82rem var(--body);background:#F6E7C8;color:var(--muted);cursor:pointer}
+.setkinds button.on{background:var(--ink);color:var(--surface)}
+#setIdea{width:100%;box-sizing:border-box;border:2px solid var(--line);border-radius:14px;padding:12px;font:500 1rem var(--body);background:var(--box);color:var(--ink);resize:vertical;margin-bottom:10px}
+.idea{background:#F6E7C8;border-radius:14px;padding:12px 14px;margin-bottom:10px}
+.ideatop{display:flex;justify-content:space-between;gap:8px;font-size:.8rem;color:var(--muted)}.ideatop b{color:var(--ink)}
+.idea p{margin:6px 0 8px;white-space:pre-wrap;word-break:break-word}
+.ideadone{border:0;border-radius:999px;padding:6px 14px;font:700 .8rem var(--body);background:var(--ink);color:var(--surface);cursor:pointer}
 </style>
 </head><body><div class="farm inner" aria-hidden="true"><svg viewBox="0 0 390 520" preserveAspectRatio="xMidYMin slice">
     <defs>
@@ -251,7 +312,14 @@ const ymd=d=>`${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`;
 const FAKE_SUNDAY=(()=>{try{return false}catch(e){return false}})();
 /* testing only: "Next week" jumps the calendar ahead a week at a time */
 const WEEK_SHIFT=(()=>{try{return Math.max(0,0)}catch(e){return 0}})();
-const NOW=(()=>{const d=new Date();d.setDate(d.getDate()+7*WEEK_SHIFT);if(FAKE_SUNDAY)d.setDate(d.getDate()+(6-(d.getDay()+6)%7));return d})(),LOCALDAY=ymd(NOW),TODAY_IDX=(NOW.getDay()+6)%7;
+const REAL_NOW=(()=>{const d=new Date();d.setDate(d.getDate()+7*WEEK_SHIFT);if(FAKE_SUNDAY)d.setDate(d.getDate()+(6-(d.getDay()+6)%7));return d})(),REAL_DAY=ymd(REAL_NOW);
+/* missed Sunday? On Monday you can still crack last week's egg: the site steps back to Sunday for that week */
+/* missed Sunday? last week's egg waits: on Monday you can still play its Red Egg, and after that you hatch it yourself (Sunday counts 0).
+   While you're looking at it, the site steps back to that week's Sunday. */
+var GRACE_ID=(()=>{try{const g=JSON.parse(localStorage.getItem("redegg2:grace")||"null");if(!g||typeof g!=="object"||g.day!==REAL_DAY||!/^\d{4}-\d{2}-\d{2}$/.test(g.id||""))return null;
+  const rm=new Date(REAL_NOW);rm.setDate(rm.getDate()-(rm.getDay()+6)%7);return g.id<ymd(rm)?g.id:null}catch(e){return null}})();
+var GRACE=!!GRACE_ID;
+const NOW=(()=>{const d=new Date(REAL_NOW);if(GRACE){const s=new Date(GRACE_ID+"T12:00:00");s.setDate(s.getDate()+6);d.setFullYear(s.getFullYear(),s.getMonth(),s.getDate())}return d})(),LOCALDAY=ymd(NOW),TODAY_IDX=(NOW.getDay()+6)%7;
 const CUR_MONDAY=(()=>{const d=new Date(NOW);d.setDate(d.getDate()-TODAY_IDX);return ymd(d)})();
 const WEEK_NO=Math.round((new Date(CUR_MONDAY+"T12:00:00")-new Date("2026-01-05T12:00:00"))/604800000);
 /* the date a day's game belongs to this week, so a catch-up gets the same puzzle everyone played that day */
@@ -262,9 +330,19 @@ const SEED_SALT="";
 function hashStr(s){s=String(s)+SEED_SALT;let h=2166136261;for(const c of s){h^=c.charCodeAt(0);h=Math.imul(h,16777619)}return h>>>0}
 function rngFrom(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
 function seededOrder(list,salt){const r=rngFrom(hashStr(salt)),a=list.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
-const RS={get(k,d){try{const v=localStorage.getItem("redegg2:"+k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem("redegg2:"+k,JSON.stringify(v))}catch(e){}}};
+const wkKey=k=>k==="week"&&GRACE?"lastEgg":k;
+const RS={get(k,d){k=wkKey(k);try{const v=localStorage.getItem("redegg2:"+k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){k=wkKey(k);try{localStorage.setItem("redegg2:"+k,JSON.stringify(v))}catch(e){}}};
 /* a new egg every Monday */
-function currentWeek(){let w=RS.get("week",null);if(!w||!w.id||w.id!==CUR_MONDAY){w={id:CUR_MONDAY,days:{},sunday:{}};RS.set("week",w)}w.days=w.days||{};w.sunday=w.sunday||{};return w}
+function currentWeek(){let w=RS.get("week",null);if(!w||!w.id||w.id!==CUR_MONDAY){
+    /* an egg that never cracked waits for Monday's catch-up, or hatches on its own after that */
+    if(!GRACE&&w&&w.id&&w.id<CUR_MONDAY&&Object.keys(w.days||{}).length&&!RS.get("pen",[]).some(p=>p.id===w.id)){
+      /* only one egg waits at a time: an even older one that was never hatched hatches quietly (Sunday 0) */
+      const old=RS.get("lastEgg",null);if(old&&old.id&&old.id!==w.id)quietHatch(old);RS.set("lastEgg",w)}
+    w={id:CUR_MONDAY,days:{},sunday:{}};RS.set("week",w)}w.days=w.days||{};w.sunday=w.sunday||{};return w}
+function quietHatch(le){try{const pen=RS.get("pen",[]);if(pen.some(p=>p.id===le.id))return;
+  const r=v=>Math.round((+v||0)*10)/10,s=o=>Object.values(o||{}).reduce((a,b)=>a+(+b||0),0),sun=r(s(le.sunday)),total=Math.round(s(le.days)+sun),t=tierFor(total);
+  pen.push({id:le.id,total,key:t.key});pen.sort((a,b)=>a.id<b.id?-1:1);RS.set("pen",pen);
+  const days={};Object.keys(le.days||{}).forEach(k=>days[k]=r(le.days[k]));const wk=RS.get("lbWeeks",{});wk[le.id]={days,sun,chick:t.key,total};RS.set("lbWeeks",wk)}catch(e){}}
 function markPlayed(){const s=RS.get("playDays",[]);if(!s.includes(LOCALDAY)){s.push(LOCALDAY);RS.set("playDays",s)}Promise.resolve().then(lbQuick);if(location.hash==="#day")keepResult()}
 /* keep the finished results screen, so you can open the game again this week to see it or share it */
 const pageKey=()=>(location.pathname.split("/").pop()||"").replace(/\.html$/,"");
@@ -284,24 +362,21 @@ function showResult(key,name){
   const wrap=document.querySelector(".wrap");if(!wrap||document.getElementById("gateMsg"))return true;
   [...wrap.children].forEach(el=>{if(el.tagName!=="HEADER")el.hidden=true});
   wrap.insertAdjacentHTML("beforeend",`<section class="card end" id="gateMsg">${r.html}</section>`);
-  const box=document.getElementById("gateMsg"),share=r.share.includes("redegg.netlify.app")?r.share:r.share+"\nredegg.netlify.app";
+  const box=document.getElementById("gateMsg"),share=r.share.includes("redegg.app")?r.share:r.share+"\nredegg.app";
   /* the same screen you saw at the end: only the buttons that would start a new game are taken out */
   box.querySelectorAll("button").forEach(b=>{if(b.id!=="copyBtn")b.remove()});
   box.querySelectorAll("a").forEach(a=>{const h=a.getAttribute("href")||"";if(h.includes("#")&&!/index\.html/.test(h))a.remove()});
   box.querySelectorAll("[id]").forEach(el=>{if(el.id!=="copyBtn"&&el.id!=="toast")el.removeAttribute("id")});
   const cp=box.querySelector("#copyBtn"),toast=box.querySelector("#toast");
   dcWire(cp,key,share);
-  /* Copy and Home sit side by side, tidy, with no empty gap under them */
-  const back=`<a href="index.html" class="revback" style="flex:1;display:flex;align-items:center;justify-content:center;text-align:center;text-decoration:none;border-radius:16px;padding:16px 10px;font:700 1.05rem var(--body);background:var(--tray,#F3E6CF);color:var(--ink,#3B2A1E)">Back to the egg</a>`;
-  const acts=cp&&cp.closest(".actions");
-  if(acts){acts.style.cssText+=";display:flex;gap:10px;width:100%";cp.style.flex="1";acts.insertAdjacentHTML("beforeend",back)}
-  else if(!box.querySelector('a[href^="index.html"]'))box.insertAdjacentHTML("beforeend",back.replace("flex:1;display:flex","display:flex;width:100%;box-sizing:border-box"));
+  dcRow(box);
   if(toast){toast.style.minHeight="0";toast.style.margin="0"}
   try{PAUSE.done()}catch(e){}
   return true;
 }
 /* the moment a game is finished, send it to the server, so your other phone or computer knows you played */
 function lbQuick(){try{
+  if(GRACE){try{lbSync()}catch(e){}return}
   if(window.claude||WEEK_SHIFT)return;const id=RS.get("lbId",null),secret=RS.get("lbSecret",null),name=RS.get("lbName","");if(!id||!secret||!name)return;
   const w=currentWeek(),r=v=>Math.round((+v||0)*10)/10,days={};Object.keys(w.days).forEach(k=>days[k]=r(w.days[k]));
   const sun=Object.keys(w.sunday).length?r(Object.values(w.sunday).reduce((a,b)=>a+(+b||0),0)):null;
@@ -334,8 +409,8 @@ function dailyGate(mode,key,name){
 /* already played on your other phone or computer? the server knows, even if this browser doesn't yet */
 function remoteGate(mode,key,name){
   if(mode!=="day"||window.claude)return;const id=RS.get("lbId",null);if(!id)return;
-  fetch("/api/players",{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
-    const me=d&&(d.players||[]).find(p=>p.id===id),wk=me&&me.weeks&&me.weeks[CUR_MONDAY];
+  fetch("/api/friends",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({id,secret:RS.get("lbSecret",""),action:"me"})}).then(r=>r.ok?r.json():null).then(d=>{
+    const me=d&&d.me,wk=me&&me.weeks&&me.weeks[CUR_MONDAY];
     if(!wk||!wk.days||!(key in wk.days))return;
     const w=currentWeek();if(key in w.days)return;w.days[key]=wk.days[key];RS.set("week",w);
     try{PAUSE.done()}catch(e){}
@@ -346,7 +421,7 @@ function remoteGate(mode,key,name){
 function showSummary(key,name,score){
   if(document.getElementById("gateMsg"))return;
   const sc=Math.round(+score||0),tier=sc>=95?["Perfect Yolk","🟨"]:sc>=75?["Sunny Side Up","🟩"]:sc>=50?["Over Easy","🟦"]:sc>=25?["Cracked","⬜"]:["Rotten Egg","🟫"];
-  const share=`The Red Egg · ${name}\n${gameDate(key)}\n${tier[1]} ${sc}/100\nredegg.netlify.app`;
+  const share=`The Red Egg · ${name}\n${gameDate(key)}\n${tier[1]} ${sc}/100\nredegg.app`;
   const wrap=document.querySelector(".wrap");[...wrap.children].forEach(el=>{if(el.tagName!=="HEADER")el.hidden=true});
   wrap.insertAdjacentHTML("beforeend",`<section class="card end" id="gateMsg" style="align-items:center;text-align:center;gap:12px">
     <p style="margin:0;font-weight:800;color:var(--muted,#7A5636)">You already played this week's ${name}.</p>
@@ -411,14 +486,14 @@ async function makeDayCard(key,share){
   const sx=(W-sw-ow)/2;c.fillStyle="#C8362F";c.font="700 150px "+ROUND;c.fillText(sc,sx,scY);c.fillStyle="#7A5636";c.font="700 60px "+ROUND;c.fillText(" / 100",sx+sw,scY);
   const tier=DC_TIERS.find(t=>(score||0)>=t[0]);c.font="900 34px "+BODY;const tw2=c.measureText(tier[1]).width+60;
   c.strokeStyle=tier[2];c.lineWidth=4;dcRR(c,(W-tw2)/2,scY+30,tw2,58,29);c.stroke();c.fillStyle=tier[2];c.textAlign="center";c.fillText(tier[1],W/2,scY+71);
-  c.fillStyle="rgba(59,42,30,.7)";c.font="800 30px "+BODY;c.fillText("redegg.netlify.app",W/2,H-44);
+  c.fillStyle="rgba(59,42,30,.7)";c.font="800 30px "+BODY;c.fillText("redegg.app",W/2,H-44);
   return new Promise((res,rej)=>{try{cv.toBlob(b=>b?res(b):rej(new Error("no image")),"image/png")}catch(e){rej(e)}});
 }
 /* open the card: share it straight to Messages and friends on a phone, or copy it on a computer */
 let DC_DL=null;try{if(window.claude&&claude.use)claude.use("downloads").then(d=>{DC_DL=d}).catch(()=>{})}catch(e){}
 async function openDayCard(key,share){
   const {score}=dcParse(share),name=GAME_NAMES[key]||key;
-  const text=`${name}: ${score}/100 today. Think you can beat it? 🥚 https://redegg.netlify.app`;
+  const text=`${name}: ${score}/100 today. Think you can beat it? 🥚 https://redegg.app`;
   const d=document.createElement("div");d.setAttribute("role","dialog");d.setAttribute("aria-modal","true");
   d.style.cssText="position:fixed;inset:0;z-index:950;background:rgba(20,12,8,.72);display:flex;align-items:center;justify-content:center;padding:16px";
   const btn="display:block;width:100%;border:0;border-radius:16px;padding:15px;font:700 1.05rem var(--body,Nunito,sans-serif);cursor:pointer;text-align:center;text-decoration:none";
@@ -444,7 +519,7 @@ function dcWire(btn,key,share){if(!btn)return;btn.textContent="Share";btn.onclic
 async function dcShare(btn,file,text){
   const old=btn.textContent,flash=t=>{btn.textContent=t;setTimeout(()=>{btn.textContent=old},2200)};
   /* the link goes as its own item so Messages makes it tappable and apps like Snapchat take picture + link */
-  const link=(text.match(/https?:\/\/\S+/)||["https://redegg.netlify.app"])[0],line=text.replace(/\s*https?:\/\/\S+/,"").trim();
+  const link=(text.match(/https?:\/\/\S+/)||["https://redegg.app"])[0],line=text.replace(/\s*https?:\/\/\S+/,"").trim();
   const tries=[{files:[file],text:line,url:link},{files:[file],url:link},{files:[file],text}];
   for(const d of tries){let ok=false;try{ok=!!(navigator.share&&navigator.canShare&&navigator.canShare(d))}catch(e){}
     if(!ok)continue;try{await navigator.share(d);return}catch(err){if(err&&err.name==="AbortError")return}}
@@ -455,7 +530,7 @@ async function dcShare(btn,file,text){
   dcApps(text,pic);
 }
 function dcApps(text,pic){
-  const t=encodeURIComponent(text),apps=[["Messages",`sms:&body=${t}`],["WhatsApp",`https://wa.me/?text=${t}`],["Email",`mailto:?subject=${encodeURIComponent("The Red Egg")}&body=${t}`],["X",`https://twitter.com/intent/tweet?text=${t}`],["Facebook",`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent("https://redegg.netlify.app")}`]];
+  const t=encodeURIComponent(text),apps=[["Messages",`sms:&body=${t}`],["WhatsApp",`https://wa.me/?text=${t}`],["Email",`mailto:?subject=${encodeURIComponent("The Red Egg")}&body=${t}`],["X",`https://twitter.com/intent/tweet?text=${t}`],["Facebook",`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent("https://redegg.app")}`]];
   const d=document.createElement("div");d.style.cssText="position:fixed;inset:0;z-index:960;background:rgba(20,12,8,.55);display:flex;align-items:flex-end;justify-content:center;padding:16px";
   const b="display:block;width:100%;box-sizing:border-box;border:0;border-radius:14px;padding:14px;font:700 1rem var(--body,Nunito,sans-serif);text-align:center;text-decoration:none;cursor:pointer;background:#FFF6E6;color:#3B2A1E";
   d.innerHTML=`<div style="width:100%;max-width:400px;background:#FFF8EC;border-radius:22px;padding:16px;display:flex;flex-direction:column;gap:8px;box-shadow:0 18px 50px rgba(0,0,0,.35)">
@@ -467,12 +542,21 @@ function dcApps(text,pic){
   d.onclick=async e=>{if(e.target===d||e.target.closest("[data-x]")){d.remove();return}const c=e.target.closest("[data-c]");if(c){try{await navigator.clipboard.writeText(text);c.textContent="Copied"}catch(err){}}};
 }
 /* the old row of colored squares is gone from the results screens; the card replaces it */
-(function(){try{const st=document.createElement("style");st.textContent=".end .share,#gateMsg .share{display:none!important}";document.head.appendChild(st)}catch(e){}})();
+(function(){try{const st=document.createElement("style");st.textContent=".end .share,#gateMsg .share{display:none!important}.dcrow{display:flex!important;gap:10px;width:100%;margin-top:6px}.dcrow>.dcshare,.dcrow>.dcback{flex:1 1 0;display:flex;align-items:center;justify-content:center;box-sizing:border-box;min-height:54px;margin:0;border:0;border-radius:16px;padding:14px 10px;font:700 1.05rem var(--body,Nunito,sans-serif);text-decoration:none;white-space:nowrap;cursor:pointer;width:auto}.dcrow>.dcshare{background:var(--ink,#3B2A1E)!important;color:#FFF6E6!important}.dcrow>.dcback{background:var(--tray,#F3E6CF)!important;color:var(--ink,#3B2A1E)!important}";document.head.appendChild(st)}catch(e){}})();
 
 /* the results screen's buttons: Share on the left, a lighter Back to the egg on the right */
-function dcOrder(box){try{const cp=box.querySelector("#copyBtn");if(!cp)return;const row=cp.parentElement;row.insertBefore(cp,row.firstChild);
-  [...row.children].filter(el=>el!==cp&&/back to the egg/i.test(el.textContent)).forEach(el=>{el.style.setProperty("background","var(--tray,#F3E6CF)","important");el.style.setProperty("color","var(--ink,#3B2A1E)","important");el.style.setProperty("border","0","important")});
-  [cp,...row.querySelectorAll("a,button")].forEach(el=>{el.style.flex="1";el.style.whiteSpace="nowrap"})}catch(e){}}
+function dcOrder(box){dcRow(box)}
+/* every game ends the same way: Share on the left, Back to the egg on the right, side by side */
+function dcRow(box){try{const cp=box.querySelector("#copyBtn");if(!cp)return;
+  const backs=[...box.querySelectorAll("a,button")].filter(el=>el!==cp&&/back to the egg/i.test(el.textContent));
+  let back=backs.shift();backs.forEach(el=>el.remove());
+  if(!back){back=document.createElement("a");back.href="index.html";back.textContent="Back to the egg"}
+  let row=box.querySelector(".dcrow");
+  if(!row){row=document.createElement("div");row.className="dcrow";const at=box.contains(back)?back:cp;at.parentElement.insertBefore(row,at)}
+  row.append(cp,back);
+  [cp,back].forEach(el=>{el.removeAttribute("style");el.className=""});cp.classList.add("dcshare");back.classList.add("dcback");
+  box.querySelectorAll(".actions").forEach(el=>{if(!el.contains(row)&&!el.textContent.trim())el.remove()});
+}catch(e){}}
 
 /* ---------- pause & resume a daily game ----------
    Leaving mid-game (switching apps, locking the phone, reloading) pauses it. Coming back shows a
@@ -609,6 +693,15 @@ const EH=[["Sports",["The Super Bowl","The NBA","The World Cup","The Olympics","
  ["History & Geography",["World Geography","US History","World Capitals","US Geography","World History","US Presidents","Famous Landmarks"]]];
 {const used=new Set(EH.flatMap(e=>e[1]));EH.push(["Wild Card",Object.keys(CATS).filter(k=>!used.has(k))])}
 const EH_POOL=Object.fromEntries(EH.map(([n,ks])=>[n,ks.flatMap(k=>CATS[k])]));
+/* Nov 2026: more questions. Weeks up to Nov 2 keep the original pools; from Nov 9 each category is dealt like a deck,
+   so nothing repeats until a category runs out, and questions already played go to the bottom of the deck. */
+const EH_MORE={"Music": [["Who sang \"Hello\" in 2015?", "Adele", "Sam Smith", "Lana Del Rey", "Ellie Goulding"], ["Which band's members wore face paint and called themselves the Demon and the Starchild?", "Kiss", "Mötley Crüe", "Twisted Sister", "Alice Cooper"], ["Which singer is known as the \"Material Girl\"?", "Madonna", "Cyndi Lauper", "Cher", "Janet Jackson"], ["\"Sweet Caroline\" is a song by which singer?", "Neil Diamond", "Elton John", "Billy Joel", "Barry Manilow"], ["Which singer had hits with \"Rocket Man\" and \"Tiny Dancer\"?", "Elton John", "Billy Joel", "Rod Stewart", "David Bowie"], ["Who was the lead singer of Nirvana?", "Kurt Cobain", "Eddie Vedder", "Chris Cornell", "Dave Grohl"], ["\"Bad Guy\" was a 2019 hit for which singer?", "Billie Eilish", "Lorde", "Olivia Rodrigo", "Halsey"], ["How many strings does a standard bass guitar have?", "4", "6", "5", "8"], ["Which singer released \"Sorry\" and \"Love Yourself\"?", "Justin Bieber", "Shawn Mendes", "Charlie Puth", "Niall Horan"], ["Which group sang \"I Want It That Way\"?", "Backstreet Boys", "NSYNC", "98 Degrees", "Boyz II Men"], ["Which Beatle was the band's drummer?", "Ringo Starr", "Paul McCartney", "George Harrison", "John Lennon"], ["Which band released the album \"Rumours\"?", "Fleetwood Mac", "Eagles", "The Doors", "Heart"], ["Which singer's real name is Stefani Germanotta?", "Lady Gaga", "Ariana Grande", "Katy Perry", "Miley Cyrus"], ["Which singer's real name is Robyn Fenty?", "Rihanna", "Ciara", "Kesha", "Normani"], ["Which band had a hit with \"Mr. Brightside\"?", "The Killers", "Kings of Leon", "The Strokes", "Franz Ferdinand"], ["Which rapper made the album \"good kid, m.A.A.d city\"?", "Kendrick Lamar", "J. Cole", "Drake", "Kanye West"], ["Who had the 2023 hit \"Flowers\"?", "Miley Cyrus", "Selena Gomez", "Demi Lovato", "Dua Lipa"], ["Harry Styles first became famous in which boy band?", "One Direction", "The Wanted", "5 Seconds of Summer", "Jonas Brothers"], ["\"Happy\" (2013) was a hit for which singer?", "Pharrell Williams", "Bruno Mars", "Pitbull", "will.i.am"], ["Which Motown group sang \"My Girl\"?", "The Temptations", "The Supremes", "The Four Tops", "The Jackson 5"], ["Who sang \"Like a Rolling Stone\"?", "Bob Dylan", "Mick Jagger", "Bruce Springsteen", "Neil Young"], ["Which country is Shakira from?", "Colombia", "Mexico", "Spain", "Argentina"]], "Movies & TV": [["In \"The Lion King,\" what is Simba's father's name?", "Mufasa", "Scar", "Rafiki", "Zazu"], ["Who played Jack in \"Titanic\"?", "Leonardo DiCaprio", "Brad Pitt", "Matt Damon", "Johnny Depp"], ["What is the name of the town in \"Stranger Things\"?", "Hawkins", "Derry", "Riverdale", "Mystic Falls"], ["In \"Toy Story,\" what is the name of the kid who owns Woody?", "Andy", "Sid", "Bonnie", "Max"], ["In \"Frozen,\" what is the name of Elsa's sister?", "Anna", "Ariel", "Aurora", "Belle"], ["In \"The Lord of the Rings,\" which hobbit carries the Ring to Mordor?", "Frodo", "Bilbo", "Samwise", "Pippin"], ["In \"Squid Game,\" what is the first game the players play?", "Red Light, Green Light", "Tug of war", "Marbles", "Glass bridge"], ["In \"Shrek,\" what kind of creature does Donkey fall in love with?", "A dragon", "A unicorn", "A horse", "An ogre"], ["Which movie features a DeLorean time machine?", "Back to the Future", "Bill & Ted's Excellent Adventure", "The Terminator", "Looper"], ["Which show's famous line is \"Winter is coming\"?", "Game of Thrones", "The Witcher", "Vikings", "The Last Kingdom"], ["Which Pixar movie is set in the Land of the Dead?", "Coco", "Soul", "Onward", "Inside Out"], ["What is the name of Barbie's longtime boyfriend?", "Ken", "Kevin", "Kyle", "Kurt"], ["In \"Finding Nemo,\" what kind of fish is Dory?", "Blue tang", "Clownfish", "Angelfish", "Pufferfish"], ["Who voices Woody in \"Toy Story\"?", "Tom Hanks", "Tim Allen", "Billy Crystal", "Robin Williams"], ["Which sitcom is set at Sacred Heart hospital?", "Scrubs", "House", "ER", "The Good Doctor"], ["Which movie is set on the beach town of Amity Island?", "Jaws", "Jurassic Park", "Cast Away", "Waterworld"], ["Who played Katniss Everdeen in \"The Hunger Games\"?", "Jennifer Lawrence", "Emma Stone", "Shailene Woodley", "Kristen Stewart"], ["In \"Ted Lasso,\" what sport does Ted coach in England?", "Soccer", "Rugby", "Cricket", "Basketball"], ["Which series is about the Roy family's media empire?", "Succession", "Billions", "Yellowstone", "Ozark"], ["In \"Monsters, Inc.,\" what do Sulley and Mike call the little girl?", "Boo", "Dot", "Lulu", "Bea"]], "Sports": [["How many players does one hockey team have on the ice, counting the goalie?", "6", "5", "7", "11"], ["In bowling, what do you call knocking down all 10 pins with your first ball?", "Strike", "Spare", "Turkey", "Split"], ["What is a perfect score in bowling?", "300", "200", "250", "500"], ["How many points is a touchdown worth before the extra point?", "6", "7", "3", "4"], ["Which sport uses the words \"love\" and \"deuce\"?", "Tennis", "Badminton", "Squash", "Golf"], ["How long is a marathon?", "26.2 miles", "13.1 miles", "24 miles", "30 miles"], ["How many holes are on a standard golf course?", "18", "9", "12", "21"], ["What color jersey does the leader of the Tour de France wear?", "Yellow", "Green", "Polka dot", "White"], ["Which boxer was known as \"Iron Mike\"?", "Mike Tyson", "Michael Spinks", "Evander Holyfield", "George Foreman"], ["How many minutes long is an NBA quarter?", "12", "10", "15", "20"], ["Which city's NFL team is the Packers?", "Green Bay", "Milwaukee", "Minneapolis", "Chicago"], ["How many players does each volleyball team have on the court?", "6", "5", "7", "4"]], "History & Geography": [["Which river flows through Paris?", "Seine", "Thames", "Danube", "Rhine"], ["Which African country has the most people?", "Nigeria", "Egypt", "Ethiopia", "South Africa"], ["In which year did World War II end?", "1945", "1944", "1946", "1939"], ["Who was the first woman to fly solo across the Atlantic?", "Amelia Earhart", "Bessie Coleman", "Sally Ride", "Harriet Quimby"], ["The Panama Canal connects the Atlantic Ocean to which ocean?", "Pacific", "Indian", "Arctic", "Southern"], ["Which mountain range is often used as the border between Europe and Asia?", "Ural Mountains", "Alps", "Himalayas", "Carpathians"], ["Which wall came down in 1989?", "Berlin Wall", "Hadrian's Wall", "Western Wall", "Great Wall"], ["Where were the first Olympic Games held, in ancient times?", "Greece", "Italy", "Egypt", "Turkey"], ["Which city is nicknamed \"the Big Apple\"?", "New York City", "Chicago", "Boston", "Los Angeles"], ["Which state is nicknamed \"the Empire State\"?", "New York", "Pennsylvania", "Massachusetts", "Virginia"], ["Marrakech is a city in which country?", "Morocco", "Egypt", "Tunisia", "Algeria"], ["Which is the only US state that borders just one other state?", "Maine", "Florida", "Washington", "Rhode Island"]], "Wild Card": [["How many hearts does an octopus have?", "3", "1", "2", "8"], ["What is a group of lions called?", "A pride", "A pack", "A herd", "A school"], ["Which fruit wears its seeds on the outside?", "Strawberry", "Raspberry", "Kiwi", "Blueberry"], ["How many sides does a hexagon have?", "6", "5", "7", "8"], ["Which animal is called the \"ship of the desert\"?", "Camel", "Horse", "Donkey", "Elephant"], ["At what temperature does water freeze in Fahrenheit?", "32°F", "0°F", "100°F", "212°F"], ["Which planet spins on its side?", "Uranus", "Neptune", "Saturn", "Venus"], ["Which vitamin does your skin make from sunlight?", "Vitamin D", "Vitamin C", "Vitamin A", "Vitamin B12"], ["Which metal is a liquid at room temperature?", "Mercury", "Lead", "Tin", "Aluminum"], ["What is a group of owls called?", "A parliament", "A murder", "A gaggle", "A pod"], ["Which planet has the shortest year?", "Mercury", "Venus", "Mars", "Earth"], ["What is a male duck called?", "A drake", "A gander", "A cob", "A rooster"], ["What color is a polar bear's skin?", "Black", "White", "Pink", "Gray"], ["Which spice gives curry powder much of its yellow color?", "Turmeric", "Saffron", "Paprika", "Cumin"], ["How many minutes are in a day?", "1,440", "1,200", "2,400", "1,040"], ["What is the most common blood type?", "O positive", "A positive", "B positive", "AB negative"]]};
+const EH_POOL2=Object.fromEntries(EH.map(([n])=>[n,EH_POOL[n].concat(EH_MORE[n]||[])]));
+function ehDeckWeek(w){const names=EH.map(e=>e[0]),old=(n,k,off)=>{const o=seededOrder(EH_POOL[n],"egghead|"+n);return o[(k+off)%o.length]};
+  const seen=new Set();for(let k=38;k<44;k++){names.forEach(n=>seen.add(old(n,k,0)));const sc=names[k%5];seen.add(old(sc,k,Math.floor(EH_POOL[sc].length/2)))}
+  const deck={},ptr={};names.forEach(n=>{const o=seededOrder(EH_POOL2[n],"egghead-deck|"+n);deck[n]=o.filter(q=>!seen.has(q)).concat(o.filter(q=>seen.has(q)));ptr[n]=0});
+  let out;for(let k=44;k<=w;k++){const q={};names.forEach(n=>{q[n]=deck[n][ptr[n]++%deck[n].length]});const sc=names[k%5];out={q,sc,sun:deck[sc][ptr[sc]++%deck[sc].length]}}
+  return out}
 const TIERS=[[19,"Perfect Yolk","t1"],[15,"Sunny Side Up","t2"],[10,"Over Easy","t3"],[5,"Cracked","t4"],[0,"Rotten Egg","t5"]];
 function tierOf(pts){const p=pts*(ROUNDS/5);return TIERS.find(([m])=>p>=m-1e-9)}
 function pill(pts){const [,n,c]=tierOf(pts);return `<span class="pill ${c}">${n}</span>`}
@@ -627,10 +720,12 @@ let S,tick=null;
 
 function newGame(seed){
   const r=mulberry(seed),daily=typeof MODE!=="undefined"&&MODE!=="practice"&&typeof seededOrder==="function";
-  const pick=(name,off)=>{const p=EH_POOL[name];if(daily){const o=seededOrder(p,"egghead|"+name);return o[(WEEK_NO+off)%o.length]}return p[Math.floor(r()*p.length)]};
+  const pick=(name,off)=>{const p=EH_POOL[name];if(daily){const o=seededOrder(p,"egghead|"+name);return o[(WEEK_NO+off)%o.length]}const p2=EH_POOL2[name];return p2[Math.floor(r()*p2.length)]};
   const names=EH.map(e=>e[0]);
-  const list=names.map(n=>[n,pick(n,0)]);
-  const sunCat=names[(daily?WEEK_NO:Math.floor(r()*5))%5];list.push([sunCat,pick(sunCat,Math.floor(EH_POOL[sunCat].length/2))]);
+  let list;
+  if(daily&&WEEK_NO>=44){const d=ehDeckWeek(WEEK_NO);list=names.map(n=>[n,d.q[n]]);list.push([d.sc,d.sun])}
+  else{list=names.map(n=>[n,pick(n,0)]);
+    const sunCat=names[(daily?WEEK_NO:Math.floor(r()*5))%5];list.push([sunCat,pick(sunCat,Math.floor(EH_POOL[sunCat].length/2))])}
   const qs=list.map(([cat,[q,a,...w]])=>({cat,q,a,opts:shuffle([a,...w],r)}));
   S={round:0,cat:"",qs,results:[]};
   $("end").hidden=true;$("progress").hidden=false;$("game").hidden=false;
@@ -707,7 +802,7 @@ function finish(){
     <div class="toast" id="toast" aria-live="polite"></div>`;
   $("game").hidden=true;end.hidden=false;$("progress").hidden=true;
   $("copyBtn").onclick=()=>{
-    try{navigator.clipboard.writeText(share.includes("redegg.netlify.app")?share:share+"\nredegg.netlify.app").then(()=>$("toast").textContent="Copied",selectShare)}catch(e){selectShare()}
+    try{navigator.clipboard.writeText(share.includes("redegg.app")?share:share+"\nredegg.app").then(()=>$("toast").textContent="Copied",selectShare)}catch(e){selectShare()}
   };
   $("againBtn").onclick=()=>newGame(Math.floor(Math.random()*1e9));
 }
